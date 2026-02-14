@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+
+# Hardhat
+artifacts/
+cache/
+typechain-types/
+
+# Coverage
+coverage/
+coverage.json
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Data
+data/registered-wallets.json
+
+# Platform config
+.replit
+replit.md
+replit.nix
+.config/
+.local/
+.cache/
+.upm/
+
+# Misc
+*.swp
+*.swo
+*~
