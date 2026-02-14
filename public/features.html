@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jacob - Features & Live Data</title>
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/features.css">
+</head>
+<body>
+    <canvas id="particle-canvas"></canvas>
+    <div class="scanlines"></div>
+
+    <nav class="top-nav">
+        <div class="container nav-inner">
+            <a href="/" class="nav-logo">Jacob</a>
+            <div class="nav-links">
+                <a href="/">Dashboard</a>
+                <a href="/features.html" class="active">Features</a>
+                <a href="/bot.html">AI Bot</a>
+                <a href="/test.html">Test</a>
+            </div>
+        </div>
+    </nav>
+
+    <header style="padding: 50px 0 40px;">
+        <div class="header-glow"></div>
+        <div class="container">
+            <h1 data-text="Features" style="font-size: 3rem;">Features</h1>
+            <p class="subtitle">
+                <span class="cyber-bracket">[</span>
+                Live Platform Data & Agent Features
+                <span class="cyber-bracket">]</span>
+            </p>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <section class="section-header">
+            <div class="section-line"></div>
+            <h2 class="section-title">Live Burn Tracker</h2>
+            <div class="section-line"></div>
+        </section>
+
+        <section class="burn-tracker-section">
+            <div class="burn-stats-grid">
+                <div class="burn-stat glass-card">
+                    <div class="burn-stat-icon">&#128293;</div>
+                    <div class="burn-stat-value" id="total-burned">--</div>
+                    <div class="burn-stat-label">JACOB Burned</div>
+                    <div class="burn-bar"><div class="burn-bar-fill" id="burn-bar-fill"></div></div>
+                </div>
+                <div class="burn-stat glass-card">
+                    <div class="burn-stat-icon">&#128176;</div>
+                    <div class="burn-stat-value" id="remaining-supply">--</div>
+                    <div class="burn-stat-label">Remaining Supply</div>
+                </div>
+                <div class="burn-stat glass-card">
+                    <div class="burn-stat-icon">&#128200;</div>
+                    <div class="burn-stat-value" id="burn-percentage">--</div>
+                    <div class="burn-stat-label">% Supply Burned</div>
+                </div>
+                <div class="burn-stat glass-card">
+                    <div class="burn-stat-icon">&#129302;</div>
+                    <div class="burn-stat-value" id="total-agents">--</div>
+                    <div class="burn-stat-label">Agents Created</div>
+                </div>
+            </div>
+            <div class="burn-countdown glass-card">
+                <h3>Supply Destruction Progress</h3>
+                <div class="countdown-visual">
+                    <div class="countdown-ring">
+                        <svg viewBox="0 0 200 200">
+                            <circle cx="100" cy="100" r="90" class="ring-bg"/>
+                            <circle cx="100" cy="100" r="90" class="ring-fill" id="countdown-ring"/>
+                        </svg>
+                        <div class="ring-center">
+                            <span id="ring-percent">0%</span>
+                            <span class="ring-label">BURNED</span>
+                        </div>
+                    </div>
+                    <div class="burn-milestones">
+                        <div class="milestone" data-target="10"><span>10%</span> <span class="ms-label">Early Burn</span></div>
+                        <div class="milestone" data-target="25"><span>25%</span> <span class="ms-label">Quarter Gone</span></div>
+                        <div class="milestone" data-target="50"><span>50%</span> <span class="ms-label">Half Supply</span></div>
+                        <div class="milestone" data-target="75"><span>75%</span> <span class="ms-label">Scarce Era</span></div>
+                        <div class="milestone" data-target="100"><span>100%</span> <span class="ms-label">Full Burn</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tier-burn-grid">
+                <div class="tier-burn-card glass-card" data-tier="bronze">
+                    <div class="tier-color-bar" style="background: #cd7f32;"></div>
+                    <h4>Bronze</h4>
+                    <div class="tier-burn-cost">10 JACOB</div>
+                    <div class="tier-burn-count" id="bronze-count">0 minted</div>
+                    <div class="tier-burn-max">Max: 100,000</div>
+                </div>
+                <div class="tier-burn-card glass-card" data-tier="silver">
+                    <div class="tier-color-bar" style="background: #c0c0c0;"></div>
+                    <h4>Silver</h4>
+                    <div class="tier-burn-cost">50 JACOB</div>
+                    <div class="tier-burn-count" id="silver-count">0 minted</div>
+                    <div class="tier-burn-max">Max: 20,000</div>
+                </div>
+                <div class="tier-burn-card glass-card" data-tier="gold">
+                    <div class="tier-color-bar" style="background: #f0b90b;"></div>
+                    <h4>Gold</h4>
+                    <div class="tier-burn-cost">250 JACOB</div>
+                    <div class="tier-burn-count" id="gold-count">0 minted</div>
+                    <div class="tier-burn-max">Max: 4,000</div>
+                </div>
+                <div class="tier-burn-card glass-card" data-tier="diamond">
+                    <div class="tier-color-bar" style="background: #b9f2ff;"></div>
+                    <h4>Diamond</h4>
+                    <div class="tier-burn-cost">1,000 JACOB</div>
+                    <div class="tier-burn-count" id="diamond-count">0 minted</div>
+                    <div class="tier-burn-max">Max: 1,000</div>
+                </div>
+                <div class="tier-burn-card glass-card" data-tier="black">
+                    <div class="tier-color-bar" style="background: #1a1a2e;"></div>
+                    <h4>Black</h4>
+                    <div class="tier-burn-cost">10,000 JACOB</div>
+                    <div class="tier-burn-count" id="black-count">0 minted</div>
+                    <div class="tier-burn-max">Max: 100</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-header">
+            <div class="section-line"></div>
+            <h2 class="section-title">Agent Leaderboard</h2>
+            <div class="section-line"></div>
+        </section>
+
+        <section class="leaderboard-section">
+            <div class="leaderboard-filters">
+                <button class="filter-btn active" data-filter="all">All Agents</button>
+                <button class="filter-btn" data-filter="5">Black</button>
+                <button class="filter-btn" data-filter="4">Diamond</button>
+                <button class="filter-btn" data-filter="3">Gold</button>
+                <button class="filter-btn" data-filter="2">Silver</button>
+                <button class="filter-btn" data-filter="1">Bronze</button>
+            </div>
+            <div class="leaderboard-table glass-card">
+                <div class="lb-header">
+                    <span class="lb-col lb-rank">Rank</span>
+                    <span class="lb-col lb-id">Agent</span>
+                    <span class="lb-col lb-tier">Tier</span>
+                    <span class="lb-col lb-burned">Burned</span>
+                    <span class="lb-col lb-owner">Owner</span>
+                </div>
+                <div id="leaderboard-body">
+                    <div class="lb-empty">Connect wallet or wait for agents to be minted</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-header">
+            <div class="section-line"></div>
+            <h2 class="section-title">Agent Profiles</h2>
+            <div class="section-line"></div>
+        </section>
+
+        <section class="profiles-section">
+            <p class="section-desc">Give your agent a unique identity. Names are stored on-chain and must be unique across all agents.</p>
+            <div class="profile-form glass-card">
+                <h3>Set Agent Profile</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Agent Token ID</label>
+                        <input type="number" id="profile-token-id" placeholder="Enter your agent's token ID" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Agent Name (1-32 characters)</label>
+                        <input type="text" id="profile-name" placeholder="e.g. Phantom, Nova, Atlas..." maxlength="32">
+                        <span class="name-status" id="name-status"></span>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Bio (max 256 characters)</label>
+                        <textarea id="profile-bio" placeholder="Describe your agent's mission..." maxlength="256" rows="3"></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Avatar URL (optional)</label>
+                        <input type="text" id="profile-avatar" placeholder="https://...">
+                    </div>
+                </div>
+                <button class="action-btn" id="set-profile-btn" disabled>Connect Wallet First</button>
+            </div>
+
+            <div class="profile-lookup glass-card">
+                <h3>Lookup Agent Profile</h3>
+                <div class="lookup-row">
+                    <input type="number" id="lookup-token-id" placeholder="Token ID" min="1">
+                    <button class="action-btn small" id="lookup-btn">Lookup</button>
+                </div>
+                <div id="lookup-result" class="lookup-result hidden"></div>
+            </div>
+        </section>
+
+        <section class="section-header">
+            <div class="section-line"></div>
+            <h2 class="section-title">Agent Upgrades</h2>
+            <div class="section-line"></div>
+        </section>
+
+        <section class="upgrades-section">
+            <p class="section-desc">Burn additional JACOB tokens to upgrade your agent to a higher tier. You only pay the difference between tiers.</p>
+            <div class="upgrade-calculator glass-card">
+                <h3>Upgrade Calculator</h3>
+                <div class="calc-grid">
+                    <div class="form-group">
+                        <label>Agent Token ID</label>
+                        <input type="number" id="upgrade-token-id" placeholder="Your agent ID" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Target Tier</label>
+                        <select id="upgrade-target-tier">
+                            <option value="2">Silver (50 JACOB)</option>
+                            <option value="3">Gold (250 JACOB)</option>
+                            <option value="4">Diamond (1,000 JACOB)</option>
+                            <option value="5">Black (10,000 JACOB)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="upgrade-cost-display" id="upgrade-cost-display">
+                    <span>Upgrade Cost:</span>
+                    <span id="upgrade-cost-value">--</span>
+                </div>
+                <button class="action-btn" id="upgrade-btn" disabled>Connect Wallet First</button>
+            </div>
+
+            <div class="upgrade-stats glass-card">
+                <h3>Upgrade Statistics</h3>
+                <div class="upgrade-stats-grid">
+                    <div class="u-stat">
+                        <span class="u-stat-value" id="total-upgrades">0</span>
+                        <span class="u-stat-label">Total Upgrades</span>
+                    </div>
+                    <div class="u-stat">
+                        <span class="u-stat-value" id="upgrade-burns">0</span>
+                        <span class="u-stat-label">JACOB Burned (Upgrades)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-header">
+            <div class="section-line"></div>
+            <h2 class="section-title">Referral System</h2>
+            <div class="section-line"></div>
+        </section>
+
+        <section class="referral-section">
+            <p class="section-desc">Earn JACOB rewards by referring new agent creators. Higher tier agents earn bigger referral bonuses.</p>
+            <div class="referral-grid">
+                <div class="referral-card glass-card">
+                    <h3>Become a Referrer</h3>
+                    <p>Register as a referrer to start earning rewards when people you refer create agents.</p>
+                    <button class="action-btn" id="register-referrer-btn" disabled>Connect Wallet First</button>
+                </div>
+                <div class="referral-card glass-card">
+                    <h3>Set Your Referrer</h3>
+                    <p>Enter the wallet address of the person who referred you before minting your first agent.</p>
+                    <input type="text" id="referrer-address" placeholder="0x... referrer address">
+                    <button class="action-btn small" id="set-referrer-btn" disabled>Set Referrer</button>
+                </div>
+                <div class="referral-card glass-card">
+                    <h3>Referral Rewards</h3>
+                    <div class="reward-tiers">
+                        <div class="reward-row"><span>Base Reward</span><code>5 JACOB</code></div>
+                        <div class="reward-row"><span>+ Bronze Bonus</span><code>+2 JACOB</code></div>
+                        <div class="reward-row"><span>+ Silver Bonus</span><code>+4 JACOB</code></div>
+                        <div class="reward-row"><span>+ Gold Bonus</span><code>+6 JACOB</code></div>
+                        <div class="reward-row"><span>+ Diamond Bonus</span><code>+8 JACOB</code></div>
+                        <div class="reward-row"><span>+ Black Bonus</span><code>+10 JACOB</code></div>
+                    </div>
+                </div>
+            </div>
+            <div class="referral-stats glass-card">
+                <div class="ref-stat"><span id="total-referrals">0</span><span>Total Referrals</span></div>
+                <div class="ref-stat"><span id="total-rewards-paid">0</span><span>Rewards Paid (JACOB)</span></div>
+            </div>
+        </section>
+
+        <section class="section-header">
+            <div class="section-line"></div>
+            <h2 class="section-title">Revenue Sharing</h2>
+            <div class="section-line"></div>
+        </section>
+
+        <section class="revenue-section">
+            <p class="section-desc">Agent holders earn BNB from protocol revenue. All fees are split 60% to the platform owner and 40% to agent holders via RevenueSharing.</p>
+            <div class="revenue-streams glass-card" style="margin-bottom: 24px;">
+                <h3 style="color: var(--accent); margin-bottom: 12px;">Revenue Streams</h3>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                    <div style="text-align: center; padding: 12px; border: 1px solid rgba(255,179,0,0.2); border-radius: 8px;">
+                        <div style="font-size: 1.5em; margin-bottom: 4px;">&#9874;</div>
+                        <div style="color: var(--accent); font-weight: bold; font-size: 0.9em;">Agent Minting</div>
+                        <div style="font-size: 0.8em; color: #8a8a8a; margin-top: 4px;">BNB fee per mint</div>
+                        <div style="font-size: 0.75em; color: #6a6a6a; margin-top: 2px;">Bronze 0.005 &bull; Silver 0.02 &bull; Gold 0.1 &bull; Diamond 0.5 &bull; Black 2 BNB</div>
+                    </div>
+                    <div style="text-align: center; padding: 12px; border: 1px solid rgba(255,179,0,0.2); border-radius: 8px;">
+                        <div style="font-size: 1.5em; margin-bottom: 4px;">&#128257;</div>
+                        <div style="color: var(--accent); font-weight: bold; font-size: 0.9em;">Vault Swaps</div>
+                        <div style="font-size: 0.8em; color: #8a8a8a; margin-top: 4px;">1% fee on every DEX swap</div>
+                        <div style="font-size: 0.75em; color: #6a6a6a; margin-top: 2px;">Every agent trade generates revenue</div>
+                    </div>
+                    <div style="text-align: center; padding: 12px; border: 1px solid rgba(255,179,0,0.2); border-radius: 8px;">
+                        <div style="font-size: 1.5em; margin-bottom: 4px;">&#127942;</div>
+                        <div style="color: var(--accent); font-weight: bold; font-size: 0.9em;">Competitions</div>
+                        <div style="font-size: 0.8em; color: #8a8a8a; margin-top: 4px;">5% of prize pools</div>
+                        <div style="font-size: 0.75em; color: #6a6a6a; margin-top: 2px;">Trading battles fund the revenue pool</div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 12px; padding: 8px; background: rgba(255,179,0,0.08); border-radius: 6px; font-size: 0.85em;">
+                    <span style="color: var(--accent);">60%</span> <span style="color: #8a8a8a;">Platform Owner</span>
+                    <span style="color: #444; margin: 0 8px;">&bull;</span>
+                    <span style="color: var(--accent);">40%</span> <span style="color: #8a8a8a;">Agent Holders (via RevenueSharing)</span>
+                </div>
+            </div>
+            <div class="revenue-grid">
+                <div class="share-card glass-card">
+                    <h3>Share Weights by Tier</h3>
+                    <div class="share-tiers">
+                        <div class="share-row"><span class="tier-dot bronze"></span><span>Bronze</span><code>1 share</code></div>
+                        <div class="share-row"><span class="tier-dot silver"></span><span>Silver</span><code>2 shares</code></div>
+                        <div class="share-row"><span class="tier-dot gold"></span><span>Gold</span><code>5 shares</code></div>
+                        <div class="share-row"><span class="tier-dot diamond"></span><span>Diamond</span><code>12 shares</code></div>
+                        <div class="share-row"><span class="tier-dot black"></span><span>Black</span><code>25 shares</code></div>
+                    </div>
+                </div>
+                <div class="share-card glass-card">
+                    <h3>Current Epoch</h3>
+                    <div class="epoch-info">
+                        <div class="epoch-stat"><span class="epoch-value" id="current-epoch">0</span><span>Epoch #</span></div>
+                        <div class="epoch-stat"><span class="epoch-value" id="epoch-revenue">0 BNB</span><span>Revenue Pool</span></div>
+                        <div class="epoch-stat"><span class="epoch-value" id="total-claimed">0 BNB</span><span>Total Claimed</span></div>
+                    </div>
+                </div>
+                <div class="share-card glass-card">
+                    <h3>Claim Revenue</h3>
+                    <div class="form-group">
+                        <label>Agent Token ID</label>
+                        <input type="number" id="claim-token-id" placeholder="Your agent ID" min="1">
+                    </div>
+                    <button class="action-btn" id="claim-revenue-btn" disabled>Connect Wallet First</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-header">
+            <div class="section-line"></div>
+            <h2 class="section-title">Competitions</h2>
+            <div class="section-line"></div>
+        </section>
+
+        <section class="competitions-section">
+            <p class="section-desc">Enter your agents into trading competitions. Best-performing agents win the prize pool.</p>
+            <div class="comp-grid" id="competitions-list">
+                <div class="comp-card glass-card">
+                    <div class="comp-status-badge registration">Coming Soon</div>
+                    <h3>First Agent Battle</h3>
+                    <p>The inaugural competition for Jacob agents. Register your agent, compete against others, and win BNB prizes.</p>
+                    <div class="comp-details">
+                        <div class="comp-detail"><span>Entry Fee</span><code>0.01 BNB</code></div>
+                        <div class="comp-detail"><span>Max Participants</span><code>50 agents</code></div>
+                        <div class="comp-detail"><span>Platform Fee</span><code>5%</code></div>
+                    </div>
+                    <button class="action-btn" disabled>Registration Opens Soon</button>
+                </div>
+                <div class="comp-card glass-card">
+                    <div class="comp-status-badge planned">Planned</div>
+                    <h3>Tier Championship</h3>
+                    <p>Tier-restricted competition. Only agents of matching tiers compete against each other for fairer matchups.</p>
+                    <div class="comp-details">
+                        <div class="comp-detail"><span>Format</span><code>Tier-Locked</code></div>
+                        <div class="comp-detail"><span>Brackets</span><code>5 (one per tier)</code></div>
+                    </div>
+                    <button class="action-btn" disabled>Coming Soon</button>
+                </div>
+            </div>
+
+            <div class="comp-leaderboard glass-card">
+                <h3>Competition Leaderboard</h3>
+                <div class="comp-lb-header">
+                    <span>Rank</span>
+                    <span>Agent</span>
+                    <span>Score</span>
+                    <span>Prize</span>
+                </div>
+                <div id="comp-leaderboard-body">
+                    <div class="lb-empty">No active competitions yet</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-header">
+            <div class="section-line"></div>
+            <h2 class="section-title">New Contracts</h2>
+            <div class="section-line"></div>
+        </section>
+
+        <section class="new-contracts-section">
+            <p class="section-desc">5 additional smart contracts powering the new features</p>
+            <div class="new-contracts-grid">
+                <div class="nc-card glass-card">
+                    <div class="nc-icon" style="color: #a855f7;">&#128100;</div>
+                    <h4>AgentProfile</h4>
+                    <p>On-chain naming, bios, and avatar URLs for agents. Unique names enforced.</p>
+                    <a href="/api/abi/AgentProfile" class="nc-abi-link">&lt;/&gt; ABI</a>
+                </div>
+                <div class="nc-card glass-card">
+                    <div class="nc-icon" style="color: #64ffda;">&#11014;</div>
+                    <h4>AgentUpgrade</h4>
+                    <p>Burn additional JACOB to upgrade agent tiers. Pay only the difference.</p>
+                    <a href="/api/abi/AgentUpgrade" class="nc-abi-link">&lt;/&gt; ABI</a>
+                </div>
+                <div class="nc-card glass-card">
+                    <div class="nc-icon" style="color: #f0b90b;">&#127873;</div>
+                    <h4>ReferralRewards</h4>
+                    <p>Earn JACOB for referring new agent creators. Tier-scaled bonuses.</p>
+                    <a href="/api/abi/ReferralRewards" class="nc-abi-link">&lt;/&gt; ABI</a>
+                </div>
+                <div class="nc-card glass-card">
+                    <div class="nc-icon" style="color: #00f0ff;">&#128184;</div>
+                    <h4>RevenueSharing</h4>
+                    <p>Epoch-based BNB distribution to agent holders. Weighted by tier.</p>
+                    <a href="/api/abi/RevenueSharing" class="nc-abi-link">&lt;/&gt; ABI</a>
+                </div>
+                <div class="nc-card glass-card">
+                    <div class="nc-icon" style="color: #ff6b6b;">&#9876;</div>
+                    <h4>CompetitionManager</h4>
+                    <p>Trading battles with entry fees, scoring, and prize pool distribution.</p>
+                    <a href="/api/abi/CompetitionManager" class="nc-abi-link">&lt;/&gt; ABI</a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-line"></div>
+            <p>Jacob <span class="footer-dot"></span> BAP-578 Non-Fungible Agent Platform <span class="footer-dot"></span> BNB Smart Chain</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <script src="/features.js"></script>
+</body>
+</html>
