@@ -485,11 +485,32 @@ const observer = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.glass-card, .section-header, .glass-panel').forEach(el => observer.observe(el));
 
+async function loadJacobPrice() {
+    try {
+        const pairAbi = ['function getReserves() view returns (uint112,uint112,uint32)'];
+        const pair = new ethers.Contract('0x601e1b5A916EBE7e97D890F67Fa3841480bb748c', pairAbi, provider);
+        const [r0, r1] = await pair.getReserves();
+        const jacobReserve = parseFloat(ethers.utils.formatEther(r0));
+        const bnbReserve = parseFloat(ethers.utils.formatEther(r1));
+        const priceInBnb = bnbReserve / jacobReserve;
+
+        const priceEl = document.getElementById('jacob-price');
+        if (priceEl) priceEl.textContent = priceInBnb.toFixed(8) + ' BNB';
+
+        const liqEl = document.getElementById('jacob-liquidity');
+        if (liqEl) liqEl.textContent = bnbReserve.toFixed(4) + ' BNB';
+    } catch (e) {
+        console.error('Error loading price:', e);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     await initProvider();
     loadBurnData();
     loadLeaderboard();
+    loadJacobPrice();
     setupUpgradeCalculator();
 
     setInterval(loadBurnData, 30000);
+    setInterval(loadJacobPrice, 30000);
 });

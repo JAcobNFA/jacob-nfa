@@ -1118,4 +1118,166 @@
     .mint-steps { flex-direction: column; }
     .mint-step { min-width: auto; }
     .mint-summary { flex-direction: column; align-items: center; }
+    .buy-jacob-inner { flex-direction: column; }
+    .buy-jacob-details { flex-direction: column; }
+}
+
+.buy-jacob-section {
+    margin: 0 0 30px;
+}
+
+.buy-jacob-box {
+    border-radius: 16px;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid rgba(240, 185, 11, 0.3);
+    background: linear-gradient(135deg, rgba(240, 185, 11, 0.05) 0%, rgba(15, 15, 35, 0.9) 100%);
+}
+
+.buy-jacob-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 32px;
+}
+
+.buy-jacob-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.buy-jacob-icon {
+    font-size: 3rem;
+    flex-shrink: 0;
+}
+
+.buy-jacob-text h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.5rem;
+    color: var(--neon-gold);
+    margin-bottom: 6px;
+    text-shadow: 0 0 20px rgba(240, 185, 11, 0.4);
+}
+
+.buy-jacob-text p {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.05rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+}
+
+.buy-jacob-details {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.buy-jacob-price,
+.buy-jacob-pair,
+.buy-jacob-lp {
+    flex: 1;
+    min-width: 140px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.price-label,
+.pair-label,
+.lp-label {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.price-value,
+.pair-value,
+.lp-value {
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.price-value {
+    color: var(--neon-gold);
+}
+
+.buy-jacob-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 16px 32px;
+    background: linear-gradient(135deg, #f0b90b 0%, #d4a30a 100%);
+    color: #000;
+    font-family: 'Orbitron', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(240, 185, 11, 0.3);
+}
+
+.buy-jacob-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 30px rgba(240, 185, 11, 0.5);
+    background: linear-gradient(135deg, #ffc921 0%, #f0b90b 100%);
+}
+
+.btn-icon {
+    font-size: 1.3rem;
+}
+
+.buy-jacob-tip {
+    background: rgba(0, 240, 255, 0.05);
+    border: 1px solid rgba(0, 240, 255, 0.15);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.5;
+}
+
+.buy-jacob-tip strong {
+    color: var(--neon-cyan);
+}
+
+.buy-jacob-contract {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.buy-jacob-contract code {
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--neon-gold);
+    font-size: 0.8rem;
+    transition: all 0.2s;
+}
+
+.buy-jacob-contract code:hover {
+    background: rgba(240, 185, 11, 0.1);
+    border-color: rgba(240, 185, 11, 0.3);
 }

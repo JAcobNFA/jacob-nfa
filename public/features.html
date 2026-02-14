@@ -136,6 +136,50 @@
 
         <section class="section-header">
             <div class="section-line"></div>
+            <h2 class="section-title">Buy JACOB</h2>
+            <div class="section-line"></div>
+        </section>
+
+        <section class="buy-jacob-section">
+            <div class="buy-jacob-box glass-card">
+                <div class="buy-jacob-inner">
+                    <div class="buy-jacob-info">
+                        <div class="buy-jacob-icon">&#128176;</div>
+                        <div class="buy-jacob-text">
+                            <h3>Get JACOB Tokens</h3>
+                            <p>Buy JACOB on PancakeSwap to mint AI Agent NFTs. Swap BNB for JACOB directly on the DEX.</p>
+                        </div>
+                    </div>
+                    <div class="buy-jacob-details">
+                        <div class="buy-jacob-price">
+                            <span class="price-label">Current Price</span>
+                            <span class="price-value" id="jacob-price">Loading...</span>
+                        </div>
+                        <div class="buy-jacob-pair">
+                            <span class="pair-label">Pair</span>
+                            <span class="pair-value">JACOB / WBNB</span>
+                        </div>
+                        <div class="buy-jacob-lp">
+                            <span class="lp-label">Liquidity</span>
+                            <span class="lp-value" id="jacob-liquidity">Loading...</span>
+                        </div>
+                    </div>
+                    <a href="https://pancakeswap.finance/swap?outputCurrency=0x94F837c740Bd0EFc15331F578c255f6d3dd7ac0b&chain=bsc" target="_blank" rel="noopener" class="buy-jacob-btn">
+                        <span class="btn-icon">&#127849;</span> Buy on PancakeSwap
+                    </a>
+                    <div class="buy-jacob-tip">
+                        <strong>Tip:</strong> Buy in smaller amounts (max ~0.001 BNB per swap) and set gas limit to 35,000,000 in your wallet for best results. DN404 auto-mints NFTs per token which requires more gas.
+                    </div>
+                    <div class="buy-jacob-contract">
+                        <span>Contract:</span>
+                        <code onclick="navigator.clipboard.writeText('0x94F837c740Bd0EFc15331F578c255f6d3dd7ac0b');this.textContent='Copied!';setTimeout(()=>this.textContent='0x94F8...7ac0b',1500)">0x94F8...7ac0b</code>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-header">
+            <div class="section-line"></div>
             <h2 class="section-title">Mint Agent NFA</h2>
             <div class="section-line"></div>
         </section>
@@ -155,7 +199,7 @@
                     <div class="mint-tier-icon"><img src="/images/nft-bronze.png" onerror="this.style.display='none'" alt="Bronze"></div>
                     <h4>Bronze Agent</h4>
                     <div class="mint-tier-burn">Burn: 10 JACOB</div>
-                    <div class="mint-tier-fee">Fee: 0.005 BNB</div>
+                    <div class="mint-tier-fee">Fee: 0.0015 BNB</div>
                     <div class="mint-tier-limit">Vault Limit: 0.1 BNB</div>
                 </div>
                 <div class="mint-tier-card glass-card" data-tier="2" onclick="selectTier(2)">
@@ -163,7 +207,7 @@
                     <div class="mint-tier-icon"><img src="/images/nft-silver.png" onerror="this.style.display='none'" alt="Silver"></div>
                     <h4>Silver Agent</h4>
                     <div class="mint-tier-burn">Burn: 50 JACOB</div>
-                    <div class="mint-tier-fee">Fee: 0.02 BNB</div>
+                    <div class="mint-tier-fee">Fee: 0.0015 BNB</div>
                     <div class="mint-tier-limit">Vault Limit: 0.5 BNB</div>
                 </div>
                 <div class="mint-tier-card glass-card" data-tier="3" onclick="selectTier(3)">
@@ -171,7 +215,7 @@
                     <div class="mint-tier-icon"><img src="/images/nft-gold.png" onerror="this.style.display='none'" alt="Gold"></div>
                     <h4>Gold Agent</h4>
                     <div class="mint-tier-burn">Burn: 250 JACOB</div>
-                    <div class="mint-tier-fee">Fee: 0.1 BNB</div>
+                    <div class="mint-tier-fee">Fee: 0.0015 BNB</div>
                     <div class="mint-tier-limit">Vault Limit: 2 BNB</div>
                 </div>
                 <div class="mint-tier-card glass-card" data-tier="4" onclick="selectTier(4)">
@@ -179,7 +223,7 @@
                     <div class="mint-tier-icon"><img src="/images/nft-diamond.png" onerror="this.style.display='none'" alt="Diamond"></div>
                     <h4>Diamond Agent</h4>
                     <div class="mint-tier-burn">Burn: 1,000 JACOB</div>
-                    <div class="mint-tier-fee">Fee: 0.5 BNB</div>
+                    <div class="mint-tier-fee">Fee: 0.0015 BNB</div>
                     <div class="mint-tier-limit">Vault Limit: 10 BNB</div>
                 </div>
                 <div class="mint-tier-card glass-card" data-tier="5" onclick="selectTier(5)">
@@ -187,7 +231,7 @@
                     <div class="mint-tier-icon"><img src="/images/nft-black.png" onerror="this.style.display='none'" alt="Black"></div>
                     <h4>Black Agent</h4>
                     <div class="mint-tier-burn">Burn: 10,000 JACOB</div>
-                    <div class="mint-tier-fee">Fee: 2 BNB</div>
+                    <div class="mint-tier-fee">Fee: 0.0015 BNB</div>
                     <div class="mint-tier-limit">Vault Limit: Unlimited</div>
                 </div>
             </div>
