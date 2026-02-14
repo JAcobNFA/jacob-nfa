@@ -1,8 +1,8 @@
 const CONTRACTS = {
     jacobToken: '0x94F837c740Bd0EFc15331F578c255f6d3dd7ac0b',
     bap578: '0xfd8EeD47b61435f43B004fC65C5b76951652a8CE',
-    agentMinter: '0x1017CD09a86D92b4CBe74CD765eD4B78Ea82a356',
-    agentVault: '0x2e44067C9752c3F7AF31856a43CBB8B6315457b9'
+    agentMinter: '0x94D146c2CDdD1A0fa8C931D625fbc4F1Eff4c9Ee',
+    agentVault: '0xc9Bb89E036BD17F8E5016C89D0B6104F8912ac8A'
 };
 
 const BSC_RPC = 'https://bsc-dataseed.binance.org/';
