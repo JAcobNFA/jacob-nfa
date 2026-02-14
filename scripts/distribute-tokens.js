@@ -35,9 +35,15 @@ const TOKENOMICS = {
   },
   community: {
     name: "Community & Early Adopters",
-    percentage: 10,
-    tokens: "100000",
+    percentage: 9,
+    tokens: "90000",
     description: "Rewards for agent creators, action executors, early users"
+  },
+  airdrop: {
+    name: "Airdrop",
+    percentage: 1,
+    tokens: "10000",
+    description: "Free tokens for registered interest wallets"
   }
 };
 
@@ -75,6 +81,7 @@ async function main() {
   console.log("  WALLET_ECOSYSTEM        - Ecosystem Development wallet");
   console.log("  WALLET_TEAM             - Team wallet (with vesting)");
   console.log("  WALLET_COMMUNITY        - Community & Early Adopters wallet");
+  console.log("  WALLET_AIRDROP          - Airdrop wallet");
   console.log("");
   console.log("Note: Agent Liquidity (25%) goes to PancakeSwap via setup-liquidity.js");
   console.log("========================================\n");
@@ -84,7 +91,8 @@ async function main() {
     agentOperations: process.env.WALLET_AGENT_OPERATIONS,
     ecosystem: process.env.WALLET_ECOSYSTEM,
     team: process.env.WALLET_TEAM,
-    community: process.env.WALLET_COMMUNITY
+    community: process.env.WALLET_COMMUNITY,
+    airdrop: process.env.WALLET_AIRDROP
   };
 
   const hasWallets = Object.values(wallets).some(w => w && w.length > 0);
