@@ -36,7 +36,7 @@ async function main() {
     },
     {
       name: "AgentVault",
-      address: "0x2e44067C9752c3F7AF31856a43CBB8B6315457b9",
+      address: "0xc9Bb89E036BD17F8E5016C89D0B6104F8912ac8A",
       constructorArgs: [
         BAP578_PROXY,
         "0xA5d096Dcd19e14D36B8F52b4A6a0abB8b362cdBC",
@@ -71,7 +71,7 @@ async function main() {
   console.log("BAP578NFA Proxy: https://bscscan.com/address/" + BAP578_PROXY + "#code");
   console.log("BAP578NFA Impl:  https://bscscan.com/address/" + implAddress + "#code");
   console.log("JacobToken:      https://bscscan.com/address/0x94F837c740Bd0EFc15331F578c255f6d3dd7ac0b#code");
-  console.log("AgentVault:      https://bscscan.com/address/0x2e44067C9752c3F7AF31856a43CBB8B6315457b9#code");
+  console.log("AgentVault:      https://bscscan.com/address/0xc9Bb89E036BD17F8E5016C89D0B6104F8912ac8A#code");
   console.log("========================================");
 }
 
