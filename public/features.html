@@ -23,6 +23,7 @@
                 <a href="/features.html" class="active">Features</a>
                 <a href="/bot.html">AI Bot</a>
                 <a href="/test.html">Test</a>
+                <button class="connect-wallet-btn" id="connect-wallet-btn" onclick="connectWallet()">Connect Wallet</button>
             </div>
         </div>
     </nav>
@@ -135,6 +136,86 @@
 
         <section class="section-header">
             <div class="section-line"></div>
+            <h2 class="section-title">Mint Agent NFA</h2>
+            <div class="section-line"></div>
+        </section>
+
+        <section class="mint-section">
+            <p class="section-desc">Burn JACOB tokens to create your AI Agent NFT. Choose a tier, approve the token spend, then mint. A small BNB fee is required per mint.</p>
+            <div id="wallet-status" class="wallet-status glass-card" style="display:none;">
+                <div class="wallet-info">
+                    <span id="wallet-address-display"></span>
+                    <span id="wallet-jacob-balance"></span>
+                    <span id="wallet-bnb-balance"></span>
+                </div>
+            </div>
+            <div class="mint-tiers-grid">
+                <div class="mint-tier-card glass-card" data-tier="1" onclick="selectTier(1)">
+                    <div class="tier-color-bar" style="background: #cd7f32;"></div>
+                    <div class="mint-tier-icon"><img src="/images/nft-bronze.png" onerror="this.style.display='none'" alt="Bronze"></div>
+                    <h4>Bronze Agent</h4>
+                    <div class="mint-tier-burn">Burn: 10 JACOB</div>
+                    <div class="mint-tier-fee">Fee: 0.005 BNB</div>
+                    <div class="mint-tier-limit">Vault Limit: 0.1 BNB</div>
+                </div>
+                <div class="mint-tier-card glass-card" data-tier="2" onclick="selectTier(2)">
+                    <div class="tier-color-bar" style="background: #c0c0c0;"></div>
+                    <div class="mint-tier-icon"><img src="/images/nft-silver.png" onerror="this.style.display='none'" alt="Silver"></div>
+                    <h4>Silver Agent</h4>
+                    <div class="mint-tier-burn">Burn: 50 JACOB</div>
+                    <div class="mint-tier-fee">Fee: 0.02 BNB</div>
+                    <div class="mint-tier-limit">Vault Limit: 0.5 BNB</div>
+                </div>
+                <div class="mint-tier-card glass-card" data-tier="3" onclick="selectTier(3)">
+                    <div class="tier-color-bar" style="background: #f0b90b;"></div>
+                    <div class="mint-tier-icon"><img src="/images/nft-gold.png" onerror="this.style.display='none'" alt="Gold"></div>
+                    <h4>Gold Agent</h4>
+                    <div class="mint-tier-burn">Burn: 250 JACOB</div>
+                    <div class="mint-tier-fee">Fee: 0.1 BNB</div>
+                    <div class="mint-tier-limit">Vault Limit: 2 BNB</div>
+                </div>
+                <div class="mint-tier-card glass-card" data-tier="4" onclick="selectTier(4)">
+                    <div class="tier-color-bar" style="background: #b9f2ff;"></div>
+                    <div class="mint-tier-icon"><img src="/images/nft-diamond.png" onerror="this.style.display='none'" alt="Diamond"></div>
+                    <h4>Diamond Agent</h4>
+                    <div class="mint-tier-burn">Burn: 1,000 JACOB</div>
+                    <div class="mint-tier-fee">Fee: 0.5 BNB</div>
+                    <div class="mint-tier-limit">Vault Limit: 10 BNB</div>
+                </div>
+                <div class="mint-tier-card glass-card" data-tier="5" onclick="selectTier(5)">
+                    <div class="tier-color-bar" style="background: #1a1a2e;"></div>
+                    <div class="mint-tier-icon"><img src="/images/nft-black.png" onerror="this.style.display='none'" alt="Black"></div>
+                    <h4>Black Agent</h4>
+                    <div class="mint-tier-burn">Burn: 10,000 JACOB</div>
+                    <div class="mint-tier-fee">Fee: 2 BNB</div>
+                    <div class="mint-tier-limit">Vault Limit: Unlimited</div>
+                </div>
+            </div>
+            <div class="mint-action-panel glass-card" id="mint-action-panel" style="display:none;">
+                <h3>Mint <span id="selected-tier-name">--</span> Agent</h3>
+                <div class="mint-summary">
+                    <div class="mint-summary-row"><span>JACOB to Burn:</span><span id="mint-burn-amount">--</span></div>
+                    <div class="mint-summary-row"><span>BNB Mint Fee:</span><span id="mint-fee-amount">--</span></div>
+                    <div class="mint-summary-row"><span>Your JACOB Balance:</span><span id="mint-your-balance">--</span></div>
+                </div>
+                <div class="mint-steps">
+                    <div class="mint-step" id="step-approve">
+                        <span class="step-number">1</span>
+                        <span class="step-label">Approve JACOB Spend</span>
+                        <button class="action-btn small" id="approve-btn" onclick="approveJacob()">Approve</button>
+                    </div>
+                    <div class="mint-step" id="step-mint">
+                        <span class="step-number">2</span>
+                        <span class="step-label">Mint Agent NFA</span>
+                        <button class="action-btn small" id="mint-btn" onclick="mintAgent()" disabled>Mint</button>
+                    </div>
+                </div>
+                <div id="mint-status" class="mint-status"></div>
+            </div>
+        </section>
+
+        <section class="section-header">
+            <div class="section-line"></div>
             <h2 class="section-title">Agent Leaderboard</h2>
             <div class="section-line"></div>
         </section>
@@ -191,7 +272,7 @@
                         <input type="text" id="profile-avatar" placeholder="https://...">
                     </div>
                 </div>
-                <button class="action-btn" id="set-profile-btn" disabled>Connect Wallet First</button>
+                <button class="action-btn" id="set-profile-btn" data-action="Set Profile" disabled>Connect Wallet First</button>
             </div>
 
             <div class="profile-lookup glass-card">
@@ -233,7 +314,7 @@
                     <span>Upgrade Cost:</span>
                     <span id="upgrade-cost-value">--</span>
                 </div>
-                <button class="action-btn" id="upgrade-btn" disabled>Connect Wallet First</button>
+                <button class="action-btn" id="upgrade-btn" data-action="Upgrade Agent" disabled>Connect Wallet First</button>
             </div>
 
             <div class="upgrade-stats glass-card">
@@ -263,13 +344,13 @@
                 <div class="referral-card glass-card">
                     <h3>Become a Referrer</h3>
                     <p>Register as a referrer to start earning rewards when people you refer create agents.</p>
-                    <button class="action-btn" id="register-referrer-btn" disabled>Connect Wallet First</button>
+                    <button class="action-btn" id="register-referrer-btn" data-action="Register" disabled>Connect Wallet First</button>
                 </div>
                 <div class="referral-card glass-card">
                     <h3>Set Your Referrer</h3>
                     <p>Enter the wallet address of the person who referred you before minting your first agent.</p>
                     <input type="text" id="referrer-address" placeholder="0x... referrer address">
-                    <button class="action-btn small" id="set-referrer-btn" disabled>Set Referrer</button>
+                    <button class="action-btn small" id="set-referrer-btn" data-action="Set Referrer" disabled>Connect Wallet First</button>
                 </div>
                 <div class="referral-card glass-card">
                     <h3>Referral Rewards</h3>
@@ -350,7 +431,7 @@
                         <label>Agent Token ID</label>
                         <input type="number" id="claim-token-id" placeholder="Your agent ID" min="1">
                     </div>
-                    <button class="action-btn" id="claim-revenue-btn" disabled>Connect Wallet First</button>
+                    <button class="action-btn" id="claim-revenue-btn" data-action="Claim Revenue" disabled>Connect Wallet First</button>
                 </div>
             </div>
         </section>

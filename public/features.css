@@ -842,11 +842,271 @@
     box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
 }
 
+.connect-wallet-btn {
+    background: linear-gradient(135deg, rgba(240, 185, 11, 0.2), rgba(240, 185, 11, 0.08));
+    border: 1px solid rgba(240, 185, 11, 0.4);
+    color: #f0b90b;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.connect-wallet-btn:hover {
+    background: linear-gradient(135deg, rgba(240, 185, 11, 0.35), rgba(240, 185, 11, 0.15));
+    box-shadow: 0 0 20px rgba(240, 185, 11, 0.2);
+}
+
+.connect-wallet-btn.connected {
+    background: rgba(100, 255, 218, 0.1);
+    border-color: rgba(100, 255, 218, 0.4);
+    color: #64ffda;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+}
+
+.wallet-status {
+    border-radius: 12px;
+    padding: 16px 24px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(100, 255, 218, 0.2);
+    background: rgba(100, 255, 218, 0.04);
+}
+
+.wallet-info {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.wallet-info span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+}
+
+#wallet-address-display {
+    color: #64ffda;
+}
+
+#wallet-jacob-balance {
+    color: #f0b90b;
+    font-weight: 600;
+}
+
+#wallet-bnb-balance {
+    color: #00f0ff;
+}
+
+.mint-section {
+    margin: 0 0 30px;
+}
+
+.mint-tiers-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.mint-tier-card {
+    border-radius: 12px;
+    padding: 20px 16px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+}
+
+.mint-tier-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+}
+
+.mint-tier-card.selected {
+    border-color: #f0b90b;
+    box-shadow: 0 0 30px rgba(240, 185, 11, 0.2);
+    background: rgba(240, 185, 11, 0.06);
+}
+
+.mint-tier-icon {
+    margin-bottom: 8px;
+}
+
+.mint-tier-icon img {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.mint-tier-card h4 {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.8rem;
+    color: #fff;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+.mint-tier-burn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    color: #ff6b6b;
+    margin-bottom: 4px;
+}
+
+.mint-tier-fee {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: #f0b90b;
+    margin-bottom: 4px;
+}
+
+.mint-tier-limit {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+}
+
+.mint-action-panel {
+    border-radius: 14px;
+    padding: 28px;
+    border: 1px solid rgba(240, 185, 11, 0.2);
+    background: rgba(240, 185, 11, 0.03);
+}
+
+.mint-action-panel h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #f0b90b;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.mint-summary {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.mint-summary-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 20px;
+    background: rgba(4,4,8,0.5);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.05);
+    min-width: 160px;
+}
+
+.mint-summary-row span:first-child {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.mint-summary-row span:last-child {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #f0b90b;
+}
+
+.mint-steps {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.mint-step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(4,4,8,0.4);
+    min-width: 250px;
+    transition: all 0.3s;
+}
+
+.mint-step.done {
+    border-color: rgba(100, 255, 218, 0.3);
+    background: rgba(100, 255, 218, 0.05);
+}
+
+.step-number {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #f0b90b;
+    border: 2px solid rgba(240, 185, 11, 0.3);
+    flex-shrink: 0;
+}
+
+.mint-step.done .step-number {
+    background: rgba(100, 255, 218, 0.2);
+    border-color: #64ffda;
+    color: #64ffda;
+}
+
+.step-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    flex: 1;
+}
+
+.mint-status {
+    text-align: center;
+    font-size: 0.9rem;
+    padding: 12px;
+    border-radius: 8px;
+    min-height: 20px;
+}
+
+.mint-status.pending {
+    color: #f0b90b;
+    background: rgba(240, 185, 11, 0.08);
+}
+
+.mint-status.success {
+    color: #64ffda;
+    background: rgba(100, 255, 218, 0.08);
+}
+
+.mint-status.error {
+    color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.08);
+}
+
 .hidden { display: none !important; }
 
 @media (max-width: 768px) {
     .burn-stats-grid { grid-template-columns: repeat(2, 1fr); }
     .tier-burn-grid { grid-template-columns: repeat(2, 1fr); }
+    .mint-tiers-grid { grid-template-columns: repeat(2, 1fr); }
     .form-grid, .calc-grid { grid-template-columns: 1fr; }
     .referral-grid { grid-template-columns: 1fr; }
     .revenue-grid { grid-template-columns: 1fr; }
@@ -855,4 +1115,7 @@
     .lb-header, .lb-row { grid-template-columns: 40px 1fr 80px 100px; }
     .lb-owner { display: none; }
     .new-contracts-grid { grid-template-columns: 1fr 1fr; }
+    .mint-steps { flex-direction: column; }
+    .mint-step { min-width: auto; }
+    .mint-summary { flex-direction: column; align-items: center; }
 }

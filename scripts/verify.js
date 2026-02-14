@@ -44,6 +44,15 @@ async function main() {
       ],
       contract: "contracts/AgentVault.sol:AgentVault",
     },
+    {
+      name: "AgentMinter",
+      address: "0x94D146c2CDdD1A0fa8C931D625fbc4F1Eff4c9Ee",
+      constructorArgs: [
+        "0x94F837c740Bd0EFc15331F578c255f6d3dd7ac0b",
+        BAP578_PROXY,
+      ],
+      contract: "contracts/AgentMinter.sol:AgentMinter",
+    },
   ];
 
   for (const info of contracts) {
@@ -72,6 +81,7 @@ async function main() {
   console.log("BAP578NFA Impl:  https://bscscan.com/address/" + implAddress + "#code");
   console.log("JacobToken:      https://bscscan.com/address/0x94F837c740Bd0EFc15331F578c255f6d3dd7ac0b#code");
   console.log("AgentVault:      https://bscscan.com/address/0xc9Bb89E036BD17F8E5016C89D0B6104F8912ac8A#code");
+  console.log("AgentMinter:     https://bscscan.com/address/0x94D146c2CDdD1A0fa8C931D625fbc4F1Eff4c9Ee#code");
   console.log("========================================");
 }
 

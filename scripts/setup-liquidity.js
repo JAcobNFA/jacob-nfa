@@ -60,6 +60,10 @@ async function main() {
     const createTx = await factory.createPair(JACOB_TOKEN, WBNB);
     await createTx.wait();
     pairAddress = await factory.getPair(JACOB_TOKEN, WBNB);
+    if (pairAddress === "0x0000000000000000000000000000000000000000") {
+      console.error("FATAL: Pair creation failed - address is still zero. Aborting.");
+      process.exit(1);
+    }
     console.log("Pair created at:", pairAddress);
   } else {
     console.log("Pair already exists at:", pairAddress);
@@ -90,7 +94,7 @@ async function main() {
   console.log("Router approved for", hre.ethers.formatEther(LIQUIDITY_JACOB_AMOUNT), "JACOB");
 
   console.log("\n--- Step 4: Add Liquidity (JACOB + BNB) ---");
-  const bnbAmount = hre.ethers.parseEther(process.env.LIQUIDITY_BNB_AMOUNT || "0.05");
+  const bnbAmount = hre.ethers.parseEther(process.env.LIQUIDITY_BNB_AMOUNT || "0.5");
   console.log("Adding liquidity:", hre.ethers.formatEther(LIQUIDITY_JACOB_AMOUNT), "JACOB +", hre.ethers.formatEther(bnbAmount), "BNB");
 
   const deadline = Math.floor(Date.now() / 1000) + 600;

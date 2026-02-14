@@ -75,44 +75,36 @@ async function main() {
   console.log("========================================");
   console.log("DISTRIBUTION WALLETS");
   console.log("========================================");
-  console.log("To distribute tokens, set these environment variables:");
-  console.log("  WALLET_AGENT_CREATION   - Agent Creation Treasury wallet");
-  console.log("  WALLET_AGENT_OPERATIONS - Agent Operations Fund wallet");
-  console.log("  WALLET_ECOSYSTEM        - Ecosystem Development wallet");
-  console.log("  WALLET_TEAM             - Team wallet (with vesting)");
-  console.log("  WALLET_COMMUNITY        - Community & Early Adopters wallet");
-  console.log("  WALLET_AIRDROP          - Airdrop wallet");
-  console.log("");
-  console.log("Note: Agent Liquidity (25%) goes to PancakeSwap via setup-liquidity.js");
-  console.log("========================================\n");
 
-  const wallets = {
-    agentCreation: process.env.WALLET_AGENT_CREATION,
-    agentOperations: process.env.WALLET_AGENT_OPERATIONS,
-    ecosystem: process.env.WALLET_ECOSYSTEM,
-    team: process.env.WALLET_TEAM,
-    community: process.env.WALLET_COMMUNITY,
-    airdrop: process.env.WALLET_AIRDROP
+  const WALLETS = {
+    team:            "0xFe6b50eAdeC141a1c0C2aDA767483D9b61e40f12",
+    agentCreation:   "0xe90d963aF0Dc7A69cA92eb536E5403cb6cc1a83A",
+    ecosystem:       "0xf1d55c24d22a4F961d276AB35c28422d61cB3B72",
+    agentOperations: "0x57EEB022305563241032Bba4efC08F2c82613010",
+    community:       "0x2a64115B9F771D89c31B90A4fBaE3107dd5B4461",
+    airdrop:         "0x2a64115B9F771D89c31B90A4fBaE3107dd5B4461",
   };
 
-  const hasWallets = Object.values(wallets).some(w => w && w.length > 0);
+  const distributions = [
+    { key: "agentOperations", wallet: WALLETS.agentOperations, tokens: "200000", name: "Agent Operations Fund" },
+    { key: "community",       wallet: WALLETS.community,       tokens: "90000",  name: "Community & Early Adopters" },
+    { key: "airdrop",         wallet: WALLETS.airdrop,         tokens: "10000",  name: "Airdrop" },
+  ];
 
-  if (!hasWallets) {
-    console.log("No distribution wallets configured. Set environment variables and run again.");
-    console.log("Tokens remain in deployer wallet for now.");
-    return;
+  console.log("Note: Team, Agent Creation, and Ecosystem go to vesting contract (deploy-vesting.js)");
+  console.log("Note: Agent Liquidity (250,000) goes to PancakeSwap via setup-liquidity.js");
+  console.log("========================================\n");
+
+  for (const dist of distributions) {
+    console.log(`${dist.name}: ${dist.wallet}`);
   }
+  console.log("");
 
-  for (const [key, wallet] of Object.entries(wallets)) {
-    if (!wallet) continue;
+  for (const dist of distributions) {
+    const amount = hre.ethers.parseEther(dist.tokens);
+    console.log(`Sending ${dist.tokens} JACOB to ${dist.name} (${dist.wallet})...`);
 
-    const allocation = TOKENOMICS[key];
-    if (!allocation) continue;
-
-    const amount = hre.ethers.parseEther(allocation.tokens);
-    console.log(`Sending ${allocation.tokens} JACOB to ${allocation.name} (${wallet})...`);
-
-    const tx = await jacobToken.transfer(wallet, amount);
+    const tx = await jacobToken.transfer(dist.wallet, amount);
     await tx.wait();
     console.log(`  Done! Tx: ${tx.hash}`);
   }

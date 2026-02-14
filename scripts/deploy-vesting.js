@@ -37,13 +37,26 @@ async function main() {
   const vestingAddress = await vesting.getAddress();
   console.log("TokenVesting deployed at:", vestingAddress);
 
-  console.log("\n--- Step 2: Transfer JACOB tokens to vesting contract ---");
+  console.log("\n--- Step 1b: Whitelist Vesting Contract on JacobToken ---");
   const tokenABI = [
     "function transfer(address to, uint256 amount) external returns (bool)",
     "function balanceOf(address account) external view returns (uint256)",
     "function approve(address spender, uint256 amount) external returns (bool)",
+    "function setWhitelist(address account, bool status) external",
+    "function whitelisted(address account) external view returns (bool)",
   ];
   const jacobToken = new hre.ethers.Contract(JACOB_TOKEN, tokenABI, deployer);
+
+  const isWhitelisted = await jacobToken.whitelisted(vestingAddress);
+  if (!isWhitelisted) {
+    const wlTx = await jacobToken.setWhitelist(vestingAddress, true);
+    await wlTx.wait();
+    console.log("Vesting contract whitelisted on JacobToken");
+  } else {
+    console.log("Vesting contract already whitelisted");
+  }
+
+  console.log("\n--- Step 2: Transfer JACOB tokens to vesting contract ---");
 
   let totalVestingTokens = 0n;
   for (const [key, alloc] of Object.entries(VESTING_ALLOCATIONS)) {
@@ -67,9 +80,14 @@ async function main() {
 
   const MONTH = 30 * 24 * 60 * 60;
 
+  const VESTING_WALLETS = {
+    team:          "0xFe6b50eAdeC141a1c0C2aDA767483D9b61e40f12",
+    agentCreation: "0xe90d963aF0Dc7A69cA92eb536E5403cb6cc1a83A",
+    ecosystem:     "0xf1d55c24d22a4F961d276AB35c28422d61cB3B72",
+  };
+
   for (const [key, alloc] of Object.entries(VESTING_ALLOCATIONS)) {
-    const walletEnvVar = `VESTING_WALLET_${key.toUpperCase()}`;
-    const beneficiary = process.env[walletEnvVar] || deployer.address;
+    const beneficiary = VESTING_WALLETS[key];
 
     const amount = hre.ethers.parseEther(alloc.tokens);
     const cliffDuration = alloc.cliffMonths * MONTH;
@@ -96,8 +114,7 @@ async function main() {
   console.log("Total beneficiaries:", count.toString());
 
   for (const [key, alloc] of Object.entries(VESTING_ALLOCATIONS)) {
-    const walletEnvVar = `VESTING_WALLET_${key.toUpperCase()}`;
-    const beneficiary = process.env[walletEnvVar] || deployer.address;
+    const beneficiary = VESTING_WALLETS[key];
     const info = await vesting.getVestingInfo(beneficiary);
     console.log(`\n  ${alloc.name} (${beneficiary}):`);
     console.log(`    Total: ${hre.ethers.formatEther(info[0])} JACOB`);

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.22;
 
 interface IJacobToken {
-    function burnFrom(address from, uint256 amount) external;
+    function transferFrom(address from, address to, uint256 amount) external returns (bool);
     function balanceOf(address account) external view returns (uint256);
 }
 
@@ -24,6 +24,7 @@ interface IOfficialBAP578 {
 
 contract AgentMinter {
     IJacobToken public immutable jacobToken;
+    address public constant DEAD_ADDRESS = 0x000000000000000000000000000000000000dEaD;
     address public bap578;
     address public owner;
     address public revenueSharing;
@@ -123,7 +124,7 @@ contract AgentMinter {
             }
         }
 
-        jacobToken.burnFrom(msg.sender, cost);
+        require(jacobToken.transferFrom(msg.sender, DEAD_ADDRESS, cost), "JACOB transfer failed");
 
         uint256 tokenId = IBAP578NFA(bap578).mintWithTier(msg.sender, tier, cost);
 

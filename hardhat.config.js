@@ -29,6 +29,9 @@ module.exports = {
   networks: {
     hardhat: {
       chainId: 56,
+      forking: process.env.BSC_FORK ? {
+        url: process.env.BSC_RPC || "https://bsc-dataseed1.ninicoin.io/",
+      } : undefined,
     },
     bsc: {
       url: "https://bsc-dataseed.binance.org/",
@@ -40,6 +43,9 @@ module.exports = {
   },
   etherscan: {
     apiKey: process.env.BSCSCAN_API_KEY || "",
+  },
+  sourcify: {
+    enabled: true,
   },
   paths: {
     sources: "./contracts",

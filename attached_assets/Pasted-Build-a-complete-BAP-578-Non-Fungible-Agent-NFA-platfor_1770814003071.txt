@@ -1,0 +1,92 @@
+Build a complete BAP-578 Non-Fungible Agent (NFA) platform on BNB Smart Chain (BSC) called "Jacob" with 4 interconnected smart contracts. The system enables AI agents to exist as tradeable NFTs with on-chain action execution and per-agent treasury management.
+
+Contract 1: BAP-578 NFA Core (Jacob Agent NFT)
+
+Build an ERC-721 Enumerable NFT contract that implements the BAP-578 Non-Fungible Agent standard. Requirements:
+
+UUPS upgradeable proxy pattern (OpenZeppelin upgradeable contracts)
+initialize(string name, string symbol, address circuitBreaker) function replacing constructor. Revert with "BAP578: Circuit Breaker address is zero" if address is zero
+Roles: owner, minter, controller with setMinter(address) and setController(address) functions
+Core BAP-578 functions:
+fundAgent(uint256 tokenId) payable -- allows sending BNB to fund a specific agent NFT (selector must be 0xef03c6db)
+name(), symbol(), tokenURI(uint256), totalSupply()
+Full ERC-721 Enumerable: tokenOfOwnerByIndex, tokenByIndex, balanceOf, ownerOf
+supportsInterface (ERC-165) returning true for ERC-721, ERC-721 Enumerable, and a custom BAP-578 interface ID 0x1a01a93a
+Circuit breaker pattern: pause(uint256 newPausedStatus) and unpause via fabc1cbc selector, controlled by the circuit breaker address
+Minting: only the minter address can mint new agent NFTs
+Store a description string and version string readable via description() and version()
+Compile with Solidity 0.8.20+
+Contract 2: Jacob Token (DN404 / ERC-404 Hybrid)
+
+Build a hybrid ERC-20 + ERC-721 token that automatically mints/burns NFTs when fungible tokens are transferred. This solves the problem of BAP-578 agents (which are NFTs) not being tradeable on AMMs like PancakeSwap.
+
+ERC-20 side: name() = "jacob", symbol() = "JACOB", decimals() = 18, total supply = 20 JACOB (20 * 10^18 units)
+ERC-721 side: When a wallet accumulates 1 full JACOB token (1e18 units), an NFT is automatically minted to that wallet. When balance drops below a whole number, the NFT is burned
+NFT tracking: maintain per-address NFT arrays with tokenOfOwnerByIndex style lookups. Store NFT ownership in a parallel mapping (address => uint256[] for owned token IDs)
+Whitelist system: setWhitelist(address, bool) -- whitelisted addresses (like PancakeSwap pairs, the deployer) are exempt from NFT minting/burning on transfer. This prevents AMM liquidity pools from accumulating NFTs
+Owner functions: transferOwnership(address), renounceOwnership()
+Access control: a controller address (the BAP-578 NFA contract) that can call a special transferFrom variant. Error message: "only bap" when unauthorized
+The key insight: buying JACOB on PancakeSwap = receiving fungible tokens that auto-mint agent NFTs. Selling = burning those NFTs. This makes BAP-578 agents liquid on DEXes
+Internal _unit() function returns 1e18 (the amount of fungible tokens per NFT)
+Compile with Solidity 0.8.20+
+Contract 3: Agent Controller (Action Handler)
+
+Build a lightweight contract for executing on-chain agent actions:
+
+Storage: name (string), version (string), description (string, updatable)
+handleAction(uint256 agentId, bytes calldata actionData, bytes calldata context) returns (bool success, bytes memory result)
+Emits two events:
+ActionExecuted(indexed uint256 agentId, address indexed caller, bytes actionData, bytes context)
+ActionResult(indexed uint256 agentId, bytes actionData, bool success, bytes result)
+Returns (true, context) -- the context is passed through as the result
+updateDescription(string) -- allows updating the description
+getAgentAddress(address) -- identity function, returns the input address
+No access control needed -- anyone can call handleAction (the BAP-578 contract handles authorization upstream)
+Compile with Solidity 0.8.14+
+Contract 4: Agent Vault / Treasury
+
+Build a fund management vault where each BAP-578 agent NFT has its own isolated treasury with DEX integration:
+
+Hardcoded addresses:
+PancakeSwap Router v2: 0x10ED43C718714eb63d5aA57B78B54704E256024E
+WBNB: 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c
+Two additional configurable addresses for fee collection / protocol treasury
+State variables:
+mapping(uint256 => mapping(address => uint256)) for per-agent, per-token balances
+mapping(uint256 => uint256) for per-agent BNB balances
+address public bap578 -- the BAP-578 NFA contract address (set via constructor or config)
+address public owner with 2-step ownership transfer (acceptOwnership, pendingOwner)
+bool public paused with pause() and unpause()
+mapping(address => bool) for whitelisted tokens
+Reentrancy guard (OpenZeppelin style, storage slot uint256 private _status)
+Fund agent: fundAgent(uint256 agentId, address token, uint256 amount)
+Checks: not paused, reentrancy guard, amount > 0, token address != 0
+If bap578 contract is set, verify the agent NFT exists by calling ownerOf(agentId) on it
+Transfer tokens from caller to vault using transferFrom (pull pattern with before/after balance check to handle fee-on-transfer tokens)
+Update balances[agentId][token] += actualReceived
+Emit AgentFunded(indexed uint256 agentId, address token, uint256 amount)
+Withdraw: withdrawFromAgent(uint256 agentId, address token, uint256 amount)
+Only the NFT owner can withdraw: call ownerOf(agentId) on the BAP-578 contract, require msg.sender == owner. Error: "Not agent NFT owner"
+Checks: not paused, reentrancy guard, sufficient balance. Error: "Insufficient balance"
+Transfer tokens from vault to caller
+Emit AgentWithdrawn(indexed uint256 agentId, address token, uint256 amount, address caller)
+Admin withdraw: adminWithdraw(uint256 agentId, address token, uint256 amount, address recipient) -- only callable by the vault owner (not NFT owner), for emergency recovery
+Handle action: handleAction(...) function similar to Contract 3 for executing operations through the vault
+Receive BNB: receive() external payable and fallback() external payable
+PancakeSwap integration: functions to swap tokens via the router on behalf of an agent (only callable by NFT owner or vault owner)
+Max swap limit: uint256 public maxSwapAmount configurable by owner
+Compile with Solidity 0.8.20+
+Deployment Order & Setup:
+
+Deploy Contract 3 (Agent Controller)
+Deploy Contract 1 (BAP-578 NFA) as UUPS proxy, call initialize("jacob", "JACOB", deployer_address)
+Call setMinter(deployer_address) and setController(controller_address) on Contract 1
+Deploy Contract 2 (Jacob Token) with the BAP-578 NFA address as controller
+Call setWhitelist(deployer_address, true) and setWhitelist(pancakeswap_pair, true) on Contract 2
+Create PancakeSwap pair via Factory v2 (0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73) with JACOB token + WBNB
+Add liquidity on PancakeSwap Router v2 with addLiquidityETH
+Deploy Contract 4 (Agent Vault) with BAP-578 address configured
+Test by calling handleAction on the controller multiple times
+Network: BNB Smart Chain Mainnet (Chain ID 56)
+RPC: https://bsc-dataseed.binance.org/
+

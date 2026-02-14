@@ -4,6 +4,7 @@ pragma solidity ^0.8.22;
 import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts/utils/Base64.sol";
 
 contract BAP578NFA is
     ERC721EnumerableUpgradeable,
@@ -229,47 +230,8 @@ contract BAP578NFA is
 
         return string(abi.encodePacked(
             "data:application/json;base64,",
-            _base64Encode(json)
+            Base64.encode(json)
         ));
-    }
-
-    function _base64Encode(bytes memory data) internal pure returns (string memory) {
-        if (data.length == 0) return "";
-
-        string memory table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-        uint256 encodedLen = 4 * ((data.length + 2) / 3);
-        string memory result = new string(encodedLen);
-
-        assembly {
-            let tablePtr := add(table, 1)
-            let resultPtr := add(result, 32)
-
-            for { let i := 0 } lt(i, mload(data)) { i := add(i, 3) } {
-                let input := and(mload(add(add(data, 32), i)), 0xffffff000000000000000000000000000000000000000000000000000000)
-
-                let out := mload(add(tablePtr, and(shr(250, input), 0x3F)))
-                out := shl(8, out)
-                out := add(out, and(mload(add(tablePtr, and(shr(244, input), 0x3F))), 0xFF))
-                out := shl(8, out)
-                out := add(out, and(mload(add(tablePtr, and(shr(238, input), 0x3F))), 0xFF))
-                out := shl(8, out)
-                out := add(out, and(mload(add(tablePtr, and(shr(232, input), 0x3F))), 0xFF))
-
-                mstore(resultPtr, shl(224, out))
-                resultPtr := add(resultPtr, 4)
-            }
-
-            switch mod(mload(data), 3)
-            case 1 {
-                mstore8(sub(resultPtr, 1), 0x3d)
-                mstore8(sub(resultPtr, 2), 0x3d)
-            }
-            case 2 {
-                mstore8(sub(resultPtr, 1), 0x3d)
-            }
-        }
-
-        return result;
     }
 
     function _authorizeUpgrade(
