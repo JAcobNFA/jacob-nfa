@@ -184,6 +184,14 @@ contract RevenueSharing {
         return 0;
     }
 
+    function emergencyWithdraw(address payable recipient) external onlyOwner {
+        require(recipient != address(0), "Zero address");
+        uint256 balance = address(this).balance;
+        require(balance > 0, "No funds");
+        (bool sent, ) = recipient.call{value: balance}("");
+        require(sent, "Transfer failed");
+    }
+
     function pause() external onlyOwner { paused = true; }
     function unpause() external onlyOwner { paused = false; }
 
