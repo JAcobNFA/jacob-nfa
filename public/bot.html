@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jacob - AI Trading Bot</title>
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/bot.css">
+</head>
+<body>
+    <canvas id="particle-canvas"></canvas>
+    <div class="scanlines"></div>
+
+    <nav class="top-nav">
+        <div class="container nav-inner">
+            <a href="/" class="nav-logo">Jacob</a>
+            <div class="nav-links">
+                <a href="/">Dashboard</a>
+                <a href="/features.html">Features</a>
+                <a href="/bot.html" class="active">AI Bot</a>
+                <a href="/test.html">Test</a>
+            </div>
+        </div>
+    </nav>
+
+    <header style="padding: 50px 0 40px;">
+        <div class="header-glow"></div>
+        <div class="container">
+            <h1 data-text="AI Bot" style="font-size: 3rem;">AI Bot</h1>
+            <p class="subtitle">
+                <span class="cyber-bracket">[</span>
+                AI-Powered Trading Strategy Engine
+                <span class="cyber-bracket">]</span>
+            </p>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <section class="section-header">
+            <div class="section-line"></div>
+            <h2 class="section-title">Strategy Console</h2>
+            <div class="section-line"></div>
+        </section>
+
+        <section class="bot-console-section">
+            <div class="bot-grid">
+                <div class="bot-chat glass-card">
+                    <div class="chat-header">
+                        <div class="bot-avatar">J</div>
+                        <div>
+                            <h3>Jacob AI</h3>
+                            <span class="bot-status" id="bot-status">Ready</span>
+                        </div>
+                    </div>
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="msg bot-msg">
+                            <div class="msg-avatar">J</div>
+                            <div class="msg-content">
+                                <p>Welcome to Jacob AI Trading Strategy Engine. I can help you with:</p>
+                                <ul>
+                                    <li>Analyzing BNB/JACOB market conditions</li>
+                                    <li>Suggesting trading strategies for your agent tier</li>
+                                    <li>Calculating optimal entry/exit points</li>
+                                    <li>Risk assessment based on vault balance</li>
+                                    <li>Tier upgrade recommendations</li>
+                                </ul>
+                                <p>What would you like to know?</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chat-input" placeholder="Ask about trading strategies, market analysis, agent optimization...">
+                        <button class="send-btn" id="send-btn">&#9654;</button>
+                    </div>
+                </div>
+
+                <div class="bot-controls">
+                    <div class="control-card glass-card">
+                        <h3>Agent Configuration</h3>
+                        <div class="control-group">
+                            <label>Agent Token ID</label>
+                            <input type="number" id="bot-agent-id" placeholder="Your agent ID" min="1">
+                        </div>
+                        <div class="control-group">
+                            <label>Agent Tier</label>
+                            <select id="bot-agent-tier">
+                                <option value="1">Bronze (0.1 BNB max)</option>
+                                <option value="2">Silver (0.5 BNB max)</option>
+                                <option value="3" selected>Gold (2 BNB max)</option>
+                                <option value="4">Diamond (10 BNB max)</option>
+                                <option value="5">Black (Unlimited)</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>Risk Tolerance</label>
+                            <select id="bot-risk">
+                                <option value="conservative">Conservative</option>
+                                <option value="moderate" selected>Moderate</option>
+                                <option value="aggressive">Aggressive</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="control-card glass-card">
+                        <h3>Quick Actions</h3>
+                        <div class="quick-actions">
+                            <button class="qa-btn" data-prompt="Analyze the current BNB/JACOB market conditions and give me a trading recommendation">Market Analysis</button>
+                            <button class="qa-btn" data-prompt="What's the best trading strategy for my agent tier and risk level?">Strategy Advice</button>
+                            <button class="qa-btn" data-prompt="Should I upgrade my agent to a higher tier? Calculate the cost-benefit">Upgrade Analysis</button>
+                            <button class="qa-btn" data-prompt="Assess the risk of my current vault position and suggest protective measures">Risk Assessment</button>
+                            <button class="qa-btn" data-prompt="Explain how the deflationary burn mechanism affects JACOB token value over time">Burn Economics</button>
+                            <button class="qa-btn" data-prompt="What are the optimal PancakeSwap swap parameters for maximum returns?">Swap Optimization</button>
+                        </div>
+                    </div>
+
+                    <div class="control-card glass-card">
+                        <h3>Bot Capabilities</h3>
+                        <div class="capabilities">
+                            <div class="cap-item">
+                                <span class="cap-dot active"></span>
+                                <span>Market Analysis</span>
+                            </div>
+                            <div class="cap-item">
+                                <span class="cap-dot active"></span>
+                                <span>Strategy Generation</span>
+                            </div>
+                            <div class="cap-item">
+                                <span class="cap-dot active"></span>
+                                <span>Risk Assessment</span>
+                            </div>
+                            <div class="cap-item">
+                                <span class="cap-dot active"></span>
+                                <span>Tier Optimization</span>
+                            </div>
+                            <div class="cap-item">
+                                <span class="cap-dot active"></span>
+                                <span>Burn Economics</span>
+                            </div>
+                            <div class="cap-item">
+                                <span class="cap-dot planned"></span>
+                                <span>Auto-Execute Trades</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-header">
+            <div class="section-line"></div>
+            <h2 class="section-title">Strategy Templates</h2>
+            <div class="section-line"></div>
+        </section>
+
+        <section class="strategies-section">
+            <div class="strat-grid">
+                <div class="strat-card glass-card">
+                    <div class="strat-tier">Bronze - Silver</div>
+                    <h3>DCA Accumulator</h3>
+                    <p>Dollar-cost average into positions with small, regular buys. Ideal for low-tier agents with limited swap capacity.</p>
+                    <div class="strat-params">
+                        <div class="sp-row"><span>Frequency</span><code>Daily</code></div>
+                        <div class="sp-row"><span>Amount</span><code>0.05-0.1 BNB</code></div>
+                        <div class="sp-row"><span>Risk</span><code>Low</code></div>
+                    </div>
+                </div>
+                <div class="strat-card glass-card">
+                    <div class="strat-tier">Gold - Diamond</div>
+                    <h3>Momentum Trader</h3>
+                    <p>Follow price trends with larger position sizes. Uses vault's higher swap limits for meaningful trades.</p>
+                    <div class="strat-params">
+                        <div class="sp-row"><span>Trigger</span><code>5% price move</code></div>
+                        <div class="sp-row"><span>Amount</span><code>1-5 BNB</code></div>
+                        <div class="sp-row"><span>Risk</span><code>Medium</code></div>
+                    </div>
+                </div>
+                <div class="strat-card glass-card">
+                    <div class="strat-tier">Black</div>
+                    <h3>Whale Strategy</h3>
+                    <p>Unlimited swap access enables large-scale arbitrage and liquidity provision. Maximum capital efficiency.</p>
+                    <div class="strat-params">
+                        <div class="sp-row"><span>Style</span><code>Arbitrage + LP</code></div>
+                        <div class="sp-row"><span>Amount</span><code>Unlimited</code></div>
+                        <div class="sp-row"><span>Risk</span><code>Variable</code></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-line"></div>
+            <p>Jacob <span class="footer-dot"></span> BAP-578 Non-Fungible Agent Platform <span class="footer-dot"></span> BNB Smart Chain</p>
+        </div>
+    </footer>
+
+    <script>
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('send-btn');
+    const botStatus = document.getElementById('bot-status');
+
+    function addMessage(content, isBot) {
+        const msg = document.createElement('div');
+        msg.className = `msg ${isBot ? 'bot-msg' : 'user-msg'}`;
+        msg.innerHTML = `
+            <div class="msg-avatar">${isBot ? 'J' : 'U'}</div>
+            <div class="msg-content"><p>${content}</p></div>
+        `;
+        chatMessages.appendChild(msg);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function getContext() {
+        const tier = document.getElementById('bot-agent-tier');
+        const risk = document.getElementById('bot-risk');
+        const agentId = document.getElementById('bot-agent-id').value;
+        return {
+            tierName: tier.options[tier.selectedIndex].text,
+            tierValue: tier.value,
+            riskLevel: risk.value,
+            agentId: agentId || 'not specified'
+        };
+    }
+
+    async function sendMessage(text) {
+        if (!text.trim()) return;
+
+        addMessage(text, false);
+        chatInput.value = '';
+        botStatus.textContent = 'Thinking...';
+        botStatus.classList.add('thinking');
+
+        const ctx = getContext();
+
+        try {
+            const res = await fetch('/api/bot/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text, context: ctx })
+            });
+            const data = await res.json();
+            addMessage(data.response || data.error || 'No response', true);
+        } catch (e) {
+            addMessage('Connection error. Please try again.', true);
+        }
+
+        botStatus.textContent = 'Ready';
+        botStatus.classList.remove('thinking');
+    }
+
+    sendBtn.addEventListener('click', () => sendMessage(chatInput.value));
+    chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(chatInput.value); });
+
+    document.querySelectorAll('.qa-btn').forEach(btn => {
+        btn.addEventListener('click', () => sendMessage(btn.dataset.prompt));
+    });
+
+    const canvas = document.getElementById('particle-canvas');
+    const ctx2 = canvas.getContext('2d');
+    let particles = [];
+    let mouse = { x: -1000, y: -1000 };
+
+    function resize() { canvas.width = window.innerWidth; canvas.height = document.body.scrollHeight; }
+    resize();
+    window.addEventListener('resize', resize);
+    document.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY + window.scrollY; });
+
+    class Particle {
+        constructor() { this.reset(); }
+        reset() {
+            this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 2 + 0.5;
+            this.speedX = (Math.random() - 0.5) * 0.3; this.speedY = (Math.random() - 0.5) * 0.3;
+            this.opacity = Math.random() * 0.5 + 0.1;
+            this.color = ['#f0b90b', '#00f0ff', '#a855f7', '#64ffda'][Math.floor(Math.random() * 4)];
+        }
+        update() {
+            this.x += this.speedX; this.y += this.speedY;
+            const dx = mouse.x - this.x; const dy = mouse.y - this.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 120) { this.x -= dx * 0.02; this.y -= dy * 0.02; }
+            if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+        }
+        draw() {
+            ctx2.beginPath(); ctx2.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx2.fillStyle = this.color; ctx2.globalAlpha = this.opacity; ctx2.fill(); ctx2.globalAlpha = 1;
+        }
+    }
+
+    for (let i = 0; i < 50; i++) particles.push(new Particle());
+
+    function animate() {
+        ctx2.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => { p.update(); p.draw(); });
+        requestAnimationFrame(animate);
+    }
+    animate();
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.glass-card, .section-header').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
