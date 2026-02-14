@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jacob - Test & Interact</title>
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/test.css">
+    <script src="https://cdn.jsdelivr.net/npm/ethers@6.9.0/dist/ethers.umd.min.js"></script>
+</head>
+<body>
+    <canvas id="particle-canvas"></canvas>
+    <div class="scanlines"></div>
+
+    <nav class="top-nav">
+        <div class="container nav-inner">
+            <a href="/" class="nav-logo">Jacob</a>
+            <div class="nav-links">
+                <a href="/">Dashboard</a>
+                <a href="/features.html">Features</a>
+                <a href="/bot.html">AI Bot</a>
+                <a href="/test.html" class="active">Test</a>
+            </div>
+            <button id="connect-btn" class="connect-btn" onclick="connectWallet()">Connect Wallet</button>
+        </div>
+    </nav>
+
+    <main class="container test-main">
+        <div class="wallet-panel glass-panel" id="wallet-panel">
+            <div class="wallet-disconnected" id="wallet-disconnected">
+                <div class="wallet-icon">&#x1F50C;</div>
+                <h2>Connect Your Wallet</h2>
+                <p>Connect MetaMask or any Web3 wallet to interact with Jacob contracts on BSC</p>
+                <button class="connect-btn-large" onclick="connectWallet()">Connect Wallet</button>
+            </div>
+            <div class="wallet-connected hidden" id="wallet-connected">
+                <div class="wallet-info">
+                    <div class="wallet-address-row">
+                        <span class="wallet-label">Connected</span>
+                        <span class="wallet-address" id="wallet-address"></span>
+                    </div>
+                    <div class="wallet-balances">
+                        <div class="balance-item">
+                            <span class="balance-label">BNB</span>
+                            <span class="balance-value" id="bnb-balance">0.00</span>
+                        </div>
+                        <div class="balance-item">
+                            <span class="balance-label">JACOB</span>
+                            <span class="balance-value neon" id="jacob-balance">0.00</span>
+                        </div>
+                        <div class="balance-item">
+                            <span class="balance-label">Agent NFTs</span>
+                            <span class="balance-value neon" id="nft-balance">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="network-warning hidden" id="network-warning">
+            <span>Wrong network detected. Please switch to BNB Smart Chain (Chain ID 56).</span>
+            <button onclick="switchToBSC()">Switch to BSC</button>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" data-tab="read" onclick="switchTab('read')">Read Contracts</button>
+            <button class="tab" data-tab="write" onclick="switchTab('write')">Write / Transact</button>
+            <button class="tab" data-tab="events" onclick="switchTab('events')">Live Events</button>
+        </div>
+
+        <div class="tab-content" id="tab-read">
+            <div class="section-header visible">
+                <div class="section-line"></div>
+                <h2 class="section-title">Read Contract State</h2>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="read-grid">
+                <div class="read-card glass-card visible">
+                    <h3>Jacob Token</h3>
+                    <div class="read-actions">
+                        <button class="action-btn" onclick="readTotalSupply()">Total Supply</button>
+                        <button class="action-btn" onclick="readMyBalance()">My JACOB Balance</button>
+                        <button class="action-btn" onclick="readMyNFTs()">My NFT Count</button>
+                        <button class="action-btn" onclick="readTokenName()">Token Name</button>
+                        <button class="action-btn" onclick="readTokenSymbol()">Token Symbol</button>
+                    </div>
+                    <div class="read-input-group">
+                        <input type="text" placeholder="Enter address to check balance" id="check-balance-addr">
+                        <button class="action-btn" onclick="readBalanceOf()">Check Balance</button>
+                    </div>
+                    <div class="read-input-group">
+                        <input type="text" placeholder="Enter address to check whitelist" id="check-whitelist-addr">
+                        <button class="action-btn" onclick="readWhitelisted()">Check Whitelist</button>
+                    </div>
+                </div>
+
+                <div class="read-card glass-card visible">
+                    <h3>BAP-578 NFA</h3>
+                    <div class="read-actions">
+                        <button class="action-btn" onclick="readNFATotalSupply()">Total NFAs Minted</button>
+                        <button class="action-btn" onclick="readNFAName()">NFA Name</button>
+                        <button class="action-btn" onclick="readNFAVersion()">Version</button>
+                        <button class="action-btn" onclick="readNFADescription()">Description</button>
+                        <button class="action-btn" onclick="readPausedStatus()">Paused Status</button>
+                    </div>
+                    <div class="read-input-group">
+                        <input type="number" placeholder="Enter Token ID" id="check-nfa-owner-id">
+                        <button class="action-btn" onclick="readNFAOwner()">Owner Of</button>
+                    </div>
+                    <div class="read-input-group">
+                        <input type="number" placeholder="Enter Token ID" id="check-agent-funds-id">
+                        <button class="action-btn" onclick="readAgentFunds()">Agent Funds</button>
+                    </div>
+                </div>
+
+                <div class="read-card glass-card visible">
+                    <h3>Agent Controller</h3>
+                    <div class="read-actions">
+                        <button class="action-btn" onclick="readControllerName()">Name</button>
+                        <button class="action-btn" onclick="readControllerVersion()">Version</button>
+                        <button class="action-btn" onclick="readControllerDescription()">Description</button>
+                    </div>
+                </div>
+
+                <div class="read-card glass-card visible">
+                    <h3>Agent Vault</h3>
+                    <div class="read-actions">
+                        <button class="action-btn" onclick="readVaultPaused()">Paused?</button>
+                        <button class="action-btn" onclick="readMaxSwap()">Max Swap Amount</button>
+                        <button class="action-btn" onclick="readVaultOwner()">Vault Owner</button>
+                    </div>
+                    <div class="read-input-group">
+                        <input type="number" placeholder="Agent ID" id="check-bnb-balance-id">
+                        <button class="action-btn" onclick="readAgentBNBBalance()">Agent BNB Balance</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content hidden" id="tab-write">
+            <div class="section-header visible">
+                <div class="section-line"></div>
+                <h2 class="section-title">Write / Transact</h2>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="write-grid">
+                <div class="write-card glass-card visible">
+                    <h3>Transfer JACOB Tokens</h3>
+                    <p class="write-desc">Send JACOB tokens to another address. If recipient gets 1+ whole tokens, agent NFTs auto-mint.</p>
+                    <div class="write-form">
+                        <input type="text" placeholder="Recipient address (0x...)" id="transfer-to">
+                        <input type="text" placeholder="Amount (e.g. 1.5)" id="transfer-amount">
+                        <button class="write-btn" onclick="transferTokens()">Transfer JACOB</button>
+                    </div>
+                </div>
+
+                <div class="write-card glass-card visible">
+                    <h3>Approve Token Spending</h3>
+                    <p class="write-desc">Allow a contract or address to spend your JACOB tokens on your behalf.</p>
+                    <div class="write-form">
+                        <input type="text" placeholder="Spender address (0x...)" id="approve-spender">
+                        <input type="text" placeholder="Amount (e.g. 1000)" id="approve-amount">
+                        <button class="write-btn" onclick="approveTokens()">Approve</button>
+                    </div>
+                </div>
+
+                <div class="write-card glass-card visible">
+                    <h3>Fund Agent (NFA)</h3>
+                    <p class="write-desc">Send BNB to a specific agent's on-chain treasury via the NFA contract.</p>
+                    <div class="write-form">
+                        <input type="number" placeholder="Agent Token ID" id="fund-agent-id">
+                        <input type="text" placeholder="BNB Amount (e.g. 0.01)" id="fund-agent-amount">
+                        <button class="write-btn" onclick="fundAgent()">Fund Agent</button>
+                    </div>
+                </div>
+
+                <div class="write-card glass-card visible">
+                    <h3>Execute Agent Action</h3>
+                    <p class="write-desc">Execute an on-chain action through the Agent Controller contract.</p>
+                    <div class="write-form">
+                        <input type="number" placeholder="Agent ID" id="action-agent-id">
+                        <input type="text" placeholder="Action data (hex, e.g. 0x00)" id="action-data">
+                        <input type="text" placeholder="Context (hex, e.g. 0x00)" id="action-context">
+                        <button class="write-btn" onclick="executeAction()">Execute Action</button>
+                    </div>
+                </div>
+
+                <div class="write-card glass-card visible">
+                    <h3>Fund Agent Vault</h3>
+                    <p class="write-desc">Deposit ERC-20 tokens into an agent's vault for on-chain operations.</p>
+                    <div class="write-form">
+                        <input type="number" placeholder="Agent ID" id="vault-fund-agent-id">
+                        <input type="text" placeholder="Token address (0x...)" id="vault-fund-token">
+                        <input type="text" placeholder="Amount" id="vault-fund-amount">
+                        <button class="write-btn" onclick="fundAgentVault()">Fund Vault</button>
+                    </div>
+                </div>
+
+                <div class="write-card glass-card visible">
+                    <h3>Withdraw From Agent Vault</h3>
+                    <p class="write-desc">Withdraw tokens from your agent's vault back to your wallet.</p>
+                    <div class="write-form">
+                        <input type="number" placeholder="Agent ID" id="vault-withdraw-agent-id">
+                        <input type="text" placeholder="Token address (0x...)" id="vault-withdraw-token">
+                        <input type="text" placeholder="Amount" id="vault-withdraw-amount">
+                        <button class="write-btn caution" onclick="withdrawFromVault()">Withdraw</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content hidden" id="tab-events">
+            <div class="section-header visible">
+                <div class="section-line"></div>
+                <h2 class="section-title">Live Event Monitor</h2>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="events-controls glass-card visible">
+                <button class="action-btn" onclick="startListening()">Start Listening</button>
+                <button class="action-btn caution" onclick="stopListening()">Stop</button>
+                <button class="action-btn" onclick="clearEvents()">Clear</button>
+                <span class="event-status" id="event-status">Idle</span>
+            </div>
+
+            <div class="events-feed glass-card visible" id="events-feed">
+                <div class="event-placeholder">Click "Start Listening" to monitor real-time contract events on BSC</div>
+            </div>
+        </div>
+
+        <div class="result-panel glass-panel" id="result-panel">
+            <div class="result-header">
+                <h3>Output</h3>
+                <button class="result-close" onclick="clearResult()">&times;</button>
+            </div>
+            <div class="result-body" id="result-body">
+                <span class="result-placeholder">Results will appear here...</span>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-line"></div>
+            <p>Jacob <span class="footer-dot"></span> BAP-578 Non-Fungible Agent Platform <span class="footer-dot"></span> BNB Smart Chain</p>
+        </div>
+    </footer>
+
+    <script>
+    const CONTRACTS = {
+        JacobToken: {
+            address: "0x94F837c740Bd0EFc15331F578c255f6d3dd7ac0b",
+            abi: [
+                "function name() view returns (string)",
+                "function symbol() view returns (string)",
+                "function decimals() view returns (uint8)",
+                "function totalSupply() view returns (uint256)",
+                "function balanceOf(address) view returns (uint256)",
+                "function nftBalanceOf(address) view returns (uint256)",
+                "function nftOwnerOf(uint256) view returns (address)",
+                "function tokenOfOwnerByIndex(address,uint256) view returns (uint256)",
+                "function whitelisted(address) view returns (bool)",
+                "function owner() view returns (address)",
+                "function controller() view returns (address)",
+                "function allowance(address,address) view returns (uint256)",
+                "function transfer(address,uint256) returns (bool)",
+                "function transferFrom(address,address,uint256) returns (bool)",
+                "function approve(address,uint256) returns (bool)",
+                "event Transfer(address indexed from, address indexed to, uint256 value)",
+                "event Approval(address indexed owner, address indexed spender, uint256 value)"
+            ]
+        },
+        BAP578NFA: {
+            address: "0xfd8EeD47b61435f43B004fC65C5b76951652a8CE",
+            abi: [
+                "function name() view returns (string)",
+                "function symbol() view returns (string)",
+                "function totalSupply() view returns (uint256)",
+                "function balanceOf(address) view returns (uint256)",
+                "function ownerOf(uint256) view returns (address)",
+                "function tokenOfOwnerByIndex(address,uint256) view returns (uint256)",
+                "function tokenURI(uint256) view returns (string)",
+                "function version() view returns (string)",
+                "function description() view returns (string)",
+                "function agentFunds(uint256) view returns (uint256)",
+                "function pausedStatus() view returns (uint256)",
+                "function minter() view returns (address)",
+                "function controller() view returns (address)",
+                "function circuitBreaker() view returns (address)",
+                "function owner() view returns (address)",
+                "function fundAgent(uint256) payable",
+                "function mint(address) returns (uint256)",
+                "event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)"
+            ]
+        },
+        AgentController: {
+            address: "0x1017CD09a86D92b4CBe74CD765eD4B78Ea82a356",
+            abi: [
+                "function name() view returns (string)",
+                "function version() view returns (string)",
+                "function description() view returns (string)",
+                "function getAgentAddress(address) view returns (address)",
+                "function handleAction(uint256,bytes,bytes)",
+                "event ActionExecuted(uint256 indexed agentId, address indexed caller, bytes actionData, bytes context)",
+                "event ActionResult(uint256 indexed agentId, bytes actionData, bool success, bytes result)"
+            ]
+        },
+        AgentVault: {
+            address: "0x2e44067C9752c3F7AF31856a43CBB8B6315457b9",
+            abi: [
+                "function owner() view returns (address)",
+                "function paused() view returns (bool)",
+                "function maxSwapAmount() view returns (uint256)",
+                "function bnbBalances(uint256) view returns (uint256)",
+                "function balances(uint256,address) view returns (uint256)",
+                "function bap578() view returns (address)",
+                "function PANCAKE_ROUTER() view returns (address)",
+                "function WBNB() view returns (address)",
+                "function fundAgent(uint256,address,uint256)",
+                "function withdrawFromAgent(uint256,address,uint256)",
+                "function handleAction(uint256,bytes,bytes)"
+            ]
+        }
+    };
+
+    let provider = null;
+    let signer = null;
+    let userAddress = null;
+    let listeners = [];
+
+    async function connectWallet() {
+        if (typeof window.ethereum === 'undefined') {
+            showResult('error', 'No Web3 wallet detected. Please install MetaMask or a compatible wallet.');
+            return;
+        }
+        try {
+            await window.ethereum.request({ method: 'eth_requestAccounts' });
+            provider = new ethers.BrowserProvider(window.ethereum);
+            signer = await provider.getSigner();
+            userAddress = await signer.getAddress();
+
+            const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+            checkNetwork(chainId);
+
+            document.getElementById('wallet-disconnected').classList.add('hidden');
+            document.getElementById('wallet-connected').classList.remove('hidden');
+            document.getElementById('wallet-address').textContent = userAddress.slice(0, 6) + '...' + userAddress.slice(-4);
+            document.getElementById('connect-btn').textContent = userAddress.slice(0, 6) + '...' + userAddress.slice(-4);
+            document.getElementById('connect-btn').classList.add('connected');
+
+            await refreshBalances();
+
+            window.ethereum.on('chainChanged', (chainId) => { checkNetwork(chainId); location.reload(); });
+            window.ethereum.on('accountsChanged', () => location.reload());
+        } catch (err) {
+            showResult('error', 'Connection failed: ' + err.message);
+        }
+    }
+
+    function checkNetwork(chainId) {
+        const warning = document.getElementById('network-warning');
+        isCorrectNetwork = parseInt(chainId, 16) === 56;
+        if (!isCorrectNetwork) {
+            warning.classList.remove('hidden');
+        } else {
+            warning.classList.add('hidden');
+        }
+    }
+
+    async function switchToBSC() {
+        try {
+            await window.ethereum.request({
+                method: 'wallet_switchEthereumChain',
+                params: [{ chainId: '0x38' }]
+            });
+        } catch (err) {
+            if (err.code === 4902) {
+                await window.ethereum.request({
+                    method: 'wallet_addEthereumChain',
+                    params: [{
+                        chainId: '0x38',
+                        chainName: 'BNB Smart Chain',
+                        nativeCurrency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
+                        rpcUrls: ['https://bsc-dataseed.binance.org/'],
+                        blockExplorerUrls: ['https://bscscan.com/']
+                    }]
+                });
+            }
+        }
+    }
+
+    async function refreshBalances() {
+        if (!provider || !userAddress) return;
+        try {
+            const bnb = await provider.getBalance(userAddress);
+            document.getElementById('bnb-balance').textContent = parseFloat(ethers.formatEther(bnb)).toFixed(4);
+
+            const token = new ethers.Contract(CONTRACTS.JacobToken.address, CONTRACTS.JacobToken.abi, provider);
+            const jacobBal = await token.balanceOf(userAddress);
+            document.getElementById('jacob-balance').textContent = parseFloat(ethers.formatEther(jacobBal)).toFixed(4);
+
+            const nftBal = await token.nftBalanceOf(userAddress);
+            document.getElementById('nft-balance').textContent = nftBal.toString();
+        } catch (err) {
+            console.error('Balance refresh error:', err);
+        }
+    }
+
+    function getContract(name, useSigner = false) {
+        const c = CONTRACTS[name];
+        return new ethers.Contract(c.address, c.abi, useSigner ? signer : provider);
+    }
+
+    let isCorrectNetwork = false;
+
+    function requireWallet() {
+        if (!signer) {
+            showResult('error', 'Please connect your wallet first.');
+            return false;
+        }
+        return true;
+    }
+
+    function requireNetwork() {
+        if (!requireWallet()) return false;
+        if (!isCorrectNetwork) {
+            showResult('error', 'Wrong network. Please switch to BNB Smart Chain (BSC) before sending transactions.');
+            return false;
+        }
+        return true;
+    }
+
+    function showResult(type, message, details) {
+        const panel = document.getElementById('result-panel');
+        const body = document.getElementById('result-body');
+        panel.classList.add('show');
+
+        let html = `<div class="result-item result-${type}">`;
+        html += `<span class="result-type">${type.toUpperCase()}</span>`;
+        html += `<span class="result-msg">${message}</span>`;
+        if (details) html += `<div class="result-details">${details}</div>`;
+        html += `</div>`;
+
+        body.innerHTML = html + body.innerHTML;
+        if (body.innerHTML.includes('result-placeholder')) {
+            body.querySelector('.result-placeholder')?.remove();
+        }
+    }
+
+    function clearResult() {
+        document.getElementById('result-body').innerHTML = '<span class="result-placeholder">Results will appear here...</span>';
+    }
+
+    function showLoading(msg) {
+        showResult('info', msg + ' ...');
+    }
+
+    async function readTotalSupply() {
+        if (!requireWallet()) return;
+        try {
+            const token = getContract('JacobToken');
+            const supply = await token.totalSupply();
+            showResult('success', 'JACOB Total Supply: ' + ethers.formatEther(supply) + ' JACOB');
+        } catch (e) { showResult('error', e.message); }
+    }
+
+    async function readMyBalance() {
+        if (!requireWallet()) return;
+        try {
+            const token = getContract('JacobToken');
+            const bal = await token.balanceOf(userAddress);
+            showResult('success', 'Your JACOB Balance: ' + ethers.formatEther(bal) + ' JACOB');
+        } catch (e) { showResult('error', e.message); }
+    }
+
+    async function readMyNFTs() {
+        if (!requireWallet()) return;
+        try {
+            const token = getContract('JacobToken');
+            const count = await token.nftBalanceOf(userAddress);
+            showResult('success', 'Your Agent NFT Count: ' + count.toString());
+        } catch (e) { showResult('error', e.message); }
+    }
+
+    async function readTokenName() {
+        if (!requireWallet()) return;
+        try {
+            const token = getContract('JacobToken');
+            const name = await token.name();
+            showResult('success', 'Token Name: ' + name);
+        } catch (e) { showResult('error', e.message); }
+    }
+
+    async function readTokenSymbol() {
+        if (!requireWallet()) return;
+        try {
+            const token = getContract('JacobToken');
+            const sym = await token.symbol();
+            showResult('success', 'Token Symbol: ' + sym);
+        } catch (e) { showResult('error', e.message); }
+    }
+
+    async function readBalanceOf() {
+        if (!requireWallet()) return;
+        const addr = document.getElementById('check-balance-addr').value.trim();
+        if (!addr) { showResult('error', 'Please enter an address'); return; }
+        try {
+            const token = getContract('JacobToken');
+            const bal = await token.balanceOf(addr);
+            showResult('success', 'Balance of ' + addr.slice(0,6) + '...' + addr.slice(-4) + ': ' + ethers.formatEther(bal) + ' JACOB');
+        } catch (e) { showResult('error', e.message); }
+    }
+
+    async function readWhitelisted() {
+        if (!requireWallet()) return;
+        const addr = document.getElementById('check-whitelist-addr').value.trim();
+        if (!addr) { showResult('error', 'Please enter an address'); return; }
+        try {
+            const token = getContract('JacobToken');
+            const wl = await token.whitelisted(addr);
+            showResult('success', addr.slice(0,6) + '...' + addr.slice(-4) + ' whitelisted: ' + (wl ? 'YES' : 'NO'));
+        } catch (e) { showResult('error', e.message); }
+    }
+
+    async function readNFATotalSupply() {
+        if (!requireWallet()) return;
+        try {
+            const nfa = getContract('BAP578NFA');
+            const supply = await nfa.totalSupply();
+            showResult('success', 'Total NFAs Minted: ' + supply.toString());
+        } catch (e) { showResult('error', e.message); }
+    }
+
+    async function readNFAName() {
+        if (!requireWallet()) return;
+        try {
+            const nfa = getContract('BAP578NFA');
+            const name = await nfa.name();
+            showResult('success', 'NFA Name: ' + name);
+        } catch (e) { showResult('error', e.message); }
+    }
+
+    async function readNFAVersion() {
+        if (!requireWallet()) return;
+        try {
+            const nfa = getContract('BAP578NFA');
+            const ver = await nfa.version();
+            showResult('success', 'NFA Version: ' + ver);
+        } catch (e) { showResult('error', e.message); }
+    }
+
+    async function readNFADescription() {
+        if (!requireWallet()) return;
+        try {
+            const nfa = getContract('BAP578NFA');
+            const desc = await nfa.description();
+            showResult('success', 'NFA Description: ' + (desc || '(empty)'));
+        } catch (e) { showResult('error', e.message); }
+    }
+
+    async function readPausedStatus() {
+        if (!requireWallet()) return;
+        try {
+            const nfa = getContract('BAP578NFA');
+            const status = await nfa.pausedStatus();
+            showResult('success', 'Paused Status: ' + (status.toString() === '0' ? 'Not Paused' : 'Paused (level ' + status.toString() + ')'));
+        } catch (e) { showResult('error', e.message); }
+    }
+
+    async function readNFAOwner() {
+        if (!requireWallet()) return;
+        const id = document.getElementById('check-nfa-owner-id').value;
+        if (!id) { showResult('error', 'Please enter a Token ID'); return; }
+        try {
+            const nfa = getContract('BAP578NFA');
+            const owner = await nfa.ownerOf(id);
+            showResult('success', 'Owner of NFA #' + id + ': ' + owner);
+        } catch (e) { showResult('error', 'NFA #' + id + ' may not exist: ' + e.message); }
+    }
+
+    async function readAgentFunds() {
+        if (!requireWallet()) return;
+        const id = document.getElementById('check-agent-funds-id').value;
+        if (!id) { showResult('error', 'Please enter a Token ID'); return; }
+        try {
+            const nfa = getContract('BAP578NFA');
+            const funds = await nfa.agentFunds(id);
+            showResult('success', 'Agent #' + id + ' Funds: ' + ethers.formatEther(funds) + ' BNB');
+        } catch (e) { showResult('error', e.message); }
+    }
+
+    async function readControllerName() {
+        if (!requireWallet()) return;
+        try {
+            const c = getContract('AgentController');
+            const name = await c.name();
+            showResult('success', 'Controller Name: ' + name);
+        } catch (e) { showResult('error', e.message); }
+    }
+
+    async function readControllerVersion() {
+        if (!requireWallet()) return;
+        try {
+            const c = getContract('AgentController');
+            const ver = await c.version();
+            showResult('success', 'Controller Version: ' + ver);
+        } catch (e) { showResult('error', e.message); }
+    }
+
+    async function readControllerDescription() {
+        if (!requireWallet()) return;
+        try {
+            const c = getContract('AgentController');
+            const desc = await c.description();
+            showResult('success', 'Controller Description: ' + (desc || '(empty)'));
+        } catch (e) { showResult('error', e.message); }
+    }
+
+    async function readVaultPaused() {
+        if (!requireWallet()) return;
+        try {
+            const v = getContract('AgentVault');
+            const paused = await v.paused();
+            showResult('success', 'Vault Paused: ' + (paused ? 'YES' : 'NO'));
+        } catch (e) { showResult('error', e.message); }
+    }
+
+    async function readMaxSwap() {
+        if (!requireWallet()) return;
+        try {
+            const v = getContract('AgentVault');
+            const max = await v.maxSwapAmount();
+            showResult('success', 'Max Swap Amount: ' + ethers.formatEther(max));
+        } catch (e) { showResult('error', e.message); }
+    }
+
+    async function readVaultOwner() {
+        if (!requireWallet()) return;
+        try {
+            const v = getContract('AgentVault');
+            const owner = await v.owner();
+            showResult('success', 'Vault Owner: ' + owner);
+        } catch (e) { showResult('error', e.message); }
+    }
+
+    async function readAgentBNBBalance() {
+        if (!requireWallet()) return;
+        const id = document.getElementById('check-bnb-balance-id').value;
+        if (!id) { showResult('error', 'Please enter an Agent ID'); return; }
+        try {
+            const v = getContract('AgentVault');
+            const bal = await v.bnbBalances(id);
+            showResult('success', 'Agent #' + id + ' Vault BNB: ' + ethers.formatEther(bal) + ' BNB');
+        } catch (e) { showResult('error', e.message); }
+    }
+
+    async function transferTokens() {
+        if (!requireNetwork()) return;
+        const to = document.getElementById('transfer-to').value.trim();
+        const amount = document.getElementById('transfer-amount').value.trim();
+        if (!to || !amount) { showResult('error', 'Please fill in all fields'); return; }
+        try {
+            showLoading('Sending ' + amount + ' JACOB');
+            const token = getContract('JacobToken', true);
+            const tx = await token.transfer(to, ethers.parseEther(amount));
+            showResult('info', 'Transaction sent: ' + tx.hash, '<a href="https://bscscan.com/tx/' + tx.hash + '" target="_blank">View on BscScan</a>');
+            const receipt = await tx.wait();
+            showResult('success', 'Transfer confirmed in block ' + receipt.blockNumber);
+            await refreshBalances();
+        } catch (e) { showResult('error', 'Transfer failed: ' + e.message); }
+    }
+
+    async function approveTokens() {
+        if (!requireNetwork()) return;
+        const spender = document.getElementById('approve-spender').value.trim();
+        const amount = document.getElementById('approve-amount').value.trim();
+        if (!spender || !amount) { showResult('error', 'Please fill in all fields'); return; }
+        try {
+            showLoading('Approving ' + amount + ' JACOB for ' + spender.slice(0,6) + '...');
+            const token = getContract('JacobToken', true);
+            const tx = await token.approve(spender, ethers.parseEther(amount));
+            showResult('info', 'Tx sent: ' + tx.hash);
+            const receipt = await tx.wait();
+            showResult('success', 'Approval confirmed in block ' + receipt.blockNumber);
+        } catch (e) { showResult('error', 'Approve failed: ' + e.message); }
+    }
+
+    async function fundAgent() {
+        if (!requireNetwork()) return;
+        const id = document.getElementById('fund-agent-id').value;
+        const amount = document.getElementById('fund-agent-amount').value.trim();
+        if (!id || !amount) { showResult('error', 'Please fill in all fields'); return; }
+        try {
+            showLoading('Funding Agent #' + id + ' with ' + amount + ' BNB');
+            const nfa = getContract('BAP578NFA', true);
+            const tx = await nfa.fundAgent(id, { value: ethers.parseEther(amount) });
+            showResult('info', 'Tx sent: ' + tx.hash);
+            const receipt = await tx.wait();
+            showResult('success', 'Agent #' + id + ' funded in block ' + receipt.blockNumber);
+            await refreshBalances();
+        } catch (e) { showResult('error', 'Fund failed: ' + e.message); }
+    }
+
+    async function executeAction() {
+        if (!requireNetwork()) return;
+        const agentId = document.getElementById('action-agent-id').value;
+        const actionData = document.getElementById('action-data').value.trim() || '0x00';
+        const context = document.getElementById('action-context').value.trim() || '0x00';
+        if (!agentId) { showResult('error', 'Please enter an Agent ID'); return; }
+        try {
+            showLoading('Executing action for Agent #' + agentId);
+            const ctrl = getContract('AgentController', true);
+            const tx = await ctrl.handleAction(agentId, actionData, context);
+            showResult('info', 'Tx sent: ' + tx.hash);
+            const receipt = await tx.wait();
+            showResult('success', 'Action executed in block ' + receipt.blockNumber);
+        } catch (e) { showResult('error', 'Action failed: ' + e.message); }
+    }
+
+    async function fundAgentVault() {
+        if (!requireNetwork()) return;
+        const agentId = document.getElementById('vault-fund-agent-id').value;
+        const token = document.getElementById('vault-fund-token').value.trim();
+        const amount = document.getElementById('vault-fund-amount').value.trim();
+        if (!agentId || !token || !amount) { showResult('error', 'Please fill in all fields'); return; }
+        try {
+            showLoading('Funding Agent #' + agentId + ' vault');
+            const vault = getContract('AgentVault', true);
+            const tx = await vault.fundAgent(agentId, token, ethers.parseEther(amount));
+            showResult('info', 'Tx sent: ' + tx.hash);
+            const receipt = await tx.wait();
+            showResult('success', 'Vault funded in block ' + receipt.blockNumber);
+        } catch (e) { showResult('error', 'Vault fund failed: ' + e.message); }
+    }
+
+    async function withdrawFromVault() {
+        if (!requireNetwork()) return;
+        const agentId = document.getElementById('vault-withdraw-agent-id').value;
+        const token = document.getElementById('vault-withdraw-token').value.trim();
+        const amount = document.getElementById('vault-withdraw-amount').value.trim();
+        if (!agentId || !token || !amount) { showResult('error', 'Please fill in all fields'); return; }
+        try {
+            showLoading('Withdrawing from Agent #' + agentId + ' vault');
+            const vault = getContract('AgentVault', true);
+            const tx = await vault.withdrawFromAgent(agentId, token, ethers.parseEther(amount));
+            showResult('info', 'Tx sent: ' + tx.hash);
+            const receipt = await tx.wait();
+            showResult('success', 'Withdrawal confirmed in block ' + receipt.blockNumber);
+            await refreshBalances();
+        } catch (e) { showResult('error', 'Withdraw failed: ' + e.message); }
+    }
+
+    function switchTab(name) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+        document.querySelector(`[data-tab="${name}"]`).classList.add('active');
+        document.getElementById('tab-' + name).classList.remove('hidden');
+    }
+
+    function startListening() {
+        if (!provider) { showResult('error', 'Connect wallet first'); return; }
+        stopListening();
+        document.getElementById('event-status').textContent = 'Listening...';
+        document.getElementById('event-status').classList.add('active');
+
+        const token = getContract('JacobToken');
+        const nfa = getContract('BAP578NFA');
+
+        token.on('Transfer', (from, to, value) => {
+            addEvent('JACOB Transfer', from.slice(0,8) + '... -> ' + to.slice(0,8) + '... | ' + ethers.formatEther(value) + ' JACOB');
+        });
+        listeners.push(token);
+
+        nfa.on('Transfer', (from, to, tokenId) => {
+            addEvent('NFA Transfer', 'NFT #' + tokenId.toString() + ' | ' + from.slice(0,8) + '... -> ' + to.slice(0,8) + '...');
+        });
+        listeners.push(nfa);
+    }
+
+    function stopListening() {
+        listeners.forEach(c => c.removeAllListeners());
+        listeners = [];
+        document.getElementById('event-status').textContent = 'Stopped';
+        document.getElementById('event-status').classList.remove('active');
+    }
+
+    function clearEvents() {
+        document.getElementById('events-feed').innerHTML = '<div class="event-placeholder">Click "Start Listening" to monitor real-time contract events on BSC</div>';
+    }
+
+    function addEvent(type, details) {
+        const feed = document.getElementById('events-feed');
+        const placeholder = feed.querySelector('.event-placeholder');
+        if (placeholder) placeholder.remove();
+
+        const time = new Date().toLocaleTimeString();
+        const el = document.createElement('div');
+        el.className = 'event-item';
+        el.innerHTML = `<span class="event-time">${time}</span><span class="event-type">${type}</span><span class="event-details">${details}</span>`;
+        feed.prepend(el);
+    }
+
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    function resize() { canvas.width = window.innerWidth; canvas.height = document.body.scrollHeight; }
+    resize();
+    window.addEventListener('resize', resize);
+    class Particle {
+        constructor() { this.reset(); }
+        reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 1.5 + 0.3;
+            this.speedX = (Math.random() - 0.5) * 0.2;
+            this.speedY = (Math.random() - 0.5) * 0.2;
+            this.opacity = Math.random() * 0.4 + 0.05;
+            this.color = ['#f0b90b','#00f0ff','#a855f7'][Math.floor(Math.random()*3)];
+        }
+        update() { this.x += this.speedX; this.y += this.speedY; if (this.x<0||this.x>canvas.width||this.y<0||this.y>canvas.height) this.reset(); }
+        draw() { ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fillStyle=this.color; ctx.globalAlpha=this.opacity; ctx.fill(); ctx.globalAlpha=1; }
+    }
+    for (let i=0;i<50;i++) particles.push(new Particle());
+    function animate() { ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.update();p.draw();}); requestAnimationFrame(animate); }
+    animate();
+    </script>
+</body>
+</html>
