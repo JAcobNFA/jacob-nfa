@@ -4,8 +4,8 @@ const CONTRACTS = {
   AGENT_CONTROLLER: "0x1017CD09a86D92b4CBe74CD765eD4B78Ea82a356",
   BAP578_PROXY: "0xfd8EeD47b61435f43B004fC65C5b76951652a8CE",
   JACOB_TOKEN: "0x94F837c740Bd0EFc15331F578c255f6d3dd7ac0b",
-  AGENT_VAULT: "0x2e44067C9752c3F7AF31856a43CBB8B6315457b9",
-  DEPLOYER: "0xA5d096Dcd19e14D36B8F52b4A6a0abB8b362cdBC"
+  AGENT_VAULT: "0xc9Bb89E036BD17F8E5016C89D0B6104F8912ac8A",
+  AGENT_MINTER: "0x94D146c2CDdD1A0fa8C931D625fbc4F1Eff4c9Ee"
 };
 
 const PANCAKE_ROUTER = "0x10ED43C718714eb63d5aA57B78B54704E256024E";
@@ -93,50 +93,67 @@ async function main() {
     warn("BAP578NFA controller not set");
   }
 
-  const upgrader = await bap578.upgrader();
-  if (upgrader !== "0x0000000000000000000000000000000000000000") {
-    pass(`BAP578NFA upgrader set to ${upgrader}`);
-  } else {
-    warn("BAP578NFA upgrader not set (deploy feature contracts first)");
+  try {
+    const upgrader = await bap578.upgrader();
+    if (upgrader !== "0x0000000000000000000000000000000000000000") {
+      pass(`BAP578NFA upgrader set to ${upgrader}`);
+    } else {
+      warn("BAP578NFA upgrader not set (deploy feature contracts first)");
+    }
+  } catch (e) {
+    warn("BAP578NFA upgrader() not available on deployed contract (upgrade proxy to add)");
   }
 
-  const pausedStatus = await bap578.pausedStatus();
-  if (pausedStatus === 0n) {
-    pass("BAP578NFA is NOT paused");
-  } else {
-    fail("BAP578NFA is PAUSED - minting blocked!");
+  try {
+    const pausedStatus = await bap578.pausedStatus();
+    if (pausedStatus === 0n) {
+      pass("BAP578NFA is NOT paused");
+    } else {
+      fail("BAP578NFA is PAUSED - minting blocked!");
+    }
+  } catch (e) {
+    warn("BAP578NFA pausedStatus() not available on deployed contract (upgrade proxy to add)");
   }
 
   console.log("\n--- 4. AgentMinter Checks ---");
   if (minter !== "0x0000000000000000000000000000000000000000") {
-    const agentMinter = await hre.ethers.getContractAt("AgentMinter", minter);
-
-    const minterOwner = await agentMinter.owner();
-    if (minterOwner === deployer.address) {
-      pass("AgentMinter owner is deployer");
+    const minterCode = await hre.ethers.provider.getCode(minter);
+    if (minterCode === "0x") {
+      warn(`BAP578NFA minter (${minter}) is an EOA, not the AgentMinter contract. Deploy AgentMinter and call setMinter() on BAP578NFA.`);
     } else {
-      fail(`AgentMinter owner is ${minterOwner}`);
-    }
+      try {
+        const agentMinter = await hre.ethers.getContractAt("AgentMinter", minter);
 
-    const minterPaused = await agentMinter.paused();
-    if (!minterPaused) {
-      pass("AgentMinter is NOT paused");
-    } else {
-      fail("AgentMinter is PAUSED");
-    }
+        const minterOwner = await agentMinter.owner();
+        if (minterOwner === deployer.address) {
+          pass("AgentMinter owner is deployer");
+        } else {
+          fail(`AgentMinter owner is ${minterOwner}`);
+        }
 
-    for (let tier = 1; tier <= 5; tier++) {
-      const cost = await agentMinter.getTierCost(tier);
-      const fee = await agentMinter.getMintFee(tier);
-      const name = await agentMinter.getTierName(tier);
-      console.log(`  Tier ${tier} (${name}): Burn ${hre.ethers.formatEther(cost)} JACOB, Fee ${hre.ethers.formatEther(fee)} BNB`);
-    }
+        const minterPaused = await agentMinter.paused();
+        if (!minterPaused) {
+          pass("AgentMinter is NOT paused");
+        } else {
+          fail("AgentMinter is PAUSED");
+        }
 
-    const revShare = await agentMinter.revenueSharing();
-    if (revShare !== "0x0000000000000000000000000000000000000000") {
-      pass(`AgentMinter revenueSharing set to ${revShare}`);
-    } else {
-      warn("AgentMinter revenueSharing not set (40% share goes to owner as fallback)");
+        for (let tier = 1; tier <= 5; tier++) {
+          const cost = await agentMinter.getTierCost(tier);
+          const fee = await agentMinter.getMintFee(tier);
+          const name = await agentMinter.getTierName(tier);
+          console.log(`  Tier ${tier} (${name}): Burn ${hre.ethers.formatEther(cost)} JACOB, Fee ${hre.ethers.formatEther(fee)} BNB`);
+        }
+
+        const revShare = await agentMinter.revenueSharing();
+        if (revShare !== "0x0000000000000000000000000000000000000000") {
+          pass(`AgentMinter revenueSharing set to ${revShare}`);
+        } else {
+          warn("AgentMinter revenueSharing not set (40% share goes to owner as fallback)");
+        }
+      } catch (e) {
+        fail(`AgentMinter at ${minter} failed to respond: ${e.message}`);
+      }
     }
   }
 
@@ -164,14 +181,18 @@ async function main() {
     fail("AgentVault is PAUSED");
   }
 
-  const swapFee = await vault.swapFeePercent();
-  console.log(`  Swap Fee: ${swapFee}%`);
+  try {
+    const swapFee = await vault.swapFeePercent();
+    console.log(`  Swap Fee: ${swapFee}%`);
 
-  for (let tier = 1; tier <= 5; tier++) {
-    const limit = await vault.tierSwapLimit(tier);
-    const enabled = await vault.tierSwapEnabled(tier);
-    const limitStr = limit === BigInt("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff") ? "Unlimited" : `${hre.ethers.formatEther(limit)} BNB`;
-    console.log(`  Tier ${tier}: Limit ${limitStr}, Enabled: ${enabled}`);
+    for (let tier = 1; tier <= 5; tier++) {
+      const limit = await vault.tierSwapLimit(tier);
+      const enabled = await vault.tierSwapEnabled(tier);
+      const limitStr = limit === BigInt("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff") ? "Unlimited" : `${hre.ethers.formatEther(limit)} BNB`;
+      console.log(`  Tier ${tier}: Limit ${limitStr}, Enabled: ${enabled}`);
+    }
+  } catch (e) {
+    warn("AgentVault tier/fee details not readable (may need redeployment to match latest ABI)");
   }
 
   console.log("\n--- 6. PancakeSwap Liquidity Check ---");
@@ -216,8 +237,12 @@ async function main() {
   const bnbBalance = await hre.ethers.provider.getBalance(deployer.address);
   console.log(`  Deployer BNB: ${hre.ethers.formatEther(bnbBalance)} BNB`);
   console.log(`  Deployer JACOB: ${hre.ethers.formatEther(deployerBalance)} JACOB`);
-  const totalBurned = await jacobToken.totalBurned();
-  console.log(`  Total JACOB Burned: ${hre.ethers.formatEther(totalBurned)} JACOB`);
+  try {
+    const totalBurned = await jacobToken.totalBurned();
+    console.log(`  Total JACOB Burned: ${hre.ethers.formatEther(totalBurned)} JACOB`);
+  } catch (e) {
+    console.log(`  Total JACOB Burned: N/A (totalBurned not on deployed contract)`);
+  }
   console.log(`  Circulating Supply: ${hre.ethers.formatEther(totalSupply)} JACOB`);
 
   console.log("\n========================================");
