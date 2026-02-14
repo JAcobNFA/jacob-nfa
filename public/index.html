@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jacob - BAP-578 Non-Fungible Agent Platform</title>
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <canvas id="particle-canvas"></canvas>
+    <div class="scanlines"></div>
+
+    <nav class="top-nav">
+        <div class="container nav-inner">
+            <a href="/" class="nav-logo">Jacob</a>
+            <div class="nav-links">
+                <a href="/" class="active">Dashboard</a>
+                <a href="/features.html">Features</a>
+                <a href="/bot.html">AI Bot</a>
+                <a href="/test.html">Test</a>
+            </div>
+        </div>
+    </nav>
+
+    <header>
+        <div class="header-glow"></div>
+        <canvas id="hacker-canvas"></canvas>
+        <div class="container">
+            <div class="logo-wrap">
+                <div class="logo-hex"></div>
+                <h1 data-text="Jacob">Jacob</h1>
+            </div>
+            <p class="subtitle">
+                <span class="cyber-bracket">[</span>
+                BAP-578 Non-Fungible Agent Platform
+                <span class="cyber-bracket">]</span>
+            </p>
+            <p class="subtitle-chain">Deployed on BNB Smart Chain</p>
+            <p class="subtitle-desc">JACOB is a Non-Fungible Agent (NFA) platform — you must buy JACOB tokens to mint agent NFTs. No token, no agent. Burn your tokens to create verified AI agents across 5 tiers (Bronze to Black). Every agent is registered on the BAP-578 standard and verified through ERC-8004 Trustless Identity. Each agent earns passive BNB revenue, trades through on-chain vaults, and competes in battles. The more you burn, the more powerful your agent becomes.</p>
+            <div class="header-stats">
+                <div class="h-stat">
+                    <span class="h-stat-value">10</span>
+                    <span class="h-stat-label">Contracts</span>
+                </div>
+                <div class="h-stat-divider"></div>
+                <div class="h-stat">
+                    <span class="h-stat-value">1M</span>
+                    <span class="h-stat-label">Supply</span>
+                </div>
+                <div class="h-stat-divider"></div>
+                <div class="h-stat">
+                    <span class="h-stat-value">BSC</span>
+                    <span class="h-stat-label">Network</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="register-bar">
+        <div class="container register-bar-inner">
+            <div class="register-info">
+                <span class="register-pulse"></span>
+                <div>
+                    <strong>The Revolution Is Coming Soon</strong>
+                    <span class="register-sub">Register your BNB wallet to get early access and airdrop eligibility</span>
+                </div>
+            </div>
+            <div class="register-form">
+                <input type="text" id="wallet-input" placeholder="0x... your BNB wallet address" spellcheck="false" autocomplete="off">
+                <button id="register-btn">Register Interest</button>
+            </div>
+            <div class="register-count"><span id="registered-count">0</span> wallets registered</div>
+            <div id="register-msg" class="register-msg"></div>
+        </div>
+    </div>
+
+    <main class="container">
+        <section class="status-bar glass-panel">
+            <div class="status-item">
+                <span class="status-dot active"></span>
+                <div>
+                    <span class="label">Network</span>
+                    <span class="value">BNB Smart Chain (ID: 56)</span>
+                </div>
+            </div>
+            <div class="status-item">
+                <span class="status-dot active"></span>
+                <div>
+                    <span class="label">Contracts</span>
+                    <span class="value" id="contract-count">10 Compiled</span>
+                </div>
+            </div>
+            <div class="status-item">
+                <span class="status-dot active"></span>
+                <div>
+                    <span class="label">Solidity</span>
+                    <span class="value">^0.8.22 / ^0.8.14</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-header">
+            <div class="section-line"></div>
+            <h2 class="section-title">BAP-578 Registry</h2>
+            <div class="section-line"></div>
+        </section>
+
+        <section class="registry-section glass-panel" style="margin-bottom:1.5rem;padding:1.5rem 2rem;">
+            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+                <span class="status-dot active"></span>
+                <span style="font-family:'Orbitron',monospace;font-size:1rem;color:#00ffc8;font-weight:600;">ERC-8004 Trustless Agents (Verified Identity)</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem;">
+                <div>
+                    <span class="label" style="display:block;margin-bottom:0.25rem;">Agent ID</span>
+                    <span class="value" style="font-size:1.5rem;color:#fff;font-family:'Orbitron',monospace;">#2894</span>
+                </div>
+                <div>
+                    <span class="label" style="display:block;margin-bottom:0.25rem;">Standard</span>
+                    <span class="value" style="color:#fff;">eip155:56:0x8004A1...a432</span>
+                </div>
+                <div>
+                    <span class="label" style="display:block;margin-bottom:0.25rem;">IdentityRegistry</span>
+                    <a href="https://bscscan.com/address/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432" target="_blank" class="address-link" style="word-break:break-all;">0x8004A169FB4a3325136EB29fA0ceB6D2e539a432</a>
+                </div>
+                <div>
+                    <span class="label" style="display:block;margin-bottom:0.25rem;">Registration TX</span>
+                    <a href="https://bscscan.com/tx/0x2c1827b0688b3143a506edeba69314706a8ce0c05eb739d82e3bc633f5000fc7" target="_blank" class="address-link" style="word-break:break-all;">0x2c1827...00fc7</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="registry-section glass-panel" style="margin-bottom:1.5rem;padding:1.5rem 2rem;">
+            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+                <span class="status-dot active"></span>
+                <span style="font-family:'Orbitron',monospace;font-size:1rem;color:#00ffc8;font-weight:600;">NFA Register - Non-Fungible Agents</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem;">
+                <div>
+                    <span class="label" style="display:block;margin-bottom:0.25rem;">Agent ID</span>
+                    <span class="value" style="font-size:1.5rem;color:#fff;font-family:'Orbitron',monospace;">#2168</span>
+                </div>
+                <div>
+                    <span class="label" style="display:block;margin-bottom:0.25rem;">Total Agents</span>
+                    <span class="value" style="color:#fff;">2,168+</span>
+                </div>
+                <div>
+                    <span class="label" style="display:block;margin-bottom:0.25rem;">NFA Register Contract</span>
+                    <a href="https://bscscan.com/address/0xd7deb29ddbb13607375ce50405a574ac2f7d978d" target="_blank" class="address-link" style="word-break:break-all;">0xd7deb29ddbb13607375ce50405a574ac2f7d978d</a>
+                </div>
+                <div>
+                    <span class="label" style="display:block;margin-bottom:0.25rem;">Registration TX</span>
+                    <a href="https://bscscan.com/tx/0x62451a3162bbc3ba4d39a665d237484d595fba83a12902e3963f879e5a913f98" target="_blank" class="address-link" style="word-break:break-all;">0x62451a...13f98</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="registry-section glass-panel" style="margin-bottom:2rem;padding:1.5rem 2rem;">
+            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+                <span class="status-dot active"></span>
+                <span style="font-family:'Orbitron',monospace;font-size:1rem;color:#00ffc8;font-weight:600;">BAP-578 PlatformRegistry</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem;">
+                <div>
+                    <span class="label" style="display:block;margin-bottom:0.25rem;">Agent ID</span>
+                    <span class="value" style="font-size:1.5rem;color:#fff;font-family:'Orbitron',monospace;">#141</span>
+                </div>
+                <div>
+                    <span class="label" style="display:block;margin-bottom:0.25rem;">Platform Connection</span>
+                    <span class="value" style="color:#fff;">WEBAPI</span>
+                </div>
+                <div>
+                    <span class="label" style="display:block;margin-bottom:0.25rem;">BAP578 Contract</span>
+                    <a href="https://bscscan.com/address/0x15b15DF2fFFF6653C21C11b93fB8A7718CE854Ce" target="_blank" class="address-link" style="word-break:break-all;">0x15b15DF2fFFF6653C21C11b93fB8A7718CE854Ce</a>
+                </div>
+                <div>
+                    <span class="label" style="display:block;margin-bottom:0.25rem;">PlatformRegistry</span>
+                    <a href="https://bscscan.com/address/0x985eae300107a838c1aB154371188e0De5a87316" target="_blank" class="address-link" style="word-break:break-all;">0x985eae300107a838c1aB154371188e0De5a87316</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-header">
+            <div class="section-line"></div>
+            <h2 class="section-title">Smart Contracts</h2>
+            <div class="section-line"></div>
+        </section>
+
+        <section class="contracts-grid">
+            <div class="contract-card glass-card">
+                <div class="card-glow controller-glow"></div>
+                <div class="card-header controller">
+                    <span class="card-number">Contract 3</span>
+                    <h2>Agent Controller</h2>
+                    <span class="card-badge pulse-badge">Deploy First</span>
+                </div>
+                <div class="card-body">
+                    <p class="card-desc">Lightweight on-chain action handler for BAP-578 agents. Executes actions and emits events for tracking.</p>
+                    <div class="card-details">
+                        <div class="detail-row">
+                            <span>File</span>
+                            <code>contracts/AgentController.sol</code>
+                        </div>
+                        <div class="detail-row">
+                            <span>Compiler</span>
+                            <code>Solidity ^0.8.14</code>
+                        </div>
+                        <div class="detail-row">
+                            <span>Pattern</span>
+                            <code>Stateless Handler</code>
+                        </div>
+                    </div>
+                    <h3>Key Functions</h3>
+                    <ul class="fn-list">
+                        <li><code>handleAction(agentId, actionData, context)</code></li>
+                        <li><code>updateDescription(newDescription)</code></li>
+                        <li><code>getAgentAddress(address)</code></li>
+                    </ul>
+                    <h3>Events</h3>
+                    <ul class="fn-list">
+                        <li><code>ActionExecuted(agentId, caller, actionData, context)</code></li>
+                        <li><code>ActionResult(agentId, actionData, success, result)</code></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="contract-card glass-card">
+                <div class="card-glow nfa-glow"></div>
+                <div class="card-header nfa">
+                    <span class="card-number">Contract 1</span>
+                    <h2>BAP-578 NFA Core</h2>
+                    <span class="card-badge">UUPS Proxy</span>
+                </div>
+                <div class="card-body">
+                    <p class="card-desc">ERC-721 Enumerable NFT implementing the BAP-578 Non-Fungible Agent standard. Each NFT represents a tradeable AI agent with its own treasury.</p>
+                    <div class="card-details">
+                        <div class="detail-row">
+                            <span>File</span>
+                            <code>contracts/BAP578NFA.sol</code>
+                        </div>
+                        <div class="detail-row">
+                            <span>Standard</span>
+                            <code>ERC-721 Enumerable + BAP-578</code>
+                        </div>
+                        <div class="detail-row">
+                            <span>Interface ID</span>
+                            <code>0x1a01a93a</code>
+                        </div>
+                        <div class="detail-row">
+                            <span>Upgradeable</span>
+                            <code>UUPS (OpenZeppelin)</code>
+                        </div>
+                    </div>
+                    <h3>Key Functions</h3>
+                    <ul class="fn-list">
+                        <li><code>initialize(name, symbol, circuitBreaker)</code></li>
+                        <li><code>mintWithTier(to, tier, burnedAmount)</code></li>
+                        <li><code>getAgentTier(tokenId) &rarr; tier</code></li>
+                        <li><code>fundAgent(tokenId) payable</code></li>
+                        <li><code>pause(newPausedStatus)</code> / <code>unpause()</code></li>
+                    </ul>
+                    <h3>Agent Tiers</h3>
+                    <div class="roles">
+                        <span class="role">Bronze</span>
+                        <span class="role">Silver</span>
+                        <span class="role">Gold</span>
+                        <span class="role">Diamond</span>
+                        <span class="role">Black</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contract-card glass-card">
+                <div class="card-glow token-glow"></div>
+                <div class="card-header token">
+                    <span class="card-number">Contract 2</span>
+                    <h2>Jacob Token</h2>
+                    <span class="card-badge">DN404 / ERC-404</span>
+                </div>
+                <div class="card-body">
+                    <p class="card-desc">Hybrid ERC-20 + ERC-721 token with deflationary burn mechanics. Tokens burned to create agents permanently reduce totalSupply.</p>
+                    <div class="card-details">
+                        <div class="detail-row">
+                            <span>Name / Symbol</span>
+                            <code>jacob / JACOB</code>
+                        </div>
+                        <div class="detail-row">
+                            <span>Total Supply</span>
+                            <code>1,000,000 JACOB (deflationary)</code>
+                        </div>
+                        <div class="detail-row">
+                            <span>NFT Ratio</span>
+                            <code>1 JACOB = 1 NFT</code>
+                        </div>
+                        <div class="detail-row">
+                            <span>Decimals</span>
+                            <code>18</code>
+                        </div>
+                    </div>
+                    <h3>Key Functions</h3>
+                    <ul class="fn-list">
+                        <li><code>burn(amount)</code> &mdash; permanently destroy tokens</li>
+                        <li><code>burnFrom(from, amount)</code> &mdash; burn via allowance</li>
+                        <li><code>transfer(to, amount)</code></li>
+                        <li><code>nftBalanceOf(account)</code></li>
+                        <li><code>totalBurned()</code> &mdash; track total destroyed</li>
+                    </ul>
+                    <h3>Deflationary Mechanism</h3>
+                    <div class="mechanism">
+                        <div class="mech-step">
+                            <span class="mech-icon">&#x1F525;</span>
+                            <span>Tokens burned to mint agents &rarr; supply shrinks forever</span>
+                        </div>
+                        <div class="mech-step">
+                            <span class="mech-icon">+</span>
+                            <span>Balance crosses whole number up &rarr; NFT minted</span>
+                        </div>
+                        <div class="mech-step">
+                            <span class="mech-icon">&minus;</span>
+                            <span>Balance drops below whole number &rarr; NFT burned</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contract-card glass-card">
+                <div class="card-glow vault-glow"></div>
+                <div class="card-header vault">
+                    <span class="card-number">Contract 4</span>
+                    <h2>Agent Vault / Treasury</h2>
+                    <span class="card-badge">DEX Integrated</span>
+                </div>
+                <div class="card-body">
+                    <p class="card-desc">Per-agent isolated treasury with PancakeSwap V2 integration. Swap limits are enforced by agent tier &mdash; higher tier agents unlock larger trades.</p>
+                    <div class="card-details">
+                        <div class="detail-row">
+                            <span>Router</span>
+                            <code>0x10ED4...024E</code>
+                        </div>
+                        <div class="detail-row">
+                            <span>Security</span>
+                            <code>Reentrancy Guard + Pausable</code>
+                        </div>
+                        <div class="detail-row">
+                            <span>Ownership</span>
+                            <code>2-Step Transfer</code>
+                        </div>
+                    </div>
+                    <h3>Tier-Based Swap Limits</h3>
+                    <div class="card-details">
+                        <div class="detail-row"><span>Bronze</span><code>0.1 BNB / swap</code></div>
+                        <div class="detail-row"><span>Silver</span><code>0.5 BNB / swap</code></div>
+                        <div class="detail-row"><span>Gold</span><code>2 BNB / swap</code></div>
+                        <div class="detail-row"><span>Diamond</span><code>10 BNB / swap</code></div>
+                        <div class="detail-row"><span>Black</span><code>Unlimited</code></div>
+                    </div>
+                    <h3>Security Features</h3>
+                    <div class="roles">
+                        <span class="role">Reentrancy Guard</span>
+                        <span class="role">Pausable</span>
+                        <span class="role">Fee-on-Transfer Safe</span>
+                        <span class="role">Tier Swap Limits</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contract-card glass-card">
+                <div class="card-glow" style="background: radial-gradient(circle, rgba(255,107,107,0.15), transparent 70%);"></div>
+                <div class="card-header" style="border-color: #ff6b6b;">
+                    <span class="card-number">Contract 5</span>
+                    <h2>Agent Minter</h2>
+                    <span class="card-badge">Burn-to-Mint</span>
+                </div>
+                <div class="card-body">
+                    <p class="card-desc">Burns JACOB tokens to mint tiered agent NFTs. The more tokens sacrificed, the higher the agent tier and vault capabilities. Deflationary flywheel.</p>
+                    <div class="card-details">
+                        <div class="detail-row">
+                            <span>File</span>
+                            <code>contracts/AgentMinter.sol</code>
+                        </div>
+                        <div class="detail-row">
+                            <span>Mechanism</span>
+                            <code>Burn JACOB &rarr; Mint Agent NFT</code>
+                        </div>
+                        <div class="detail-row">
+                            <span>Tiers</span>
+                            <code>5 (Bronze to Black)</code>
+                        </div>
+                    </div>
+                    <h3>Burn Costs Per Tier</h3>
+                    <div class="card-details">
+                        <div class="detail-row"><span>Bronze</span><code>10 JACOB &mdash; max 100,000</code></div>
+                        <div class="detail-row"><span>Silver</span><code>50 JACOB &mdash; max 20,000</code></div>
+                        <div class="detail-row"><span>Gold</span><code>250 JACOB &mdash; max 4,000</code></div>
+                        <div class="detail-row"><span>Diamond</span><code>1,000 JACOB &mdash; max 1,000</code></div>
+                        <div class="detail-row"><span>Black</span><code>10,000 JACOB &mdash; max 100</code></div>
+                    </div>
+                    <h3>Key Functions</h3>
+                    <ul class="fn-list">
+                        <li><code>mintAgent(tier)</code> &mdash; burn tokens + create agent</li>
+                        <li><code>getTierCost(tier)</code> &mdash; check burn cost</li>
+                        <li><code>totalMinted()</code> / <code>totalTokensBurned()</code></li>
+                        <li><code>getMaxPossibleAgents(tier)</code></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-header">
+            <div class="section-line"></div>
+            <h2 class="section-title">AI Agent Tokenomics</h2>
+            <div class="section-line"></div>
+        </section>
+
+        <section class="tokenomics-section">
+            <p class="section-desc">JACOB tokens are the fuel for creating, operating, and trading AI agents on-chain. Every token interaction serves the agent ecosystem.</p>
+
+            <div class="tokenomics-grid">
+                <div class="token-alloc glass-card">
+                    <div class="alloc-bar" style="--pct: 25%; --color: #f0b90b;">
+                        <span class="alloc-pct">25%</span>
+                    </div>
+                    <h3>Agent Liquidity Pool</h3>
+                    <span class="alloc-amount">250,000 JACOB</span>
+                    <p>PancakeSwap trading pair -- how users buy JACOB to create and fund AI agents</p>
+                </div>
+                <div class="token-alloc glass-card">
+                    <div class="alloc-bar" style="--pct: 20%; --color: #00f0ff;">
+                        <span class="alloc-pct">20%</span>
+                    </div>
+                    <h3>Agent Creation Treasury</h3>
+                    <span class="alloc-amount">200,000 JACOB</span>
+                    <p>Reserved for agent minting rewards -- when agents perform well, creators earn from this pool</p>
+                </div>
+                <div class="token-alloc glass-card">
+                    <div class="alloc-bar" style="--pct: 20%; --color: #a855f7;">
+                        <span class="alloc-pct">20%</span>
+                    </div>
+                    <h3>Agent Operations Fund</h3>
+                    <span class="alloc-amount">200,000 JACOB</span>
+                    <p>Funds agent vaults -- agents need capital to execute on-chain actions via the Vault contract</p>
+                </div>
+                <div class="token-alloc glass-card">
+                    <div class="alloc-bar" style="--pct: 15%; --color: #c792ea;">
+                        <span class="alloc-pct">15%</span>
+                    </div>
+                    <h3>Ecosystem Development</h3>
+                    <span class="alloc-amount">150,000 JACOB</span>
+                    <p>Building AI models, agent templates, developer tools, and third-party integrations</p>
+                </div>
+                <div class="token-alloc glass-card">
+                    <div class="alloc-bar" style="--pct: 10%; --color: #ff6b6b;">
+                        <span class="alloc-pct">10%</span>
+                    </div>
+                    <h3>Team</h3>
+                    <span class="alloc-amount">100,000 JACOB</span>
+                    <p>12-month cliff, 24-month linear vest for long-term alignment</p>
+                </div>
+                <div class="token-alloc glass-card">
+                    <div class="alloc-bar" style="--pct: 9%; --color: #82aaff;">
+                        <span class="alloc-pct">9%</span>
+                    </div>
+                    <h3>Community & Early Adopters</h3>
+                    <span class="alloc-amount">90,000 JACOB</span>
+                    <p>Rewards for agent creators, action executors, and early platform users</p>
+                </div>
+                <div class="token-alloc glass-card">
+                    <div class="alloc-bar" style="--pct: 1%; --color: #64ffda;">
+                        <span class="alloc-pct">1%</span>
+                    </div>
+                    <h3>Airdrop</h3>
+                    <span class="alloc-amount">10,000 JACOB</span>
+                    <p>Free tokens for registered interest wallets -- sign up early to claim your share</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-header">
+            <div class="section-line"></div>
+            <h2 class="section-title">Token Vesting & Locks</h2>
+            <div class="section-line"></div>
+        </section>
+
+        <section class="vesting-section">
+            <p class="section-desc">All major allocations are locked in an on-chain vesting contract. LP tokens are burned permanently. No rug pulls possible.</p>
+
+            <div class="vesting-grid">
+                <div class="vesting-card glass-card">
+                    <div class="vesting-header locked">
+                        <span class="lock-icon">&#x1F512;</span>
+                        <h3>Liquidity Pool</h3>
+                        <span class="vesting-badge burn">LP BURNED</span>
+                    </div>
+                    <div class="vesting-details">
+                        <div class="detail-row"><span>Amount</span><code>250,000 JACOB + BNB</code></div>
+                        <div class="detail-row"><span>Status</span><code>Permanently Locked</code></div>
+                        <div class="detail-row"><span>Method</span><code>LP tokens sent to 0x...dEaD</code></div>
+                    </div>
+                </div>
+
+                <div class="vesting-card glass-card">
+                    <div class="vesting-header locked">
+                        <span class="lock-icon">&#x1F512;</span>
+                        <h3>Team Tokens</h3>
+                        <span class="vesting-badge cliff">12mo CLIFF</span>
+                    </div>
+                    <div class="vesting-details">
+                        <div class="detail-row"><span>Amount</span><code>100,000 JACOB (10%)</code></div>
+                        <div class="detail-row"><span>Cliff</span><code>12 months (no access)</code></div>
+                        <div class="detail-row"><span>Vesting</span><code>24 months linear after cliff</code></div>
+                        <div class="detail-row"><span>Fully unlocked</span><code>36 months from launch</code></div>
+                    </div>
+                </div>
+
+                <div class="vesting-card glass-card">
+                    <div class="vesting-header locked">
+                        <span class="lock-icon">&#x1F512;</span>
+                        <h3>Agent Creation Treasury</h3>
+                        <span class="vesting-badge cliff">3mo CLIFF</span>
+                    </div>
+                    <div class="vesting-details">
+                        <div class="detail-row"><span>Amount</span><code>200,000 JACOB (20%)</code></div>
+                        <div class="detail-row"><span>Cliff</span><code>3 months</code></div>
+                        <div class="detail-row"><span>Vesting</span><code>12 months linear after cliff</code></div>
+                        <div class="detail-row"><span>Fully unlocked</span><code>15 months from launch</code></div>
+                    </div>
+                </div>
+
+                <div class="vesting-card glass-card">
+                    <div class="vesting-header locked">
+                        <span class="lock-icon">&#x1F512;</span>
+                        <h3>Ecosystem Development</h3>
+                        <span class="vesting-badge cliff">3mo CLIFF</span>
+                    </div>
+                    <div class="vesting-details">
+                        <div class="detail-row"><span>Amount</span><code>150,000 JACOB (15%)</code></div>
+                        <div class="detail-row"><span>Cliff</span><code>3 months</code></div>
+                        <div class="detail-row"><span>Vesting</span><code>18 months linear after cliff</code></div>
+                        <div class="detail-row"><span>Fully unlocked</span><code>21 months from launch</code></div>
+                    </div>
+                </div>
+
+                <div class="vesting-card glass-card">
+                    <div class="vesting-header unlocked">
+                        <span class="lock-icon">&#x1F513;</span>
+                        <h3>Agent Operations Fund</h3>
+                        <span class="vesting-badge open">UNLOCKED</span>
+                    </div>
+                    <div class="vesting-details">
+                        <div class="detail-row"><span>Amount</span><code>200,000 JACOB (20%)</code></div>
+                        <div class="detail-row"><span>Status</span><code>Available for agent vault funding</code></div>
+                        <div class="detail-row"><span>Reason</span><code>Needed for real-time agent operations</code></div>
+                    </div>
+                </div>
+
+                <div class="vesting-card glass-card">
+                    <div class="vesting-header unlocked">
+                        <span class="lock-icon">&#x1F513;</span>
+                        <h3>Community & Early Adopters</h3>
+                        <span class="vesting-badge open">UNLOCKED</span>
+                    </div>
+                    <div class="vesting-details">
+                        <div class="detail-row"><span>Amount</span><code>100,000 JACOB (10%)</code></div>
+                        <div class="detail-row"><span>Status</span><code>Available for airdrops & rewards</code></div>
+                        <div class="detail-row"><span>Reason</span><code>Community rewards and user incentives</code></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vesting-summary glass-card">
+                <h3>Trust Summary</h3>
+                <div class="trust-stats">
+                    <div class="trust-stat">
+                        <span class="trust-value">45%</span>
+                        <span class="trust-label">Vested (cliff + linear)</span>
+                    </div>
+                    <div class="trust-stat">
+                        <span class="trust-value">25%</span>
+                        <span class="trust-label">LP Burned (permanent)</span>
+                    </div>
+                    <div class="trust-stat">
+                        <span class="trust-value">30%</span>
+                        <span class="trust-label">Unlocked (operations + community)</span>
+                    </div>
+                </div>
+                <p class="trust-note">70% of total supply is either locked in vesting contracts or permanently burned as LP. All vesting schedules are verifiable on-chain.</p>
+            </div>
+        </section>
+
+        <section class="section-header">
+            <div class="section-line"></div>
+            <h2 class="section-title">Agent Value Flow</h2>
+            <div class="section-line"></div>
+        </section>
+
+        <section class="value-flow-section">
+            <p class="section-desc">How JACOB tokens power the AI agent lifecycle &mdash; a deflationary flywheel</p>
+            <div class="flow-steps">
+                <div class="flow-step glass-card">
+                    <div class="flow-icon neon-glow">1</div>
+                    <div class="flow-content">
+                        <h3>Acquire JACOB</h3>
+                        <p>Users buy JACOB on PancakeSwap. The token is liquid and tradeable on the DEX with permanently locked liquidity.</p>
+                    </div>
+                </div>
+                <div class="flow-connector">
+                    <div class="flow-pulse"></div>
+                </div>
+                <div class="flow-step glass-card">
+                    <div class="flow-icon neon-glow">2</div>
+                    <div class="flow-content">
+                        <h3>Burn to Create Agent</h3>
+                        <p>Burn 10&ndash;10,000 JACOB via AgentMinter to create a tiered agent NFT. Tokens are destroyed forever, reducing total supply. Higher burn = higher tier.</p>
+                    </div>
+                </div>
+                <div class="flow-connector">
+                    <div class="flow-pulse"></div>
+                </div>
+                <div class="flow-step glass-card">
+                    <div class="flow-icon neon-glow">3</div>
+                    <div class="flow-content">
+                        <h3>Fund &amp; Operate</h3>
+                        <p>Deposit tokens or BNB into your agent's vault. Agent tier determines swap limits &mdash; Black agents get unlimited access to PancakeSwap trades.</p>
+                    </div>
+                </div>
+                <div class="flow-connector">
+                    <div class="flow-pulse"></div>
+                </div>
+                <div class="flow-step glass-card">
+                    <div class="flow-icon neon-glow">4</div>
+                    <div class="flow-content">
+                        <h3>Execute Actions</h3>
+                        <p>Agents execute on-chain actions through the Controller. Each action is recorded with full event tracking. Agents are tradeable ERC-721 NFTs.</p>
+                    </div>
+                </div>
+                <div class="flow-connector">
+                    <div class="flow-pulse"></div>
+                </div>
+                <div class="flow-step glass-card">
+                    <div class="flow-icon neon-glow">5</div>
+                    <div class="flow-content">
+                        <h3>Deflationary Flywheel</h3>
+                        <p>Every agent minted burns supply permanently. More agents = scarcer tokens = higher value for remaining holders and existing agents. The ecosystem grows as supply shrinks.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-header">
+            <div class="section-line"></div>
+            <h2 class="section-title">Deployment Sequence</h2>
+            <div class="section-line"></div>
+        </section>
+
+        <section class="deployment-section">
+            <div class="deploy-steps">
+                <div class="step glass-card">
+                    <span class="step-num neon-glow">1</span>
+                    <div class="step-content">
+                        <h3>Deploy Agent Controller</h3>
+                        <code>npx hardhat run scripts/deploy.js --network bsc</code>
+                    </div>
+                </div>
+                <div class="step glass-card">
+                    <span class="step-num neon-glow">2</span>
+                    <div class="step-content">
+                        <h3>Deploy BAP-578 NFA (UUPS Proxy)</h3>
+                        <p>Calls <code>initialize("jacob", "JACOB", deployer)</code></p>
+                    </div>
+                </div>
+                <div class="step glass-card">
+                    <span class="step-num neon-glow">3</span>
+                    <div class="step-content">
+                        <h3>Configure BAP-578 NFA</h3>
+                        <p>Set minter &amp; controller addresses</p>
+                    </div>
+                </div>
+                <div class="step glass-card">
+                    <span class="step-num neon-glow">4</span>
+                    <div class="step-content">
+                        <h3>Deploy Jacob Token</h3>
+                        <p>With BAP-578 NFA address as controller</p>
+                    </div>
+                </div>
+                <div class="step glass-card">
+                    <span class="step-num neon-glow">5</span>
+                    <div class="step-content">
+                        <h3>Configure Whitelists</h3>
+                        <p>Whitelist deployer and PancakeSwap pair</p>
+                    </div>
+                </div>
+                <div class="step glass-card">
+                    <span class="step-num neon-glow">6</span>
+                    <div class="step-content">
+                        <h3>Deploy Agent Vault</h3>
+                        <p>With BAP-578 address configured</p>
+                    </div>
+                </div>
+                <div class="step glass-card">
+                    <span class="step-num neon-glow">7</span>
+                    <div class="step-content">
+                        <h3>Deploy Agent Minter</h3>
+                        <p>Burn-to-mint contract &mdash; set as BAP-578 minter, whitelist on JacobToken</p>
+                    </div>
+                </div>
+                <div class="step glass-card">
+                    <span class="step-num neon-glow">8</span>
+                    <div class="step-content">
+                        <h3>PancakeSwap Setup</h3>
+                        <p>Create pair via Factory V2 &amp; add liquidity</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-header">
+            <div class="section-line"></div>
+            <h2 class="section-title">Contract ABIs</h2>
+            <div class="section-line"></div>
+        </section>
+
+        <section class="abi-section">
+            <p>After compilation, ABIs are available in the <code>artifacts/contracts/</code> directory.</p>
+            <div class="abi-grid">
+                <a href="/api/abi/AgentController" class="abi-link glass-card">
+                    <span class="abi-icon">&lt;/&gt;</span>
+                    AgentController
+                </a>
+                <a href="/api/abi/BAP578NFA" class="abi-link glass-card">
+                    <span class="abi-icon">&lt;/&gt;</span>
+                    BAP578NFA
+                </a>
+                <a href="/api/abi/JacobToken" class="abi-link glass-card">
+                    <span class="abi-icon">&lt;/&gt;</span>
+                    JacobToken
+                </a>
+                <a href="/api/abi/AgentVault" class="abi-link glass-card">
+                    <span class="abi-icon">&lt;/&gt;</span>
+                    AgentVault
+                </a>
+                <a href="/api/abi/AgentMinter" class="abi-link glass-card">
+                    <span class="abi-icon">&lt;/&gt;</span>
+                    AgentMinter
+                </a>
+            </div>
+        </section>
+
+        <section class="section-header">
+            <div class="section-line"></div>
+            <h2 class="section-title">BSC Mainnet Config</h2>
+            <div class="section-line"></div>
+        </section>
+
+        <section class="config-section">
+            <div class="config-grid glass-card">
+                <div class="config-item">
+                    <span class="config-label">Chain ID</span>
+                    <span class="config-value">56</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-label">RPC</span>
+                    <span class="config-value">https://bsc-dataseed.binance.org/</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-label">PancakeSwap Router V2</span>
+                    <span class="config-value">0x10ED43C718714eb63d5aA57B78B54704E256024E</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-label">PancakeSwap Factory V2</span>
+                    <span class="config-value">0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-label">WBNB</span>
+                    <span class="config-value">0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-line"></div>
+            <p>Jacob <span class="footer-dot"></span> BAP-578 Non-Fungible Agent Platform <span class="footer-dot"></span> BNB Smart Chain</p>
+        </div>
+    </footer>
+
+    <script>
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let mouse = { x: -1000, y: -1000 };
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = document.body.scrollHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+    document.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY + window.scrollY; });
+
+    class Particle {
+        constructor() {
+            this.reset();
+        }
+        reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 2 + 0.5;
+            this.speedX = (Math.random() - 0.5) * 0.3;
+            this.speedY = (Math.random() - 0.5) * 0.3;
+            this.opacity = Math.random() * 0.5 + 0.1;
+            this.color = ['#f0b90b', '#00f0ff', '#a855f7', '#64ffda'][Math.floor(Math.random() * 4)];
+        }
+        update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+            const dx = mouse.x - this.x;
+            const dy = mouse.y - this.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 120) {
+                this.x -= dx * 0.02;
+                this.y -= dy * 0.02;
+                this.opacity = Math.min(this.opacity + 0.02, 0.8);
+            }
+            if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+        }
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.globalAlpha = this.opacity;
+            ctx.fill();
+            ctx.globalAlpha = 1;
+        }
+    }
+
+    for (let i = 0; i < 80; i++) particles.push(new Particle());
+
+    function connectParticles() {
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 150) {
+                    ctx.beginPath();
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.strokeStyle = '#f0b90b';
+                    ctx.globalAlpha = 0.05 * (1 - dist / 150);
+                    ctx.lineWidth = 0.5;
+                    ctx.stroke();
+                    ctx.globalAlpha = 1;
+                }
+            }
+        }
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => { p.update(); p.draw(); });
+        connectParticles();
+        requestAnimationFrame(animate);
+    }
+    animate();
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.glass-card, .section-header, .glass-panel').forEach(el => observer.observe(el));
+
+    (function() {
+        fetch('/api/register-count').then(r => r.json()).then(d => {
+            document.getElementById('registered-count').textContent = d.count;
+        }).catch(() => {});
+
+        const regBtn = document.getElementById('register-btn');
+        const walletInput = document.getElementById('wallet-input');
+        const regMsg = document.getElementById('register-msg');
+
+        regBtn.addEventListener('click', async () => {
+            const wallet = walletInput.value.trim();
+            regMsg.className = 'register-msg';
+            regMsg.textContent = '';
+
+            if (!wallet) {
+                regMsg.className = 'register-msg error';
+                regMsg.textContent = 'Please enter your BNB wallet address';
+                return;
+            }
+            if (!/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
+                regMsg.className = 'register-msg error';
+                regMsg.textContent = 'Invalid wallet address — must be a valid 0x... BNB address';
+                return;
+            }
+
+            regBtn.disabled = true;
+            regBtn.textContent = 'Registering...';
+
+            try {
+                const res = await fetch('/api/register-interest', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ wallet })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('registered-count').textContent = data.count;
+                    if (data.message === 'Already registered') {
+                        regMsg.className = 'register-msg info';
+                        regMsg.textContent = 'This wallet is already registered — you\'re on the list!';
+                    } else {
+                        regMsg.className = 'register-msg success';
+                        regMsg.textContent = 'You\'re in! Wallet registered for early access.';
+                        walletInput.value = '';
+                    }
+                } else {
+                    regMsg.className = 'register-msg error';
+                    regMsg.textContent = data.error || 'Something went wrong';
+                }
+            } catch (e) {
+                regMsg.className = 'register-msg error';
+                regMsg.textContent = 'Connection error — please try again';
+            }
+
+            regBtn.disabled = false;
+            regBtn.textContent = 'Register Interest';
+        });
+
+        walletInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') regBtn.click();
+        });
+    })();
+
+    (function() {
+        const hc = document.getElementById('hacker-canvas');
+        const hctx = hc.getContext('2d');
+        const header = document.querySelector('header');
+
+        function resizeHacker() {
+            hc.width = header.offsetWidth;
+            hc.height = header.offsetHeight;
+        }
+        resizeHacker();
+        window.addEventListener('resize', resizeHacker);
+
+        class Hacker {
+            constructor() {
+                this.reset();
+            }
+            reset(startVisible) {
+                this.x = Math.random() * hc.width;
+                this.y = hc.height * 0.3 + Math.random() * hc.height * 0.4;
+                this.baseX = this.x;
+                this.baseY = this.y;
+                this.size = 55 + Math.random() * 50;
+                this.dirX = (Math.random() - 0.5) * 0.4;
+                this.drift = Math.random() * Math.PI * 2;
+                this.driftSpeed = 0.008 + Math.random() * 0.012;
+                this.maxAlpha = 0.45 + Math.random() * 0.35;
+                this.fadeSpeed = 0.003 + Math.random() * 0.004;
+                this.holdTime = 300 + Math.random() * 500;
+                this.holdCounter = 0;
+                this.glitchTimer = 0;
+                this.glitchOffset = 0;
+                if (startVisible) {
+                    this.alpha = this.maxAlpha * (0.5 + Math.random() * 0.5);
+                    this.phase = 'hold';
+                } else {
+                    this.alpha = 0;
+                    this.phase = 'in';
+                }
+            }
+            drawFigure(x, y, s, a) {
+                hctx.save();
+                hctx.globalAlpha = a;
+                hctx.translate(x, y);
+
+                const glowColor = 'rgba(240, 185, 11, 0.5)';
+                hctx.shadowColor = glowColor;
+                hctx.shadowBlur = 30;
+                hctx.strokeStyle = 'rgba(240, 185, 11, 0.25)';
+                hctx.lineWidth = 1.5;
+                hctx.fillStyle = 'rgba(8, 8, 18, 0.95)';
+
+                hctx.beginPath();
+                hctx.moveTo(-s * 0.55, -s * 0.4);
+                hctx.quadraticCurveTo(-s * 0.6, -s * 1.0, 0, -s * 1.15);
+                hctx.quadraticCurveTo(s * 0.6, -s * 1.0, s * 0.55, -s * 0.4);
+                hctx.lineTo(s * 0.4, -s * 0.3);
+                hctx.quadraticCurveTo(0, -s * 0.75, -s * 0.4, -s * 0.3);
+                hctx.closePath();
+                hctx.fill();
+                hctx.stroke();
+
+                hctx.beginPath();
+                hctx.ellipse(0, -s * 0.6, s * 0.25, s * 0.25, 0, 0, Math.PI * 2);
+                hctx.fill();
+                hctx.stroke();
+
+                hctx.beginPath();
+                hctx.moveTo(-s * 0.28, -s * 0.35);
+                hctx.lineTo(s * 0.28, -s * 0.35);
+                hctx.lineTo(s * 0.2, s * 0.35);
+                hctx.quadraticCurveTo(0, s * 0.5, -s * 0.2, s * 0.35);
+                hctx.closePath();
+                hctx.fill();
+                hctx.stroke();
+
+                hctx.beginPath();
+                hctx.moveTo(-s * 0.28, -s * 0.15);
+                hctx.quadraticCurveTo(-s * 0.7, s * 0.15, -s * 0.5, s * 0.55);
+                hctx.lineTo(-s * 0.35, s * 0.5);
+                hctx.quadraticCurveTo(-s * 0.5, s * 0.1, -s * 0.18, s * 0.0);
+                hctx.closePath();
+                hctx.fill();
+                hctx.stroke();
+
+                hctx.beginPath();
+                hctx.moveTo(s * 0.28, -s * 0.15);
+                hctx.quadraticCurveTo(s * 0.7, s * 0.15, s * 0.5, s * 0.55);
+                hctx.lineTo(s * 0.35, s * 0.5);
+                hctx.quadraticCurveTo(s * 0.5, s * 0.1, s * 0.18, s * 0.0);
+                hctx.closePath();
+                hctx.fill();
+                hctx.stroke();
+
+                hctx.shadowColor = 'rgba(240, 185, 11, 0.9)';
+                hctx.shadowBlur = 15;
+                hctx.fillStyle = 'rgba(240, 185, 11, 0.7)';
+                hctx.beginPath();
+                hctx.ellipse(-s * 0.08, -s * 0.62, s * 0.045, s * 0.03, 0, 0, Math.PI * 2);
+                hctx.fill();
+                hctx.beginPath();
+                hctx.ellipse(s * 0.08, -s * 0.62, s * 0.045, s * 0.03, 0, 0, Math.PI * 2);
+                hctx.fill();
+
+                hctx.shadowBlur = 25;
+                hctx.fillStyle = 'rgba(240, 185, 11, 0.3)';
+                hctx.beginPath();
+                hctx.ellipse(-s * 0.08, -s * 0.62, s * 0.08, s * 0.06, 0, 0, Math.PI * 2);
+                hctx.fill();
+                hctx.beginPath();
+                hctx.ellipse(s * 0.08, -s * 0.62, s * 0.08, s * 0.06, 0, 0, Math.PI * 2);
+                hctx.fill();
+
+                hctx.restore();
+            }
+            update() {
+                this.drift += this.driftSpeed;
+                this.x = this.baseX + Math.sin(this.drift) * 40;
+                this.y = this.baseY + Math.cos(this.drift * 0.7) * 15;
+                this.baseX += this.dirX;
+
+                if (this.baseX < -80 || this.baseX > hc.width + 80) {
+                    this.dirX *= -1;
+                }
+
+                this.glitchTimer++;
+                if (this.glitchTimer > 100 + Math.random() * 150) {
+                    this.glitchOffset = (Math.random() - 0.5) * 10;
+                    this.glitchTimer = 0;
+                    setTimeout(() => { this.glitchOffset = 0; }, 100);
+                }
+
+                if (this.phase === 'in') {
+                    this.alpha += this.fadeSpeed;
+                    if (this.alpha >= this.maxAlpha) {
+                        this.alpha = this.maxAlpha;
+                        this.phase = 'hold';
+                    }
+                } else if (this.phase === 'hold') {
+                    this.holdCounter++;
+                    if (this.holdCounter >= this.holdTime) {
+                        this.phase = 'out';
+                    }
+                } else if (this.phase === 'out') {
+                    this.alpha -= this.fadeSpeed;
+                    if (this.alpha <= 0) {
+                        this.alpha = 0;
+                        this.reset(false);
+                    }
+                }
+            }
+            draw() {
+                if (this.alpha <= 0) return;
+                this.drawFigure(this.x + this.glitchOffset, this.y, this.size, this.alpha);
+                if (Math.abs(this.glitchOffset) > 3) {
+                    this.drawFigure(this.x - this.glitchOffset * 2, this.y, this.size, this.alpha * 0.3);
+                }
+            }
+        }
+
+        const hackers = [];
+        const hackerCount = 6;
+        for (let i = 0; i < hackerCount; i++) {
+            const h = new Hacker();
+            h.reset(true);
+            h.drift = (i / hackerCount) * Math.PI * 2;
+            h.baseX = (hc.width / (hackerCount + 1)) * (i + 1);
+            h.x = h.baseX;
+            hackers.push(h);
+        }
+
+        function animateHackers() {
+            hctx.clearRect(0, 0, hc.width, hc.height);
+            hackers.forEach(h => { h.update(); h.draw(); });
+            requestAnimationFrame(animateHackers);
+        }
+        animateHackers();
+    })();
+    </script>
+</body>
+</html>
