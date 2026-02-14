@@ -97,16 +97,19 @@ contract AgentMinter {
     function mintAgent(uint8 tier) external payable whenNotPaused returns (uint256) {
         uint256 cost = getTierCost(tier);
         require(cost > 0, "Invalid tier");
-        require(msg.value >= mintFee[tier], "Insufficient BNB mint fee");
+        uint256 fee = mintFee[tier];
+        require(msg.value >= fee, "Insufficient BNB mint fee");
         require(
             jacobToken.balanceOf(msg.sender) >= cost,
             "Insufficient JACOB balance"
         );
 
-        if (msg.value > 0) {
-            totalMintFeesCollected += msg.value;
-            uint256 ownerShare = (msg.value * 60) / 100;
-            uint256 revenueShare = msg.value - ownerShare;
+        uint256 excess = msg.value - fee;
+
+        if (fee > 0) {
+            totalMintFeesCollected += fee;
+            uint256 ownerShare = (fee * 60) / 100;
+            uint256 revenueShare = fee - ownerShare;
 
             (bool oSent, ) = payable(owner).call{value: ownerShare}("");
             require(oSent, "Owner fee transfer failed");
@@ -133,6 +136,12 @@ contract AgentMinter {
         }
 
         emit AgentCreated(msg.sender, tokenId, tier, cost);
+
+        if (excess > 0) {
+            (bool refundSent, ) = payable(msg.sender).call{value: excess}("");
+            require(refundSent, "Refund failed");
+        }
+
         return tokenId;
     }
 
