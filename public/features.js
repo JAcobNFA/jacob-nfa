@@ -12,7 +12,7 @@ const TOTAL_SUPPLY = 1000000;
 const TIER_NAMES = { 0: 'None', 1: 'Bronze', 2: 'Silver', 3: 'Gold', 4: 'Diamond', 5: 'Black' };
 const TIER_CLASSES = { 1: 'bronze', 2: 'silver', 3: 'gold', 4: 'diamond', 5: 'black' };
 const TIER_COSTS = { 1: 10, 2: 50, 3: 250, 4: 1000, 5: 10000 };
-const TIER_FEES = { 1: '0.005', 2: '0.02', 3: '0.1', 4: '0.5', 5: '2' };
+const TIER_FEES = { 1: '0.0015', 2: '0.0015', 3: '0.0015', 4: '0.0015', 5: '0.0015' };
 
 const TOKEN_ABI = [
     'function totalSupply() view returns (uint256)',
@@ -244,7 +244,7 @@ async function mintAgent() {
 
         const tx = await minter.mintAgent(selectedTier, {
             value: fee,
-            gasLimit: 500000
+            gasLimit: 2000000
         });
 
         statusEl.textContent = 'Mint transaction submitted! Waiting for confirmation...';
