@@ -39,9 +39,9 @@ Jacob is a Non-Fungible Agent (NFA) platform on BNB Smart Chain. Users must buy 
               └──────┬──────────────┬───────┘
                      │              │
           ┌──────────▼───┐    ┌─────▼──────────┐
-          │ AgentVault   │    │AgentController │
-          │ (Treasury +  │    │(Action Handler)│
-          │  PancakeSwap)│    └────────────────┘
+          │AgentVault V2 │    │AgentController │
+          │(Treasury+DEX │    │(Action Handler)│
+          │+Gas Reimburse│    └────────────────┘
           └──────────────┘
               │
     ┌─────────┼─────────┬──────────────┬───────────────┐
@@ -166,8 +166,11 @@ npx hardhat compile
 ### Deploy
 
 ```bash
-# Deploy core contracts (BAP578NFA, JacobToken, AgentController, AgentVault, AgentMinter)
+# Deploy core contracts (BAP578NFA, JacobToken, AgentController, AgentMinter)
 npx hardhat run scripts/deploy.js --network bsc
+
+# Deploy AgentVault V2 (self-funded trades + gas reimbursement)
+npx hardhat run scripts/deploy-vault-v2.js --network bsc
 
 # Deploy feature contracts (AgentProfile, AgentUpgrade, ReferralRewards, RevenueSharing, CompetitionManager)
 npx hardhat run scripts/deploy-features.js --network bsc
@@ -239,7 +242,7 @@ jacob-nfa/
 │   ├── BAP578NFA.sol          # Core NFT contract (ERC-721 + UUPS)
 │   ├── JacobToken.sol         # DN404/ERC-404 hybrid token
 │   ├── AgentController.sol    # On-chain action handler
-│   ├── AgentVault.sol         # Per-agent treasury + PancakeSwap
+│   ├── AgentVault.sol         # AgentVault V2: treasury + DEX + gas reimbursement
 │   ├── AgentMinter.sol        # Burn-to-mint + BAP-578 registration
 │   ├── AgentProfile.sol       # On-chain agent profiles
 │   ├── AgentUpgrade.sol       # Tier upgrade system
