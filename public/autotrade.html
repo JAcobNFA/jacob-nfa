@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jacob - Agent Autopilot</title>
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/bot.css?v=7">
+    <style>
+        .at-page-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 24px;
+        }
+        .at-page-full {
+            grid-column: 1 / -1;
+        }
+        .at-vault-card {
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        .at-vault-card h3 {
+            margin: 0 0 16px 0;
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+        }
+        .at-vault-balance-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .at-vault-amount {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #f0b90b;
+        }
+        .at-vault-label {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.5);
+        }
+        .at-vault-warning {
+            background: rgba(255, 68, 68, 0.15);
+            border: 1px solid rgba(255, 68, 68, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        .at-vault-warning-title {
+            color: #ff4444;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+        .at-vault-warning p {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+        .at-vault-ok {
+            background: rgba(0, 255, 170, 0.1);
+            border: 1px solid rgba(0, 255, 170, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        .at-vault-ok-title {
+            color: #00ffaa;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+        .at-vault-ok p {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.8rem;
+            margin: 0;
+        }
+        .at-deposit-steps {
+            margin-top: 12px;
+            padding: 0;
+            list-style: none;
+            counter-reset: step;
+        }
+        .at-deposit-steps li {
+            counter-increment: step;
+            padding: 8px 0 8px 36px;
+            position: relative;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        .at-deposit-steps li::before {
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(240, 185, 11, 0.2);
+            color: #f0b90b;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .at-vault-addr {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .at-vault-addr code {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: #f0b90b;
+            word-break: break-all;
+        }
+        .at-copy-btn {
+            background: rgba(240, 185, 11, 0.15);
+            border: 1px solid rgba(240, 185, 11, 0.3);
+            border-radius: 6px;
+            color: #f0b90b;
+            padding: 6px 10px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .at-copy-btn:hover { background: rgba(240, 185, 11, 0.3); }
+        .at-agent-card {
+            padding: 24px;
+        }
+        .at-agent-card h3 {
+            margin: 0 0 16px 0;
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+        }
+        .at-agent-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .at-agent-stat {
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+        .at-agent-stat-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+        }
+        .at-agent-stat-lbl {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.4);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .at-connect-prompt {
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(255,255,255,0.5);
+        }
+        .at-connect-prompt h3 {
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 12px;
+        }
+        .at-connect-prompt p { font-size: 0.9rem; margin-bottom: 20px; }
+        .at-connect-btn {
+            background: linear-gradient(135deg, #f0b90b, #d4a00a);
+            color: #0a0a1a;
+            border: none;
+            padding: 12px 28px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .at-connect-btn:hover { transform: scale(1.03); box-shadow: 0 0 20px rgba(240,185,11,0.3); }
+        .at-tier-locked {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .at-tier-locked h3 {
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 12px;
+        }
+        .at-tier-locked p { color: rgba(255,255,255,0.5); font-size: 0.9rem; }
+        .at-tier-locked .lock-icon { font-size: 3rem; margin-bottom: 16px; }
+        .at-agent-select-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .at-agent-select-row select {
+            flex: 1;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: #fff;
+            padding: 10px 14px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.95rem;
+        }
+        .at-agent-select-row select:focus {
+            outline: none;
+            border-color: rgba(240, 185, 11, 0.5);
+        }
+        .at-detect-status {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.5);
+            margin-top: 8px;
+        }
+        .at-refresh-btn {
+            background: rgba(0, 255, 170, 0.1);
+            border: 1px solid rgba(0, 255, 170, 0.3);
+            color: #00ffaa;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+        }
+        .at-refresh-btn:hover { background: rgba(0, 255, 170, 0.2); }
+        @media (max-width: 768px) {
+            .at-page-grid { grid-template-columns: 1fr; }
+            .at-vault-amount { font-size: 1.5rem; }
+            .at-agent-info { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particle-canvas"></canvas>
+    <div class="scanlines"></div>
+
+    <nav class="top-nav">
+        <div class="container nav-inner">
+            <a href="/" class="nav-logo">Jacob</a>
+            <button class="hamburger" id="hamburger" aria-label="Menu" onclick="this.classList.toggle('active');this.nextElementSibling.classList.toggle('open')">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-links" id="nav-links">
+                <a href="/" data-i18n="nav_dashboard">Dashboard</a>
+                <a href="/command.html" data-i18n="nav_command">Command Center</a>
+                <a href="/jacob.html" data-i18n="nav_bot">Jacob</a>
+                <a href="/autotrade.html" class="active">Agent Autopilot</a>
+                <a href="/guide.html" data-i18n="nav_guide">Guide</a>
+                <button class="connect-wallet-btn" id="connect-wallet-btn" onclick="if(typeof connectWalletWithFallback==='function'){connectWalletWithFallback()}">Connect Wallet</button>
+                <button class="lang-toggle" id="lang-toggle" onclick="toggleLanguage()">中文</button>
+            </div>
+        </div>
+    </nav>
+
+    <header style="padding: 50px 0 40px;">
+        <div class="header-glow"></div>
+        <div class="container">
+            <h1 data-text="Agent Autopilot" style="font-size: 3rem;">Agent Autopilot</h1>
+            <p class="subtitle">
+                <span class="cyber-bracket">[</span>
+                <span>AI-Driven Autonomous Execution Engine</span>
+                <span class="cyber-bracket">]</span>
+            </p>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <div id="at-connect-state" class="glass-card at-connect-prompt">
+            <h3>Connect Your Wallet</h3>
+            <p>Connect your wallet to detect your agents and access autonomous trading.</p>
+            <button class="at-connect-btn" onclick="if(typeof connectWalletWithFallback==='function'){connectWalletWithFallback()}">Connect Wallet</button>
+        </div>
+
+        <div id="at-tier-locked-state" style="display:none;" class="glass-card at-tier-locked at-page-full">
+            <div class="lock-icon">&#128274;</div>
+            <h3>Diamond+ Tier Required</h3>
+            <p>Autonomous trading is available for <strong>Diamond</strong> and <strong>Black</strong> tier agents only.<br>Upgrade your agent in the <a href="/command.html" style="color:#f0b90b;">Command Center</a> to unlock AI-driven autonomous execution.</p>
+            <div style="margin-top:20px; display:flex; flex-wrap:wrap; gap:12px; justify-content:center;">
+                <div class="at-locked-feat"><span>&#9889;</span> AI-powered trade signals every 2 minutes</div>
+                <div class="at-locked-feat"><span>&#128737;</span> 3 strategy profiles: Conservative, Balanced, Aggressive</div>
+                <div class="at-locked-feat"><span>&#128176;</span> Safety controls: stop-loss, take-profit, daily caps</div>
+                <div class="at-locked-feat"><span>&#128202;</span> Real-time trade monitoring and activity logs</div>
+            </div>
+        </div>
+
+        <div id="at-main-content" style="display:none;">
+
+            <div class="at-page-grid">
+                <div class="glass-card at-agent-card">
+                    <h3>Your Agent</h3>
+                    <div class="at-agent-select-row">
+                        <select id="at-agent-select"></select>
+                        <button class="at-refresh-btn" onclick="refreshVaultBalance()">Refresh</button>
+                    </div>
+                    <div class="at-detect-status" id="at-detect-status"></div>
+
+                    <div class="at-agent-info" id="at-agent-info">
+                        <div class="at-agent-stat">
+                            <div class="at-agent-stat-val" id="at-agent-tier">--</div>
+                            <div class="at-agent-stat-lbl">Tier</div>
+                        </div>
+                        <div class="at-agent-stat">
+                            <div class="at-agent-stat-val" id="at-agent-swap-limit">--</div>
+                            <div class="at-agent-stat-lbl">Swap Limit</div>
+                        </div>
+                        <div class="at-agent-stat">
+                            <div class="at-agent-stat-val" id="at-agent-jacob">--</div>
+                            <div class="at-agent-stat-lbl">Vault JACOB</div>
+                        </div>
+                        <div class="at-agent-stat">
+                            <div class="at-agent-stat-val" id="at-agent-revenue">--</div>
+                            <div class="at-agent-stat-lbl">Revenue Status</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card at-vault-card">
+                    <h3>Vault Balance</h3>
+                    <div class="at-vault-balance-row">
+                        <div>
+                            <div class="at-vault-amount" id="at-vault-bnb">0.0000</div>
+                            <div class="at-vault-label">BNB Available for Trading</div>
+                        </div>
+                    </div>
+
+                    <div id="at-vault-warning" class="at-vault-warning" style="display:none;">
+                        <div class="at-vault-warning-title">Deposit BNB to Start Trading</div>
+                        <p>Your vault needs BNB to execute trades. The bot cannot trade with an empty vault.</p>
+                        <ol class="at-deposit-steps">
+                            <li>Go to the <a href="/command.html" style="color:#f0b90b;">Command Center</a> to deposit, or send BNB directly to the AgentVault contract:</li>
+                            <li>
+                                <div class="at-vault-addr">
+                                    <code>0x120192695152B8788277e46af1412002697B9F25</code>
+                                    <button class="at-copy-btn" onclick="navigator.clipboard.writeText('0x120192695152B8788277e46af1412002697B9F25');this.textContent='Copied!';setTimeout(function(){document.querySelector('.at-copy-btn').textContent='Copy'},2000);">Copy</button>
+                                </div>
+                            </li>
+                            <li>Use the <code>depositBNB(agentId)</code> function on BscScan with your agent ID and the BNB amount you want to deposit.</li>
+                            <li>Click <strong>Refresh</strong> above once your deposit confirms.</li>
+                        </ol>
+                    </div>
+
+                    <div id="at-vault-ok" class="at-vault-ok" style="display:none;">
+                        <div class="at-vault-ok-title">Vault Funded</div>
+                        <p>Your vault has enough BNB. You can enable autonomous trading below.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="at-page-grid" id="at-controls-wrapper">
+                <div class="auto-trade-control glass-card">
+                    <div class="at-header">
+                        <h3>Control Panel</h3>
+                        <div class="at-status-badge" id="at-status-badge">OFFLINE</div>
+                    </div>
+
+                    <div class="at-toggle-row">
+                        <label class="at-toggle-label">Autonomous Trading</label>
+                        <label class="at-switch" id="at-switch-wrap">
+                            <input type="checkbox" id="at-enabled-toggle">
+                            <span class="at-slider"></span>
+                        </label>
+                    </div>
+                    <div id="at-toggle-block-msg" style="display:none; color:#ff4444; font-size:0.8rem; margin:-8px 0 8px 0;">
+                        Deposit BNB to your vault before enabling autonomous trading.
+                    </div>
+
+                    <div class="at-field">
+                        <label>Strategy</label>
+                        <select id="at-strategy" class="at-select">
+                            <option value="conservative">Conservative — Low risk, strong signals only</option>
+                            <option value="balanced" selected>Balanced — Moderate risk, standard positions</option>
+                            <option value="aggressive">Aggressive — Higher risk, more frequent trades</option>
+                        </select>
+                    </div>
+
+                    <div class="at-field-row">
+                        <div class="at-field">
+                            <label>Max Trade (BNB)</label>
+                            <input type="number" id="at-max-trade" class="at-input" value="0.05" min="0.01" max="100" step="0.01">
+                        </div>
+                        <div class="at-field">
+                            <label>Daily Cap (BNB)</label>
+                            <input type="number" id="at-daily-cap" class="at-input" value="0.2" min="0.01" max="500" step="0.01">
+                        </div>
+                    </div>
+
+                    <div class="at-field-row">
+                        <div class="at-field">
+                            <label>Stop Loss %</label>
+                            <input type="number" id="at-stop-loss" class="at-input" value="10" min="1" max="50" step="1">
+                        </div>
+                        <div class="at-field">
+                            <label>Take Profit %</label>
+                            <input type="number" id="at-take-profit" class="at-input" value="20" min="1" max="100" step="1">
+                        </div>
+                    </div>
+
+                    <div class="at-field-row">
+                        <div class="at-field">
+                            <label>Cooldown (mins)</label>
+                            <input type="number" id="at-cooldown" class="at-input" value="30" min="5" max="1440" step="5">
+                        </div>
+                        <div class="at-field">
+                            <label>Slippage (bps)</label>
+                            <input type="number" id="at-slippage" class="at-input" value="500" min="50" max="2000" step="50">
+                        </div>
+                    </div>
+
+                    <button class="at-btn at-btn-simulate" id="at-simulate-btn" onclick="simulateAutoTrade()">Simulate Signal</button>
+                </div>
+
+                <div class="auto-trade-stats glass-card">
+                    <h3>Live Status</h3>
+                    <div class="at-stats-grid">
+                        <div class="at-stat">
+                            <div class="at-stat-val" id="at-total-trades">0</div>
+                            <div class="at-stat-lbl">Total Trades</div>
+                        </div>
+                        <div class="at-stat">
+                            <div class="at-stat-val" id="at-total-volume">0.00</div>
+                            <div class="at-stat-lbl">Volume (BNB)</div>
+                        </div>
+                        <div class="at-stat">
+                            <div class="at-stat-val" id="at-daily-spent">0.00</div>
+                            <div class="at-stat-lbl">Daily Spent</div>
+                        </div>
+                        <div class="at-stat">
+                            <div class="at-stat-val" id="at-daily-remaining">0.00</div>
+                            <div class="at-stat-lbl">Daily Remaining</div>
+                        </div>
+                    </div>
+
+                    <div class="at-cooldown-bar" id="at-cooldown-bar" style="display:none;">
+                        <span>Cooldown active</span>
+                        <div class="at-cooldown-fill" id="at-cooldown-fill"></div>
+                    </div>
+
+                    <h3 style="margin-top:16px;">Recent Activity</h3>
+                    <div class="at-log" id="at-log">
+                        <div class="at-log-empty">No autonomous trades yet</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="at-page-grid">
+                <div class="at-page-full">
+                    <div class="at-simulation-result glass-card" id="at-simulation-result" style="display:none;">
+                        <h3>Simulation Result</h3>
+                        <div class="at-sim-body" id="at-sim-body"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-line"></div>
+            <p>Jacob <span class="footer-dot"></span> BAP-578 Non-Fungible Agent Platform <span class="footer-dot"></span> BNB Smart Chain</p>
+        </div>
+    </footer>
+
+    <script>
+    var TIER_NAMES = { 1: 'Bronze', 2: 'Silver', 3: 'Gold', 4: 'Diamond', 5: 'Black' };
+    var TIER_SWAP_LIMITS = { 1: '0.1 BNB', 2: '0.5 BNB', 3: '2 BNB', 4: '10 BNB', 5: 'Unlimited' };
+
+    var _connectedWallet = null;
+    var _walletAgents = [];
+    var _selectedAgentId = null;
+    var _selectedTier = 0;
+    var _vaultBNB = 0;
+
+    function showState(state) {
+        document.getElementById('at-connect-state').style.display = state === 'connect' ? '' : 'none';
+        document.getElementById('at-tier-locked-state').style.display = state === 'locked' ? '' : 'none';
+        document.getElementById('at-main-content').style.display = state === 'main' ? '' : 'none';
+    }
+
+    async function detectAgents(address) {
+        var status = document.getElementById('at-detect-status');
+        status.innerHTML = '<span class="detect-icon spin">&#9881;</span> Scanning blockchain for your agents...';
+
+        try {
+            var res = await fetch('/api/wallet-agents/' + address);
+            var data = await res.json();
+
+            if (data.agents && data.agents.length > 0) {
+                _walletAgents = data.agents;
+
+                var diamondPlus = data.agents.filter(function(a) { return a.tier >= 4; });
+
+                if (diamondPlus.length === 0) {
+                    showState('locked');
+                    status.innerHTML = '';
+                    return;
+                }
+
+                showState('main');
+
+                var selector = document.getElementById('at-agent-select');
+                var sorted = diamondPlus.slice().sort(function(a, b) { return b.tier - a.tier; });
+                selector.innerHTML = sorted.map(function(a) {
+                    return '<option value="' + a.tokenId + '">#' + a.tokenId + ' — ' + a.tierName + '</option>';
+                }).join('');
+
+                status.innerHTML = '<span style="color:#00ffaa;">&#10003;</span> Found ' + diamondPlus.length + ' eligible agent' + (diamondPlus.length > 1 ? 's' : '');
+
+                selector.value = sorted[0].tokenId;
+                selectAgent(sorted[0].tokenId, sorted[0].tier);
+
+                selector.addEventListener('change', function() {
+                    var agent = diamondPlus.find(function(a) { return a.tokenId === parseInt(selector.value); });
+                    if (agent) selectAgent(agent.tokenId, agent.tier);
+                });
+            } else {
+                showState('locked');
+                status.innerHTML = '<span style="color:#f0b90b;">&#9888;</span> No agents found. <a href="/command.html" style="color:#f0b90b;">Mint your first agent</a>';
+            }
+        } catch(e) {
+            status.innerHTML = '<span style="color:#ff4444;">&#10007;</span> Could not scan blockchain';
+        }
+    }
+
+    async function selectAgent(agentId, tier) {
+        _selectedAgentId = agentId;
+        _selectedTier = tier;
+
+        document.getElementById('at-agent-tier').textContent = TIER_NAMES[tier] || 'Unknown';
+        document.getElementById('at-agent-swap-limit').textContent = TIER_SWAP_LIMITS[tier] || '--';
+
+        await loadVaultBalance(agentId);
+        loadAutoTradeStatus(agentId);
+    }
+
+    async function loadVaultBalance(agentId) {
+        try {
+            var url = '/api/agent-context/' + agentId;
+            if (_connectedWallet) url += '?wallet=' + _connectedWallet;
+            var res = await fetch(url);
+            var data = await res.json();
+
+            _vaultBNB = parseFloat(data.vaultBnb || 0);
+            document.getElementById('at-vault-bnb').textContent = _vaultBNB.toFixed(4);
+            document.getElementById('at-agent-jacob').textContent = parseFloat(data.vaultJacob || 0).toFixed(2);
+            document.getElementById('at-agent-revenue').textContent = data.revenueRegistered ? 'Registered' : 'Not Registered';
+            document.getElementById('at-agent-revenue').style.color = data.revenueRegistered ? '#00ffaa' : '#ff4444';
+
+            updateVaultGate();
+        } catch(e) {
+            document.getElementById('at-vault-bnb').textContent = '?.????';
+        }
+    }
+
+    function updateVaultGate() {
+        var maxTrade = parseFloat(document.getElementById('at-max-trade').value) || 0.05;
+        var hasFunds = _vaultBNB >= 0.001;
+        var warningEl = document.getElementById('at-vault-warning');
+        var okEl = document.getElementById('at-vault-ok');
+        var blockMsg = document.getElementById('at-toggle-block-msg');
+        var toggle = document.getElementById('at-enabled-toggle');
+
+        if (hasFunds) {
+            warningEl.style.display = 'none';
+            okEl.style.display = '';
+            blockMsg.style.display = 'none';
+            toggle.disabled = false;
+            document.getElementById('at-switch-wrap').style.opacity = '1';
+            document.getElementById('at-switch-wrap').style.cursor = 'pointer';
+        } else {
+            warningEl.style.display = '';
+            okEl.style.display = 'none';
+            blockMsg.style.display = '';
+            if (!toggle.checked) {
+                toggle.disabled = true;
+                document.getElementById('at-switch-wrap').style.opacity = '0.4';
+                document.getElementById('at-switch-wrap').style.cursor = 'not-allowed';
+            }
+        }
+    }
+
+    function refreshVaultBalance() {
+        if (_selectedAgentId) {
+            loadVaultBalance(_selectedAgentId);
+        }
+    }
+
+    function loadAutoTradeStatus(agentId) {
+        fetch('/api/auto-trade/status?agentId=' + agentId).then(function(r) { return r.json(); }).then(function(data) {
+            var badge = document.getElementById('at-status-badge');
+            var toggle = document.getElementById('at-enabled-toggle');
+
+            if (data.enabled) {
+                badge.textContent = 'ACTIVE';
+                badge.className = 'at-status-badge at-active';
+                toggle.checked = true;
+            } else {
+                badge.textContent = 'OFFLINE';
+                badge.className = 'at-status-badge at-offline';
+                toggle.checked = false;
+            }
+
+            if (data.configured) {
+                document.getElementById('at-strategy').value = data.strategy || 'balanced';
+                document.getElementById('at-max-trade').value = data.maxTradeBNB || 0.05;
+                document.getElementById('at-daily-cap').value = data.dailyCapBNB || 0.2;
+                document.getElementById('at-stop-loss').value = data.stopLossPct || 10;
+                document.getElementById('at-take-profit').value = data.takeProfitPct || 20;
+                document.getElementById('at-cooldown').value = data.cooldownMins || 30;
+                document.getElementById('at-slippage').value = data.slippageBps || 500;
+            }
+
+            document.getElementById('at-total-trades').textContent = data.totalTrades || 0;
+            document.getElementById('at-total-volume').textContent = (data.totalVolumeBNB || 0).toFixed(4);
+            document.getElementById('at-daily-spent').textContent = (data.dailySpent || 0).toFixed(4);
+            document.getElementById('at-daily-remaining').textContent = (data.dailyRemaining || 0).toFixed(4);
+
+            if (data.cooldownActive) {
+                document.getElementById('at-cooldown-bar').style.display = '';
+            } else {
+                document.getElementById('at-cooldown-bar').style.display = 'none';
+            }
+
+            updateVaultGate();
+            loadAutoTradeLogs(agentId);
+        }).catch(function() {});
+    }
+
+    function loadAutoTradeLogs(agentId) {
+        fetch('/api/auto-trade/logs?agentId=' + agentId + '&limit=20').then(function(r) { return r.json(); }).then(function(data) {
+            var logEl = document.getElementById('at-log');
+            if (!data.logs || data.logs.length === 0) {
+                logEl.innerHTML = '<div class="at-log-empty">No autonomous trades yet</div>';
+                return;
+            }
+
+            var html = '';
+            data.logs.reverse().forEach(function(log) {
+                var time = new Date(log.timestamp).toLocaleString();
+                var cls = log.type === 'trade' ? 'at-log-trade' : log.type === 'skip' ? 'at-log-skip' : log.type === 'error' ? 'at-log-error' : 'at-log-info';
+
+                if (log.type === 'trade') {
+                    var sig = log.signal || {};
+                    html += '<div class="at-log-entry ' + cls + '"><span class="at-log-time">' + time + '</span><span class="at-log-action">' + (sig.action || '').toUpperCase() + '</span><span>' + (log.amountBNB || 0).toFixed(4) + ' BNB</span>';
+                    if (log.result && log.result.txHash) {
+                        html += '<a href="https://bscscan.com/tx/' + log.result.txHash + '" target="_blank" class="at-log-tx">TX</a>';
+                    }
+                    html += '</div>';
+                } else if (log.type === 'skip') {
+                    html += '<div class="at-log-entry ' + cls + '"><span class="at-log-time">' + time + '</span><span>SKIP</span><span>' + (log.reason || '') + '</span></div>';
+                } else if (log.type === 'error') {
+                    html += '<div class="at-log-entry ' + cls + '"><span class="at-log-time">' + time + '</span><span>ERROR</span><span>' + (log.error || '') + '</span></div>';
+                } else if (log.type === 'failed') {
+                    html += '<div class="at-log-entry at-log-error"><span class="at-log-time">' + time + '</span><span>FAILED</span><span>' + (log.result && log.result.error ? log.result.error : 'Trade execution failed') + '</span></div>';
+                } else {
+                    html += '<div class="at-log-entry ' + cls + '"><span class="at-log-time">' + time + '</span><span>' + (log.type || '').toUpperCase() + '</span></div>';
+                }
+            });
+            logEl.innerHTML = html;
+        }).catch(function() {});
+    }
+
+    document.getElementById('at-enabled-toggle').addEventListener('change', function() {
+        if (!_selectedAgentId || !_connectedWallet) {
+            this.checked = false;
+            alert('Connect your wallet and select an agent first');
+            return;
+        }
+
+        if (this.checked && _vaultBNB < 0.001) {
+            this.checked = false;
+            alert('Your vault needs BNB before you can enable autonomous trading. Please deposit BNB to your agent vault first.');
+            return;
+        }
+
+        var enabled = this.checked;
+        var endpoint = enabled ? '/api/auto-trade/enable' : '/api/auto-trade/disable';
+
+        var body = { agentId: _selectedAgentId, walletAddress: _connectedWallet };
+
+        if (enabled) {
+            body.strategy = document.getElementById('at-strategy').value;
+            body.maxTradeBNB = parseFloat(document.getElementById('at-max-trade').value);
+            body.dailyCapBNB = parseFloat(document.getElementById('at-daily-cap').value);
+            body.stopLossPct = parseFloat(document.getElementById('at-stop-loss').value);
+            body.takeProfitPct = parseFloat(document.getElementById('at-take-profit').value);
+            body.cooldownMins = parseInt(document.getElementById('at-cooldown').value);
+            body.slippageBps = parseInt(document.getElementById('at-slippage').value);
+        }
+
+        fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        }).then(function(r) { return r.json(); }).then(function(data) {
+            if (data.error) {
+                alert(data.error);
+                document.getElementById('at-enabled-toggle').checked = !enabled;
+                return;
+            }
+            loadAutoTradeStatus(_selectedAgentId);
+        }).catch(function(e) {
+            alert('Failed to update auto-trade');
+            document.getElementById('at-enabled-toggle').checked = !enabled;
+        });
+    });
+
+    function simulateAutoTrade() {
+        if (!_selectedAgentId) { alert('Select an agent first'); return; }
+        var btn = document.getElementById('at-simulate-btn');
+        var resultEl = document.getElementById('at-simulation-result');
+        var bodyEl = document.getElementById('at-sim-body');
+
+        btn.disabled = true;
+        btn.textContent = 'Simulating...';
+        resultEl.style.display = '';
+        bodyEl.innerHTML = '<div class="at-loading">Generating AI trading signal...</div>';
+
+        fetch('/api/auto-trade/simulate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ agentId: _selectedAgentId, walletAddress: _connectedWallet || '' })
+        }).then(function(r) { return r.json(); }).then(function(data) {
+            btn.disabled = false;
+            btn.textContent = 'Simulate Signal';
+
+            if (data.error) {
+                bodyEl.innerHTML = '<div class="at-sim-error">' + data.error + '</div>';
+                return;
+            }
+
+            var sig = data.signal || {};
+            var val = data.validation || {};
+            var mkt = data.marketSnapshot || {};
+            var actionClass = sig.action === 'buy' ? 'at-sig-buy' : sig.action === 'sell' ? 'at-sig-sell' : 'at-sig-hold';
+
+            var html = '<div class="at-sim-grid">';
+            html += '<div class="at-sim-signal ' + actionClass + '"><div class="at-sim-action">' + (sig.action || 'HOLD').toUpperCase() + '</div>';
+            html += '<div class="at-sim-confidence">Confidence: ' + (sig.confidence || 'N/A') + '</div>';
+            html += '<div class="at-sim-risk">Risk: ' + (sig.riskScore || 'N/A') + '/10</div>';
+            if (sig.amountBNB) html += '<div>Amount: ' + sig.amountBNB + ' BNB</div>';
+            html += '</div>';
+            html += '<div class="at-sim-market"><div class="at-sim-lbl">Market</div>';
+            html += '<div>Price: $' + (mkt.price || 0).toFixed(6) + '</div>';
+            html += '<div>1h: ' + (mkt.change1h || 0) + '%</div>';
+            html += '<div>24h: ' + (mkt.change24h || 0) + '%</div>';
+            html += '</div>';
+            html += '<div class="at-sim-verdict"><div class="at-sim-lbl">Verdict</div>';
+            html += '<div>' + (data.wouldExecute ? 'WOULD EXECUTE' : 'WOULD NOT EXECUTE') + '</div>';
+            html += '<div class="at-sim-reason">' + (val.reason || '') + '</div>';
+            html += '</div></div>';
+            if (sig.reasoning) html += '<div class="at-sim-reasoning"><strong>AI Reasoning:</strong> ' + sig.reasoning + '</div>';
+            html += '<div class="at-sim-note">' + (data.note || '') + '</div>';
+
+            bodyEl.innerHTML = html;
+        }).catch(function() {
+            btn.disabled = false;
+            btn.textContent = 'Simulate Signal';
+            bodyEl.innerHTML = '<div class="at-sim-error">Simulation failed</div>';
+        });
+    }
+
+    document.getElementById('at-max-trade').addEventListener('change', updateVaultGate);
+
+    window.addEventListener('wallet-connected', function(e) {
+        var address = e.detail && e.detail.address;
+        if (address) {
+            _connectedWallet = address;
+            window._connectedWallet = address;
+            var btn = document.getElementById('connect-wallet-btn');
+            if (btn) {
+                btn.textContent = address.substring(0, 6) + '...' + address.substring(38);
+                btn.classList.add('connected');
+            }
+            detectAgents(address);
+        }
+    });
+
+    window.addEventListener('wallet-connect-injected', function() {
+        if (window.ethereum) {
+            window.ethereum.request({ method: 'eth_requestAccounts' }).then(function(accounts) {
+                if (accounts && accounts.length > 0) {
+                    window.dispatchEvent(new CustomEvent('wallet-connected', { detail: { address: accounts[0] } }));
+                }
+            }).catch(function() {});
+        }
+    });
+
+    if (window.ethereum) {
+        window.ethereum.request({ method: 'eth_accounts' }).then(function(accounts) {
+            if (accounts && accounts.length > 0) {
+                _connectedWallet = accounts[0];
+                window._connectedWallet = accounts[0];
+                var btn = document.getElementById('connect-wallet-btn');
+                if (btn) {
+                    btn.textContent = accounts[0].substring(0, 6) + '...' + accounts[0].substring(38);
+                    btn.classList.add('connected');
+                }
+                detectAgents(accounts[0]);
+            }
+        }).catch(function() {});
+    }
+
+    setInterval(function() {
+        if (_selectedAgentId) loadAutoTradeStatus(_selectedAgentId);
+    }, 30000);
+
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.glass-card, .section-header').forEach(function(el) { observer.observe(el); });
+    </script>
+    <script src="/walletconnect.js?v=2"></script>
+    <script src="/hackers.js"></script>
+    <script src="/i18n.js"></script>
+</body>
+</html>

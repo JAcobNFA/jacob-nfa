@@ -35,11 +35,32 @@ contract BAP578NFA is
     address public upgrader;
     string public baseImageURI;
 
+    struct LearningMetrics {
+        uint256 totalInteractions;
+        uint256 learningEvents;
+        uint256 lastUpdateTimestamp;
+        uint256 learningVelocity;
+        uint256 confidenceScore;
+    }
+
+    mapping(uint256 => bool) public learningEnabled;
+    mapping(uint256 => address) public learningModule;
+    mapping(uint256 => bytes32) public learningTreeRoot;
+    mapping(uint256 => uint256) public learningVersion;
+    mapping(uint256 => uint256) public lastLearningUpdate;
+    mapping(uint256 => LearningMetrics) public agentLearningMetrics;
+
+    string public projectMention;
+
     event AgentFunded(uint256 indexed tokenId, address indexed funder, uint256 amount);
     event Paused(uint256 newPausedStatus);
     event Unpaused();
     event AgentMinted(uint256 indexed tokenId, address indexed to, AgentTier tier, uint256 burnedAmount);
     event AgentTierUpdated(uint256 indexed tokenId, AgentTier fromTier, AgentTier toTier, uint256 additionalBurned);
+    event LearningEnabled(uint256 indexed tokenId, address learningModule);
+    event LearningRootUpdated(uint256 indexed tokenId, bytes32 oldRoot, bytes32 newRoot, uint256 version);
+    event LearningModuleUpdated(uint256 indexed tokenId, address oldModule, address newModule);
+    event LearningMetricsUpdated(uint256 indexed tokenId, uint256 totalInteractions, uint256 learningEvents);
 
     modifier onlyMinter() {
         require(msg.sender == minter, "BAP578: caller is not the minter");
@@ -48,6 +69,15 @@ contract BAP578NFA is
 
     modifier whenNotPaused() {
         require(pausedStatus == 0, "BAP578: contract is paused");
+        _;
+    }
+
+    modifier onlyAgentOwner(uint256 tokenId) {
+        require(_ownerOf(tokenId) != address(0), "BAP578: agent does not exist");
+        require(
+            msg.sender == _ownerOf(tokenId) || msg.sender == owner(),
+            "BAP578: caller is not the agent owner"
+        );
         _;
     }
 
@@ -91,6 +121,10 @@ contract BAP578NFA is
 
     function setBaseImageURI(string memory _baseImageURI) external onlyOwner {
         baseImageURI = _baseImageURI;
+    }
+
+    function setProjectMention(string memory _mention) external onlyOwner {
+        projectMention = _mention;
     }
 
     function updateAgentTier(
@@ -161,6 +195,94 @@ contract BAP578NFA is
         emit AgentFunded(tokenId, msg.sender, msg.value);
     }
 
+    function enableLearning(
+        uint256 tokenId,
+        address _learningModule
+    ) external onlyAgentOwner(tokenId) {
+        require(!learningEnabled[tokenId], "BAP578: learning already enabled");
+        learningEnabled[tokenId] = true;
+        learningModule[tokenId] = _learningModule;
+        learningVersion[tokenId] = 1;
+        lastLearningUpdate[tokenId] = block.timestamp;
+
+        agentLearningMetrics[tokenId] = LearningMetrics({
+            totalInteractions: 0,
+            learningEvents: 0,
+            lastUpdateTimestamp: block.timestamp,
+            learningVelocity: 0,
+            confidenceScore: 0
+        });
+
+        emit LearningEnabled(tokenId, _learningModule);
+    }
+
+    function setLearningModule(
+        uint256 tokenId,
+        address _newModule
+    ) external onlyAgentOwner(tokenId) {
+        require(learningEnabled[tokenId], "BAP578: learning not enabled");
+        address oldModule = learningModule[tokenId];
+        learningModule[tokenId] = _newModule;
+        emit LearningModuleUpdated(tokenId, oldModule, _newModule);
+    }
+
+    function updateLearningRoot(
+        uint256 tokenId,
+        bytes32 _newRoot
+    ) external onlyAgentOwner(tokenId) {
+        require(learningEnabled[tokenId], "BAP578: learning not enabled");
+        bytes32 oldRoot = learningTreeRoot[tokenId];
+        learningTreeRoot[tokenId] = _newRoot;
+        learningVersion[tokenId]++;
+        lastLearningUpdate[tokenId] = block.timestamp;
+
+        emit LearningRootUpdated(tokenId, oldRoot, _newRoot, learningVersion[tokenId]);
+    }
+
+    function updateLearningMetrics(
+        uint256 tokenId,
+        uint256 _totalInteractions,
+        uint256 _learningEvents,
+        uint256 _learningVelocity,
+        uint256 _confidenceScore
+    ) external onlyAgentOwner(tokenId) {
+        require(learningEnabled[tokenId], "BAP578: learning not enabled");
+
+        agentLearningMetrics[tokenId] = LearningMetrics({
+            totalInteractions: _totalInteractions,
+            learningEvents: _learningEvents,
+            lastUpdateTimestamp: block.timestamp,
+            learningVelocity: _learningVelocity,
+            confidenceScore: _confidenceScore
+        });
+
+        emit LearningMetricsUpdated(tokenId, _totalInteractions, _learningEvents);
+    }
+
+    function getLearningInfo(uint256 tokenId) external view returns (
+        bool enabled,
+        address module,
+        bytes32 merkleRoot,
+        uint256 ver,
+        uint256 lastUpdate,
+        LearningMetrics memory metrics
+    ) {
+        require(_ownerOf(tokenId) != address(0), "BAP578: agent does not exist");
+        return (
+            learningEnabled[tokenId],
+            learningModule[tokenId],
+            learningTreeRoot[tokenId],
+            learningVersion[tokenId],
+            lastLearningUpdate[tokenId],
+            agentLearningMetrics[tokenId]
+        );
+    }
+
+    function getLearningTreeRoot(uint256 tokenId) external view returns (bytes32) {
+        require(_ownerOf(tokenId) != address(0), "BAP578: agent does not exist");
+        return learningTreeRoot[tokenId];
+    }
+
     function pause(uint256 newPausedStatus) external {
         require(
             msg.sender == circuitBreaker,
@@ -214,6 +336,10 @@ contract BAP578NFA is
         uint256 burned = agentBurnedAmount[tokenId];
         string memory imageUrl = string(abi.encodePacked(baseImageURI, _tierToFileName(tier)));
 
+        bytes memory mentionJson = bytes(projectMention).length > 0
+            ? abi.encodePacked(',"mention":"', projectMention, '"')
+            : bytes("");
+
         bytes memory json = abi.encodePacked(
             '{"name":"Jacob Agent #',
             _toString(tokenId),
@@ -221,7 +347,9 @@ contract BAP578NFA is
             tierName,
             ' Tier","image":"',
             imageUrl,
-            '","attributes":[{"trait_type":"Tier","value":"',
+            '"',
+            mentionJson,
+            ',"attributes":[{"trait_type":"Tier","value":"',
             tierName,
             '"},{"trait_type":"Burned JACOB","value":',
             _toString(burned / 1e18),

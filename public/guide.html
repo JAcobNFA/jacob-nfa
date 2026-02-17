@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jacob - How-To Guide</title>
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/guide.css">
+</head>
+<body>
+    <canvas id="particle-canvas"></canvas>
+    <div class="scanlines"></div>
+
+    <nav class="top-nav">
+        <div class="container nav-inner">
+            <a href="/" class="nav-logo">Jacob</a>
+            <button class="hamburger" id="hamburger" aria-label="Menu" onclick="this.classList.toggle('active');this.nextElementSibling.classList.toggle('open')">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-links" id="nav-links">
+                <a href="/">Dashboard</a>
+                <a href="/command.html">Command Center</a>
+                <a href="/jacob.html" data-i18n="nav_bot">Jacob</a>
+                <a href="/autotrade.html">Agent Autopilot</a>
+                <a href="/guide.html" class="active">Guide</a>
+                <button class="connect-wallet-btn" id="connect-wallet-btn" onclick="if(typeof connectWalletWithFallback==='function'){connectWalletWithFallback()}">Connect Wallet</button>
+                <button class="lang-toggle" id="lang-toggle" onclick="toggleLanguage()">中文</button>
+            </div>
+        </div>
+    </nav>
+
+    <header style="padding: 50px 0 40px;">
+        <div class="header-glow"></div>
+        <div class="container">
+            <h1 data-text="How-To Guide" style="font-size: 3rem;" data-i18n="guide_title">How-To Guide</h1>
+            <p class="subtitle">
+                <span class="cyber-bracket">[</span>
+                <span data-i18n="guide_subtitle">Complete Guide to the Jacob NFA Platform</span>
+                <span class="cyber-bracket">]</span>
+            </p>
+        </div>
+    </header>
+
+    <main class="guide-container">
+
+        <div class="guide-toc">
+            <h3 data-i18n="toc_title">Table of Contents</h3>
+            <ol>
+                <li><a href="#what-is" data-i18n="toc_1">What is Jacob?</a></li>
+                <li><a href="#how-it-works" data-i18n="toc_2">How It Works</a></li>
+                <li><a href="#get-tokens" data-i18n="toc_3">Getting JACOB Tokens</a></li>
+                <li><a href="#mint-agent" data-i18n="toc_4">Minting Your Agent</a></li>
+                <li><a href="#tiers" data-i18n="toc_5">Agent Tiers Explained</a></li>
+                <li><a href="#vault" data-i18n="toc_6">Using Your Agent Vault</a></li>
+                <li><a href="#profiles" data-i18n="toc_7">Agent Profiles</a></li>
+                <li><a href="#upgrades" data-i18n="toc_8">Upgrading Your Agent</a></li>
+                <li><a href="#revenue" data-i18n="toc_9">Revenue Sharing</a></li>
+                <li><a href="#referrals" data-i18n="toc_10">Referral Rewards</a></li>
+                <li><a href="#competitions" data-i18n="toc_11">Trading Competitions</a></li>
+                <li><a href="#ai-bot" data-i18n="toc_12">AI Trading Bot</a></li>
+                <li><a href="#autopilot" data-i18n="toc_autopilot">Agent Autopilot</a></li>
+                <li><a href="#tokenomics" data-i18n="toc_13">Tokenomics</a></li>
+                <li><a href="#registries" data-i18n="toc_14">BAP-578 & ERC-8004 Registries</a></li>
+                <li><a href="#faq" data-i18n="toc_15">FAQ</a></li>
+            </ol>
+        </div>
+
+        <section class="guide-section" id="what-is">
+            <h2><span class="step-num">1</span> <span data-i18n="s1_title">What is Jacob?</span></h2>
+            <p data-i18n="s1_p1">Jacob is a Non-Fungible Agent (NFA) platform built on BNB Smart Chain (BSC). It lets you create AI agents that exist as tradeable NFTs on the blockchain.</p>
+            <p data-i18n="s1_p2">Each agent is an ERC-721 NFT with its own on-chain treasury, tier level, and capabilities. Agents can trade through decentralized exchanges, earn passive BNB revenue, compete in battles, and have unique on-chain identities.</p>
+            <div class="guide-highlight">
+                <p data-i18n="s1_highlight">The core principle: You buy JACOB tokens, burn them to create your agent. The more tokens you burn, the higher your agent's tier and capabilities. No token, no agent.</p>
+            </div>
+        </section>
+
+        <section class="guide-section" id="how-it-works">
+            <h2><span class="step-num">2</span> <span data-i18n="s2_title">How It Works</span></h2>
+            <p data-i18n="s2_p1">The platform operates through 10 interconnected smart contracts:</p>
+            <ol>
+                <li data-i18n="s2_li1"><strong>JacobToken</strong> - The JACOB token (DN404/ERC-404 hybrid) with a 100:1 NFT ratio. Total supply: 1,000,000.</li>
+                <li data-i18n="s2_li2"><strong>BAP578NFA</strong> - The core ERC-721 NFT contract. Each NFT is an AI agent with tier and learning capabilities.</li>
+                <li data-i18n="s2_li3"><strong>AgentMinter</strong> - Burns JACOB tokens to mint tiered agent NFTs. The burn-to-mint engine.</li>
+                <li data-i18n="s2_li4"><strong>AgentVault</strong> - Per-agent treasury with PancakeSwap DEX integration for trading.</li>
+                <li data-i18n="s2_li5"><strong>AgentController</strong> - Handles on-chain actions and emits events for tracking.</li>
+                <li data-i18n="s2_li6"><strong>AgentProfile</strong> - On-chain naming, bios, and avatars for agents.</li>
+                <li data-i18n="s2_li7"><strong>AgentUpgrade</strong> - Upgrade your agent to a higher tier by burning more tokens.</li>
+                <li data-i18n="s2_li8"><strong>ReferralRewards</strong> - Earn JACOB rewards by referring new users.</li>
+                <li data-i18n="s2_li9"><strong>RevenueSharing</strong> - Epoch-based BNB revenue distribution weighted by agent tier.</li>
+                <li data-i18n="s2_li10"><strong>CompetitionManager</strong> - Agent trading battles with entry fees and prize pools.</li>
+            </ol>
+        </section>
+
+        <section class="guide-section" id="get-tokens">
+            <h2><span class="step-num">3</span> <span data-i18n="s3_title">Getting JACOB Tokens</span></h2>
+            <p data-i18n="s3_p1">Before you can create an agent, you need JACOB tokens. Here's how to get them:</p>
+            <ol>
+                <li data-i18n="s3_li1"><strong>Set up a wallet</strong> - Install MetaMask or any BSC-compatible wallet. Add BNB Smart Chain network (Chain ID: 56).</li>
+                <li data-i18n="s3_li2"><strong>Get BNB</strong> - You need BNB for gas fees and to buy JACOB tokens. Purchase BNB from an exchange and send it to your wallet.</li>
+                <li data-i18n="s3_li3"><strong>Buy JACOB</strong> - Swap BNB for JACOB tokens on PancakeSwap. The liquidity pool is JACOB/WBNB.</li>
+            </ol>
+            <div class="guide-highlight">
+                <p data-i18n="s3_highlight">JACOB uses a DN404/ERC-404 hybrid standard with a 100:1 NFT ratio. For every 100 JACOB tokens you hold, you automatically receive 1 mirror NFT. These are separate from the agent NFTs you mint.</p>
+            </div>
+            <div class="guide-warn">
+                <p data-i18n="s3_warn">Always verify the JACOB token contract address before buying. Only use the official PancakeSwap liquidity pool to avoid scams.</p>
+            </div>
+        </section>
+
+        <section class="guide-section" id="mint-agent">
+            <h2><span class="step-num">4</span> <span data-i18n="s4_title">Minting Your Agent</span></h2>
+            <p data-i18n="s4_p1">Once you have JACOB tokens, you can burn them to mint an AI agent NFT:</p>
+            <ol>
+                <li data-i18n="s4_li1"><strong>Connect your wallet</strong> - Visit the Command Center page and click "Connect Wallet".</li>
+                <li data-i18n="s4_li2"><strong>Choose your tier</strong> - Select the agent tier you want (Bronze to Black). Higher tiers cost more tokens but have more capabilities.</li>
+                <li data-i18n="s4_li3"><strong>Approve tokens</strong> - Approve the AgentMinter contract to spend your JACOB tokens.</li>
+                <li data-i18n="s4_li4"><strong>Mint</strong> - Click "Mint Agent" to burn your JACOB tokens and create your agent NFT. The tokens are permanently destroyed.</li>
+                <li data-i18n="s4_li5"><strong>View your agent</strong> - Your new agent appears in your wallet as an ERC-721 NFT with its own unique ID, tier, and metadata.</li>
+            </ol>
+            <div class="guide-warn">
+                <p data-i18n="s4_warn">Burning is permanent! The JACOB tokens used to mint an agent are destroyed forever. This reduces the circulating supply and increases scarcity.</p>
+            </div>
+        </section>
+
+        <section class="guide-section" id="tiers">
+            <h2><span class="step-num">5</span> <span data-i18n="s5_title">Agent Tiers Explained</span></h2>
+            <p data-i18n="s5_p1">Agents come in 5 tiers, each with increasing capabilities and burn costs:</p>
+            <table class="tier-table">
+                <thead>
+                    <tr>
+                        <th data-i18n="tier_th_tier">Tier</th>
+                        <th data-i18n="tier_th_cost">Burn Cost</th>
+                        <th data-i18n="tier_th_swap">Swap Limit</th>
+                        <th data-i18n="tier_th_rev">Revenue Share</th>
+                        <th data-i18n="tier_th_limit">Supply Limit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="tier-name">Bronze</td>
+                        <td data-i18n="tier_bronze_cost">10 JACOB</td>
+                        <td>0.1 BNB</td>
+                        <td>1x</td>
+                        <td data-i18n="tier_unlimited">Unlimited</td>
+                    </tr>
+                    <tr>
+                        <td class="tier-name">Silver</td>
+                        <td data-i18n="tier_silver_cost">50 JACOB</td>
+                        <td>0.5 BNB</td>
+                        <td>2x</td>
+                        <td data-i18n="tier_unlimited2">Unlimited</td>
+                    </tr>
+                    <tr>
+                        <td class="tier-name">Gold</td>
+                        <td data-i18n="tier_gold_cost">200 JACOB</td>
+                        <td>2 BNB</td>
+                        <td>4x</td>
+                        <td data-i18n="tier_unlimited3">Unlimited</td>
+                    </tr>
+                    <tr>
+                        <td class="tier-name">Diamond</td>
+                        <td data-i18n="tier_diamond_cost">1,000 JACOB</td>
+                        <td>10 BNB</td>
+                        <td>8x</td>
+                        <td data-i18n="tier_unlimited4">Unlimited</td>
+                    </tr>
+                    <tr>
+                        <td class="tier-name">Black</td>
+                        <td data-i18n="tier_black_cost">5,000 JACOB</td>
+                        <td data-i18n="tier_black_swap">Unlimited</td>
+                        <td>16x</td>
+                        <td data-i18n="tier_black_limit">Max 100 (1% supply)</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="guide-highlight">
+                <p data-i18n="s5_highlight">Black tier is the most exclusive - only 100 Black agents can ever exist (1% of total supply). They get unlimited swap capability and the highest revenue share multiplier.</p>
+            </div>
+        </section>
+
+        <section class="guide-section" id="vault">
+            <h2><span class="step-num">6</span> <span data-i18n="s6_title">Using Your Agent Vault</span></h2>
+            <p data-i18n="s6_p1">Every agent has its own on-chain treasury called the AgentVault. Here's what you can do with it:</p>
+            <ul>
+                <li data-i18n="s6_li1"><strong>Deposit BNB</strong> - Send BNB to your agent's vault to fund trading operations. You can deposit via the Command Center or directly on the vault contract.</li>
+                <li data-i18n="s6_li2"><strong>Trade on PancakeSwap</strong> - Execute swaps through the integrated PancakeSwap DEX. Swap limits depend on your agent's tier.</li>
+                <li data-i18n="s6_li3"><strong>Withdraw</strong> - The agent owner can withdraw funds from the vault at any time.</li>
+                <li><strong>Self-Funded Trades</strong> - Your agent uses its own vault BNB for trades. No external funding needed - just deposit BNB and your agent handles the rest.</li>
+                <li><strong>Gas Reimbursement</strong> - When the autopilot executes trades, gas costs are automatically deducted from your agent's vault BNB. Your agent pays for everything - both the trade and the gas fee.</li>
+            </ul>
+            <div class="guide-highlight">
+                <p>AgentVault V2 Contract: <code style="color:#f0b90b;">0x120192695152B8788277e46af1412002697B9F25</code> (<a href="https://bscscan.com/address/0x120192695152B8788277e46af1412002697B9F25" target="_blank" style="color:#00ffaa;">View on BscScan</a>)</p>
+                <p data-i18n="s6_highlight">A 1% fee is applied to all DEX swaps through the AgentVault. This fee is split 60/40 - 60% to platform operations and 40% distributed back to all agent holders through revenue sharing.</p>
+            </div>
+        </section>
+
+        <section class="guide-section" id="profiles">
+            <h2><span class="step-num">7</span> <span data-i18n="s7_title">Agent Profiles</span></h2>
+            <p data-i18n="s7_p1">Give your agent a unique identity on-chain:</p>
+            <ul>
+                <li data-i18n="s7_li1"><strong>Name</strong> - Choose a unique name for your agent. Names are enforced to be unique across the platform.</li>
+                <li data-i18n="s7_li2"><strong>Bio</strong> - Write a description or backstory for your agent.</li>
+                <li data-i18n="s7_li3"><strong>Avatar</strong> - Set an avatar image URL for your agent's profile picture.</li>
+            </ul>
+            <p data-i18n="s7_p2">All profile data is stored on-chain, making it permanent and verifiable.</p>
+        </section>
+
+        <section class="guide-section" id="upgrades">
+            <h2><span class="step-num">8</span> <span data-i18n="s8_title">Upgrading Your Agent</span></h2>
+            <p data-i18n="s8_p1">You can upgrade your agent to a higher tier by burning additional JACOB tokens:</p>
+            <ul>
+                <li data-i18n="s8_li1">You only pay the difference between your current tier and the target tier.</li>
+                <li data-i18n="s8_li2">For example, upgrading from Bronze (10 JACOB) to Silver (50 JACOB) costs 40 additional JACOB.</li>
+                <li data-i18n="s8_li3">Upgrades are immediate - your agent gains the new tier's benefits right away.</li>
+                <li data-i18n="s8_li4">You cannot downgrade - tiers only go up.</li>
+            </ul>
+        </section>
+
+        <section class="guide-section" id="revenue">
+            <h2><span class="step-num">9</span> <span data-i18n="s9_title">Revenue Sharing</span></h2>
+            <p data-i18n="s9_p1">The platform distributes BNB revenue to agent holders through epochs:</p>
+            <ul>
+                <li data-i18n="s9_li1"><strong>Revenue sources</strong> - Agent minting fees, 1% AgentVault swap fees, and 5% of competition prize pools.</li>
+                <li data-i18n="s9_li2"><strong>Distribution split</strong> - 60% goes to platform operations & marketing, 40% is distributed to agent holders.</li>
+                <li data-i18n="s9_li3"><strong>Tier-weighted</strong> - Higher tier agents receive proportionally more BNB. A Black agent (16x) earns 16 times more than a Bronze agent (1x) per epoch.</li>
+                <li data-i18n="s9_li4"><strong>Claiming</strong> - You can claim your BNB rewards at the end of each epoch period.</li>
+            </ul>
+        </section>
+
+        <section class="guide-section" id="referrals">
+            <h2><span class="step-num">10</span> <span data-i18n="s10_title">Referral Rewards</span></h2>
+            <p data-i18n="s10_p1">Earn JACOB tokens by referring new users to the platform:</p>
+            <ul>
+                <li data-i18n="s10_li1">Share your referral link with friends.</li>
+                <li data-i18n="s10_li2">When they mint an agent using your referral, you receive JACOB token rewards.</li>
+                <li data-i18n="s10_li3">Reward amounts are scaled by the tier of the agent minted - higher tier mints earn you bigger rewards.</li>
+            </ul>
+        </section>
+
+        <section class="guide-section" id="competitions">
+            <h2><span class="step-num">11</span> <span data-i18n="s11_title">Trading Competitions</span></h2>
+            <p data-i18n="s11_p1">Pit your agent against others in trading battles:</p>
+            <ul>
+                <li data-i18n="s11_li1"><strong>Entry</strong> - Pay an entry fee in JACOB tokens to enter your agent into a competition.</li>
+                <li data-i18n="s11_li2"><strong>Scoring</strong> - Performance is tracked on-chain. Agents are scored based on their trading results during the competition period.</li>
+                <li data-i18n="s11_li3"><strong>Prizes</strong> - Winners receive prizes from the prize pool. 5% of the pool goes to the platform revenue.</li>
+            </ul>
+        </section>
+
+        <section class="guide-section" id="ai-bot">
+            <h2><span class="step-num">12</span> <span data-i18n="s12_title">AI Trading Bot</span></h2>
+            <p data-i18n="s12_p1">The AI Bot page provides an AI-powered trading strategy engine:</p>
+            <ul>
+                <li data-i18n="s12_li1"><strong>Market Analysis</strong> - Get real-time analysis of BNB/JACOB market conditions.</li>
+                <li data-i18n="s12_li2"><strong>Trading Strategies</strong> - Receive tier-appropriate trading strategies for your agent.</li>
+                <li data-i18n="s12_li3"><strong>Entry/Exit Points</strong> - Calculate optimal buy and sell levels based on current conditions.</li>
+                <li data-i18n="s12_li4"><strong>Risk Assessment</strong> - Evaluate risk based on your agent's vault balance and tier limits.</li>
+                <li data-i18n="s12_li5"><strong>Upgrade Recommendations</strong> - Get advice on when to upgrade your agent's tier.</li>
+            </ul>
+            <p data-i18n="s12_p2">Configure your agent's token ID, tier, and risk tolerance in the settings panel, then chat with the AI for personalized strategies.</p>
+        </section>
+
+        <section class="guide-section" id="autopilot">
+            <h2><span class="step-num">13</span> Agent Autopilot (Autonomous Trading)</h2>
+            <p>Diamond and Black tier agents can enable fully autonomous AI-driven trading. The autopilot discovers trending tokens on BSC, analyzes them with AI, and executes trades automatically using your agent's vault BNB.</p>
+            <ul>
+                <li><strong>Tier Requirement</strong> - Only Diamond (Tier 4) and Black (Tier 5) agents can use autopilot.</li>
+                <li><strong>Dynamic Token Discovery</strong> - The AI scans trending BSC tokens every 2 minutes using live market data. It can trade ANY token on BSC (except JACOB, which is always excluded).</li>
+                <li><strong>3 Strategy Profiles</strong> - Choose Conservative (only high-liquidity tokens, $1M+ liquidity), Balanced ($100K+ liquidity), or Aggressive ($50K+ liquidity) based on your risk appetite.</li>
+                <li><strong>Self-Funded</strong> - Your agent uses its own vault BNB for every trade. Deposit BNB to your agent's vault, and the autopilot uses it automatically.</li>
+                <li><strong>Gas Reimbursement</strong> - Gas fees for each trade are deducted from your agent's vault BNB. Your agent covers 100% of costs - both trade amount and gas.</li>
+                <li><strong>Safety Controls</strong> - Maximum trade size, daily spending caps, cooldown periods, stop-loss, and take-profit limits are all configurable.</li>
+                <li><strong>Simulation Mode</strong> - Test the autopilot without risking real BNB. The AI generates signals but no actual trades are executed.</li>
+                <li><strong>Trade Logging</strong> - Every trade is logged with BscScan transaction links. View your agent's trading activity in real-time.</li>
+            </ul>
+            <div class="guide-highlight">
+                <p>To get started: Go to the <a href="/autotrade.html" style="color:#f0b90b;">Agent Autopilot</a> page, connect your wallet, select your Diamond or Black agent, deposit BNB to the vault, choose a strategy, and enable autopilot. You can also access autopilot via the Telegram bot.</p>
+            </div>
+        </section>
+
+        <section class="guide-section" id="tokenomics">
+            <h2><span class="step-num">14</span> <span data-i18n="s13_title">Tokenomics</span></h2>
+            <p data-i18n="s13_p1">The JACOB token has a total supply of 1,000,000 tokens distributed as follows:</p>
+            <ul class="token-alloc-list">
+                <li><span data-i18n="alloc_ops">Operations</span> <span class="alloc-pct">25%</span></li>
+                <li><span data-i18n="alloc_create">Creation Treasury</span> <span class="alloc-pct">20%</span></li>
+                <li><span data-i18n="alloc_eco">Ecosystem</span> <span class="alloc-pct">15%</span></li>
+                <li><span data-i18n="alloc_lp">Liquidity Pool (Burned)</span> <span class="alloc-pct">12.5%</span></li>
+                <li><span data-i18n="alloc_team">Team (Vested)</span> <span class="alloc-pct">10%</span></li>
+                <li><span data-i18n="alloc_community">Community & Airdrop</span> <span class="alloc-pct">10%</span></li>
+                <li><span data-i18n="alloc_reserve">Strategic Reserve</span> <span class="alloc-pct">7.5%</span></li>
+            </ul>
+            <div class="guide-highlight">
+                <p data-i18n="s13_highlight">57.5% of the total supply is locked: 45% vested over time + 12.5% LP tokens burned permanently. This ensures long-term stability and prevents dumping.</p>
+            </div>
+        </section>
+
+        <section class="guide-section" id="registries">
+            <h2><span class="step-num">15</span> <span data-i18n="s14_title">BAP-578 & ERC-8004 Registries</span></h2>
+            <p data-i18n="s14_p1">Jacob is registered on multiple on-chain identity registries:</p>
+            <ul>
+                <li data-i18n="s14_li1"><strong>ERC-8004 IdentityRegistry</strong> - Provides trustless agent identity verification. Jacob NFA Platform is registered as Agent ID #4190.</li>
+                <li data-i18n="s14_li2"><strong>NFA Register</strong> - The primary Non-Fungible Agent register with 2,168+ agents listed.</li>
+                <li data-i18n="s14_li3"><strong>BAP-578 PlatformRegistry</strong> - The official platform registry connecting Jacob to the BAP-578 ecosystem.</li>
+            </ul>
+            <p data-i18n="s14_p2">All agents minted on Jacob include a "jacob mention" in their metadata, ensuring they are properly associated with the project on nfascan.net and other explorers.</p>
+        </section>
+
+        <section class="guide-section" id="faq">
+            <h2><span class="step-num">16</span> <span data-i18n="s15_title">Frequently Asked Questions</span></h2>
+
+            <p><strong data-i18n="faq_q1">Q: What blockchain does Jacob run on?</strong></p>
+            <p data-i18n="faq_a1">A: BNB Smart Chain (BSC), Chain ID 56. You need BNB for gas fees.</p>
+
+            <p><strong data-i18n="faq_q2">Q: Can I sell my agent NFT?</strong></p>
+            <p data-i18n="faq_a2">A: Yes! Agents are standard ERC-721 NFTs and can be traded on any BSC-compatible NFT marketplace.</p>
+
+            <p><strong data-i18n="faq_q3">Q: What happens to burned tokens?</strong></p>
+            <p data-i18n="faq_a3">A: They are permanently destroyed. This is a deflationary mechanism - the circulating supply decreases every time an agent is minted or upgraded.</p>
+
+            <p><strong data-i18n="faq_q4">Q: Can I have multiple agents?</strong></p>
+            <p data-i18n="faq_a4">A: Yes, you can mint as many agents as you want (subject to Black tier supply limits). Each agent has its own vault and capabilities.</p>
+
+            <p><strong data-i18n="faq_q5">Q: How do I earn BNB revenue?</strong></p>
+            <p data-i18n="faq_a5">A: Simply hold an agent NFT. Revenue is distributed at the end of each epoch. Higher tier agents earn proportionally more.</p>
+
+            <p><strong data-i18n="faq_q6">Q: Is the AI bot free to use?</strong></p>
+            <p data-i18n="faq_a6">A: The AI strategy bot on this website is available for agent holders. It provides trading analysis and recommendations tailored to your agent's tier.</p>
+
+            <p><strong>Q: How does the autopilot pay for trades?</strong></p>
+            <p>A: Your agent uses its own vault BNB for everything. When you deposit BNB to your agent's vault, the autopilot uses that BNB to execute trades. Gas fees are also automatically deducted from the vault. Your agent is fully self-funded.</p>
+
+            <p><strong>Q: Can the autopilot trade JACOB tokens?</strong></p>
+            <p>A: No. JACOB is permanently excluded from autopilot trading to protect the project's token. The autopilot can trade any other BSC token with sufficient liquidity.</p>
+
+            <p><strong>Q: What is the AgentVault V2 contract address?</strong></p>
+            <p>A: <code style="color:#f0b90b;">0x120192695152B8788277e46af1412002697B9F25</code> - <a href="https://bscscan.com/address/0x120192695152B8788277e46af1412002697B9F25" target="_blank" style="color:#00ffaa;">View on BscScan</a></p>
+        </section>
+
+        <div class="guide-footer">
+            <p data-i18n="guide_footer">Built on BNB Smart Chain | BAP-578 Standard | ERC-8004 Verified</p>
+            <p><a href="/" data-i18n="guide_back">Back to Dashboard</a></p>
+        </div>
+
+    </main>
+
+    <script>
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const particles = [];
+    for (let i = 0; i < 40; i++) {
+        particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.3,
+            vy: (Math.random() - 0.5) * 0.3,
+            size: Math.random() * 2 + 0.5,
+            color: ['#f0b90b', '#7c3aed', '#00ffaa', '#ffd54f'][Math.floor(Math.random() * 4)]
+        });
+    }
+    function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+            p.x += p.vx; p.y += p.vy;
+            if (p.x < 0) p.x = canvas.width;
+            if (p.x > canvas.width) p.x = 0;
+            if (p.y < 0) p.y = canvas.height;
+            if (p.y > canvas.height) p.y = 0;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = 0.6;
+            ctx.fill();
+        });
+        ctx.globalAlpha = 1;
+        requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+    window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+    </script>
+    <script src="/walletconnect.js?v=2"></script>
+    <script src="/hackers.js"></script>
+    <script src="/i18n.js"></script>
+</body>
+</html>

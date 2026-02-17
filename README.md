@@ -61,7 +61,7 @@ Jacob is a Non-Fungible Agent (NFA) platform on BNB Smart Chain. Users must buy 
 | **BAP578NFA** | ERC-721 Enumerable + UUPS upgradeable proxy with 5-tier system | ^0.8.22 |
 | **JacobToken** | DN404/ERC-404 hybrid token with auto NFT mint/burn + deflationary burn() | ^0.8.22 |
 | **AgentController** | Lightweight on-chain action handler | ^0.8.14 |
-| **AgentVault** | Per-agent treasury with PancakeSwap V2 DEX integration | ^0.8.22 |
+| **AgentVault V2** | Per-agent treasury with PancakeSwap V2 DEX, self-funded trades, gas reimbursement | ^0.8.22 |
 | **AgentMinter** | Burn-to-mint agent creation with auto BAP-578 registry registration | ^0.8.22 |
 
 ### Feature Contracts
@@ -90,19 +90,20 @@ Black tier = 1% of total supply. Maximum 100 Black agents can ever exist.
 
 | Allocation | Amount | Percentage |
 |------------|--------|------------|
-| Agent Liquidity Pool | 250,000 JACOB | 25% |
+| Agent Operations Fund | 250,000 JACOB | 25% |
 | Agent Creation Treasury | 200,000 JACOB | 20% |
-| Agent Operations Fund | 200,000 JACOB | 20% |
 | Ecosystem Development | 150,000 JACOB | 15% |
+| Agent Liquidity Pool | 125,000 JACOB | 12.5% |
 | Team (12mo cliff, 24mo vest) | 100,000 JACOB | 10% |
-| Community & Early Adopters | 90,000 JACOB | 9% |
-| Airdrop | 10,000 JACOB | 1% |
+| Community & Airdrop | 100,000 JACOB | 10% |
+| Strategic Reserve | 75,000 JACOB | 7.5% |
 
-**70% of supply is locked** (45% vested + 25% LP burned permanently).
+**LP/MC Ratio:** 25% (125,000 JACOB + 1 BNB on PancakeSwap V2, LP burned permanently).
+**57.5% of supply is locked** (45% vested + 12.5% LP burned permanently).
 
 ## Revenue Model
 
-Revenue is split **60% to platform owner / 40% to agent holders** from three sources:
+Revenue is split **60% to platform operations & marketing / 40% to agent holders** from three sources:
 
 - **Agent Minting** — BNB fee on every mint (0.005 - 2 BNB per tier)
 - **Vault Swaps** — 1% fee on every DEX swap through AgentVault
@@ -115,10 +116,11 @@ Agent holders claim their share through epoch-based revenue distribution, weight
 | Contract | Address |
 |----------|---------|
 | BAP578NFA (Proxy) | `0xfd8EeD47b61435f43B004fC65C5b76951652a8CE` |
-| JacobToken | `0x94F837c740Bd0EFc15331F578c255f6d3dd7ac0b` |
+| JacobTokenV2 | `0x9d2a35f82cf36777A73a721f7cb22e5F86acc318` |
 | AgentController | `0x1017CD09a86D92b4CBe74CD765eD4B78Ea82a356` |
-| AgentVault | `0xc9Bb89E036BD17F8E5016C89D0B6104F8912ac8A` |
-| AgentMinter | `0x94D146c2CDdD1A0fa8C931D625fbc4F1Eff4c9Ee` |
+| AgentVault V2 | `0x120192695152B8788277e46af1412002697B9F25` |
+| AgentMinter V3 | `0xb053397547587fE5B999881e9b5C040889dD47C6` |
+| PancakeSwap V2 Pair | `0x1EED76a091e4E02aaEb6879590eeF53F27E9c520` |
 | Deployer | `0xA5d096Dcd19e14D36B8F52b4A6a0abB8b362cdBC` |
 
 ## Registry Registrations
@@ -248,6 +250,8 @@ jacob-nfa/
 ├── scripts/
 │   ├── deploy.js              # Deploy core contracts
 │   ├── deploy-features.js     # Deploy feature contracts
+│   ├── deploy-vault-v2.js     # Deploy AgentVault V2 (self-funding + gas reimbursement)
+│   ├── deploy-minter-v4.js    # Deploy AgentMinter V4 (LP-oracle pricing)
 │   ├── deploy-vesting.js      # Deploy vesting contracts
 │   ├── setup-liquidity.js     # PancakeSwap liquidity setup
 │   ├── distribute-tokens.js   # Token distribution
@@ -256,18 +260,59 @@ jacob-nfa/
 ├── public/
 │   ├── index.html             # Main dashboard
 │   ├── features.html          # Features & live data
-│   ├── bot.html               # AI trading bot
+│   ├── jacob.html             # AI trading bot (chat interface)
+│   ├── autotrade.html         # Autonomous trading UI
+│   ├── command.html           # Command center (mint, deposit, etc.)
+│   ├── guide.html             # How-to guide for users
 │   ├── test.html              # Contract interaction testing
+│   ├── tg-wallet.html         # Telegram wallet linking Mini App
 │   ├── style.css              # Main styles
-│   ├── features.css           # Features page styles
-│   ├── bot.css                # Bot page styles
-│   ├── test.css               # Test page styles
-│   ├── features.js            # BSC chain data reader
+│   ├── command.js             # Command center logic
 │   └── images/                # NFT tier artwork
+├── src/
+│   ├── autoTrade/
+│   │   ├── keeper.js          # Autopilot execution engine (120s cycle)
+│   │   └── store.js           # Config persistence & position tracking
+│   └── telegram/
+│       ├── bot.js             # Telegram bot with wallet, AI, autopilot
+│       └── walletStore.js     # Custodial wallet manager (AES-256-GCM)
 ├── server.js                  # Express server + AI bot API
 ├── hardhat.config.js          # Hardhat configuration
 └── package.json
 ```
+
+## Agent Autopilot (Autonomous Trading)
+
+Diamond and Black tier agents can enable fully autonomous AI-driven trading:
+
+- **Dynamic Token Discovery** — AI scans trending BSC tokens every 2 minutes via DexScreener. Can trade ANY token on BSC (JACOB is permanently excluded).
+- **3 Strategy Profiles** — Conservative ($1M+ liquidity), Balanced ($100K+), Aggressive ($50K+).
+- **Self-Funded Trades** — Agents use their own vault BNB for every trade. No external funding needed.
+- **Gas Reimbursement** — Gas costs are automatically deducted from the agent's vault BNB after each trade, reimbursing the executor. Capped at 0.005 BNB per trade for safety.
+- **Position Tracking** — All purchased tokens are tracked with metadata (symbol, name, decimals, address) for sell decisions.
+- **Safety Controls** — Max trade size, daily caps, cooldowns, stop-loss/take-profit, slippage limits.
+- **Simulation Mode** — Test without real trades.
+
+### Key Files
+
+| File | Purpose |
+|------|---------|
+| `src/autoTrade/keeper.js` | Execution engine (runs every 120s) |
+| `src/autoTrade/store.js` | Config persistence & position tracking |
+| `contracts/AgentVault.sol` | On-chain vault with self-funding & gas reimbursement |
+| `scripts/deploy-vault-v2.js` | Deploy script for AgentVault V2 |
+| `public/autotrade.html` | Autopilot web UI |
+
+### API Endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| `/api/auto-trade/enable` | Enable autopilot for an agent |
+| `/api/auto-trade/disable` | Disable autopilot |
+| `/api/auto-trade/status` | Get autopilot status |
+| `/api/auto-trade/simulate` | Run simulation |
+| `/api/auto-trade/logs` | View trade logs |
+| `/api/auto-trade/strategies` | List available strategies |
 
 ## Security
 
@@ -279,6 +324,8 @@ jacob-nfa/
 - Tier-based swap limits enforced on-chain
 - 1% swap fee collected on ALL swap types (BNB-to-token, token-to-token, token-to-BNB)
 - Token fee withdrawal with 60/40 revenue split
+- Gas reimbursement capped at 0.005 BNB per trade
+- JACOB token triple-excluded from autopilot trading (AI prompt, validator, executor)
 
 ## License
 

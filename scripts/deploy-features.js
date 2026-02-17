@@ -7,7 +7,7 @@ async function main() {
 
   const BAP578_PROXY = "0xfd8EeD47b61435f43B004fC65C5b76951652a8CE";
   const JACOB_TOKEN = "0x94F837c740Bd0EFc15331F578c255f6d3dd7ac0b";
-  const AGENT_VAULT = "0xc9Bb89E036BD17F8E5016C89D0B6104F8912ac8A";
+  const AGENT_VAULT = "0x120192695152B8788277e46af1412002697B9F25";
 
   console.log("\n--- Step 1: Deploy AgentProfile ---");
   const AgentProfile = await hre.ethers.getContractFactory("AgentProfile");

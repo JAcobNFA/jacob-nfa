@@ -19,13 +19,18 @@
     <nav class="top-nav">
         <div class="container nav-inner">
             <a href="/" class="nav-logo">Jacob</a>
-            <div class="nav-links">
-                <a href="/">Dashboard</a>
-                <a href="/features.html">Features</a>
-                <a href="/bot.html">AI Bot</a>
-                <a href="/test.html" class="active">Test</a>
+            <button class="hamburger" id="hamburger" aria-label="Menu" onclick="this.classList.toggle('active');this.nextElementSibling.classList.toggle('open')">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-links" id="nav-links">
+                <a href="/" data-i18n="nav_dashboard">Dashboard</a>
+                <a href="/command.html" data-i18n="nav_command">Command Center</a>
+                <a href="/jacob.html" data-i18n="nav_bot">Jacob</a>
+                <a href="/autotrade.html">Agent Autopilot</a>
+                <a href="/guide.html" data-i18n="nav_guide">Guide</a>
+                <button id="connect-btn" class="connect-btn" onclick="connectWallet()">Connect Wallet</button>
+                <button class="lang-toggle" id="lang-toggle" onclick="toggleLanguage()">中文</button>
             </div>
-            <button id="connect-btn" class="connect-btn" onclick="connectWallet()">Connect Wallet</button>
         </div>
     </nav>
 
@@ -255,7 +260,7 @@
     <script>
     const CONTRACTS = {
         JacobToken: {
-            address: "0x94F837c740Bd0EFc15331F578c255f6d3dd7ac0b",
+            address: "0x9d2a35f82cf36777A73a721f7cb22e5F86acc318",
             abi: [
                 "function name() view returns (string)",
                 "function symbol() view returns (string)",
@@ -312,7 +317,7 @@
             ]
         },
         AgentVault: {
-            address: "0xc9Bb89E036BD17F8E5016C89D0B6104F8912ac8A",
+            address: "0x120192695152B8788277e46af1412002697B9F25",
             abi: [
                 "function owner() view returns (address)",
                 "function paused() view returns (bool)",
@@ -335,32 +340,81 @@
     let listeners = [];
 
     async function connectWallet() {
-        if (typeof window.ethereum === 'undefined') {
-            showResult('error', 'No Web3 wallet detected. Please install MetaMask or a compatible wallet.');
+        if (typeof closeHamburgerMenu === 'function') closeHamburgerMenu();
+
+        if (typeof window.ethereum !== 'undefined') {
+            try {
+                await connectWithInjected(window.ethereum);
+            } catch (err) {
+                showResult('error', 'Connection failed: ' + err.message);
+            }
             return;
         }
-        try {
-            await window.ethereum.request({ method: 'eth_requestAccounts' });
-            provider = new ethers.BrowserProvider(window.ethereum);
-            signer = await provider.getSigner();
-            userAddress = await signer.getAddress();
 
-            const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-            checkNetwork(chainId);
-
-            document.getElementById('wallet-disconnected').classList.add('hidden');
-            document.getElementById('wallet-connected').classList.remove('hidden');
-            document.getElementById('wallet-address').textContent = userAddress.slice(0, 6) + '...' + userAddress.slice(-4);
-            document.getElementById('connect-btn').textContent = userAddress.slice(0, 6) + '...' + userAddress.slice(-4);
-            document.getElementById('connect-btn').classList.add('connected');
-
-            await refreshBalances();
-
-            window.ethereum.on('chainChanged', (chainId) => { checkNetwork(chainId); location.reload(); });
-            window.ethereum.on('accountsChanged', () => location.reload());
-        } catch (err) {
-            showResult('error', 'Connection failed: ' + err.message);
+        if (typeof showMobileWalletFallback === 'function') {
+            showMobileWalletFallback();
+        } else {
+            showResult('error', 'No Web3 wallet detected. Please install MetaMask or a compatible wallet.');
         }
+    }
+
+    async function connectWithInjected(ethereumProvider) {
+        await ethereumProvider.request({ method: 'eth_requestAccounts' });
+        provider = new ethers.BrowserProvider(ethereumProvider);
+        signer = await provider.getSigner();
+        userAddress = await signer.getAddress();
+
+        localStorage.setItem('jacob_wallet_connected', 'true');
+
+        const chainId = await ethereumProvider.request({ method: 'eth_chainId' });
+        checkNetwork(chainId);
+
+        onWalletConnected();
+        await refreshBalances();
+
+        if (ethereumProvider.on) {
+            ethereumProvider.on('chainChanged', (chainId) => { checkNetwork(chainId); location.reload(); });
+            ethereumProvider.on('accountsChanged', (accounts) => {
+                if (accounts.length === 0) localStorage.removeItem('jacob_wallet_connected');
+                location.reload();
+            });
+        }
+    }
+
+    function onWalletConnected() {
+        document.getElementById('wallet-disconnected').classList.add('hidden');
+        document.getElementById('wallet-connected').classList.remove('hidden');
+        document.getElementById('wallet-address').textContent = userAddress.slice(0, 6) + '...' + userAddress.slice(-4);
+        document.getElementById('connect-btn').textContent = userAddress.slice(0, 6) + '...' + userAddress.slice(-4);
+        document.getElementById('connect-btn').classList.add('connected');
+    }
+
+    window.addEventListener('wallet-connected', async function(e) {
+        try {
+            const eip1193Provider = e.detail.provider;
+            provider = new ethers.BrowserProvider(eip1193Provider);
+            signer = await provider.getSigner();
+            userAddress = e.detail.address;
+
+            localStorage.setItem('jacob_wallet_connected', 'true');
+            onWalletConnected();
+            await refreshBalances();
+        } catch (err) {
+            console.error('Wallet connection handler error:', err);
+        }
+    });
+
+    async function tryAutoConnect() {
+        if (typeof window.ethereum === 'undefined') return;
+        if (!localStorage.getItem('jacob_wallet_connected')) return;
+        try {
+            const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+            if (accounts && accounts.length > 0) {
+                await connectWithInjected(window.ethereum);
+            } else {
+                localStorage.removeItem('jacob_wallet_connected');
+            }
+        } catch (e) {}
     }
 
     function checkNetwork(chainId) {
@@ -591,7 +645,7 @@
         try {
             const nfa = getContract('BAP578NFA');
             const funds = await nfa.agentFunds(id);
-            showResult('success', 'Agent #' + id + ' Funds: ' + ethers.formatEther(funds) + ' BNB');
+            showResult('success', id + ' Funds: ' + ethers.formatEther(funds) + ' BNB');
         } catch (e) { showResult('error', e.message); }
     }
 
@@ -656,7 +710,7 @@
         try {
             const v = getContract('AgentVault');
             const bal = await v.bnbBalances(id);
-            showResult('success', 'Agent #' + id + ' Vault BNB: ' + ethers.formatEther(bal) + ' BNB');
+            showResult('success', id + ' Vault BNB: ' + ethers.formatEther(bal) + ' BNB');
         } catch (e) { showResult('error', e.message); }
     }
 
@@ -697,12 +751,12 @@
         const amount = document.getElementById('fund-agent-amount').value.trim();
         if (!id || !amount) { showResult('error', 'Please fill in all fields'); return; }
         try {
-            showLoading('Funding Agent #' + id + ' with ' + amount + ' BNB');
+            showLoading('Funding ' + id + ' with ' + amount + ' BNB');
             const nfa = getContract('BAP578NFA', true);
             const tx = await nfa.fundAgent(id, { value: ethers.parseEther(amount) });
             showResult('info', 'Tx sent: ' + tx.hash);
             const receipt = await tx.wait();
-            showResult('success', 'Agent #' + id + ' funded in block ' + receipt.blockNumber);
+            showResult('success', id + ' funded in block ' + receipt.blockNumber);
             await refreshBalances();
         } catch (e) { showResult('error', 'Fund failed: ' + e.message); }
     }
@@ -714,7 +768,7 @@
         const context = document.getElementById('action-context').value.trim() || '0x00';
         if (!agentId) { showResult('error', 'Please enter an Agent ID'); return; }
         try {
-            showLoading('Executing action for Agent #' + agentId);
+            showLoading('Executing action for ' + agentId);
             const ctrl = getContract('AgentController', true);
             const tx = await ctrl.handleAction(agentId, actionData, context);
             showResult('info', 'Tx sent: ' + tx.hash);
@@ -730,7 +784,7 @@
         const amount = document.getElementById('vault-fund-amount').value.trim();
         if (!agentId || !token || !amount) { showResult('error', 'Please fill in all fields'); return; }
         try {
-            showLoading('Funding Agent #' + agentId + ' vault');
+            showLoading('Funding ' + agentId + ' vault');
             const vault = getContract('AgentVault', true);
             const tx = await vault.fundAgent(agentId, token, ethers.parseEther(amount));
             showResult('info', 'Tx sent: ' + tx.hash);
@@ -746,7 +800,7 @@
         const amount = document.getElementById('vault-withdraw-amount').value.trim();
         if (!agentId || !token || !amount) { showResult('error', 'Please fill in all fields'); return; }
         try {
-            showLoading('Withdrawing from Agent #' + agentId + ' vault');
+            showLoading('Withdrawing from ' + agentId + ' vault');
             const vault = getContract('AgentVault', true);
             const tx = await vault.withdrawFromAgent(agentId, token, ethers.parseEther(amount));
             showResult('info', 'Tx sent: ' + tx.hash);
@@ -821,7 +875,7 @@
             this.speedX = (Math.random() - 0.5) * 0.2;
             this.speedY = (Math.random() - 0.5) * 0.2;
             this.opacity = Math.random() * 0.4 + 0.05;
-            this.color = ['#f0b90b','#00f0ff','#a855f7'][Math.floor(Math.random()*3)];
+            this.color = ['#f0b90b','#ffd54f','#a855f7'][Math.floor(Math.random()*3)];
         }
         update() { this.x += this.speedX; this.y += this.speedY; if (this.x<0||this.x>canvas.width||this.y<0||this.y>canvas.height) this.reset(); }
         draw() { ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fillStyle=this.color; ctx.globalAlpha=this.opacity; ctx.fill(); ctx.globalAlpha=1; }
@@ -829,6 +883,10 @@
     for (let i=0;i<50;i++) particles.push(new Particle());
     function animate() { ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.update();p.draw();}); requestAnimationFrame(animate); }
     animate();
+    tryAutoConnect();
     </script>
+    <script src="/walletconnect.js?v=2"></script>
+    <script src="/hackers.js"></script>
+    <script src="/i18n.js"></script>
 </body>
 </html>

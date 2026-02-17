@@ -17,11 +17,17 @@
     <nav class="top-nav">
         <div class="container nav-inner">
             <a href="/" class="nav-logo">Jacob</a>
-            <div class="nav-links">
-                <a href="/" class="active">Dashboard</a>
-                <a href="/features.html">Features</a>
-                <a href="/bot.html">AI Bot</a>
-                <a href="/test.html">Test</a>
+            <button class="hamburger" id="hamburger" aria-label="Menu" onclick="this.classList.toggle('active');this.nextElementSibling.classList.toggle('open')">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-links" id="nav-links">
+                <a href="/" class="active" data-i18n="nav_dashboard">Dashboard</a>
+                <a href="/command.html" data-i18n="nav_command">Command Center</a>
+                <a href="/jacob.html" data-i18n="nav_bot">Jacob</a>
+                <a href="/autotrade.html">Agent Autopilot</a>
+                <a href="/guide.html" data-i18n="nav_guide">Guide</a>
+                <button class="connect-wallet-btn" id="connect-wallet-btn" onclick="connectWalletNav()">Connect Wallet</button>
+                <button class="lang-toggle" id="lang-toggle" onclick="toggleLanguage()">中文</button>
             </div>
         </div>
     </nav>
@@ -36,68 +42,51 @@
             </div>
             <p class="subtitle">
                 <span class="cyber-bracket">[</span>
-                BAP-578 Non-Fungible Agent Platform
+                <span data-i18n="idx_subtitle">BAP-578 Non-Fungible Agent Platform</span>
                 <span class="cyber-bracket">]</span>
             </p>
-            <p class="subtitle-chain">Deployed on BNB Smart Chain</p>
-            <p class="subtitle-desc">JACOB is a Non-Fungible Agent (NFA) platform — you must buy JACOB tokens to mint agent NFTs. No token, no agent. Burn your tokens to create verified AI agents across 5 tiers (Bronze to Black). Every agent is registered on the BAP-578 standard and verified through ERC-8004 Trustless Identity. Each agent earns passive BNB revenue, trades through on-chain vaults, and competes in battles. The more you burn, the more powerful your agent becomes.</p>
+            <p class="subtitle-chain" data-i18n="idx_chain">Deployed on BNB Smart Chain</p>
+            <p class="subtitle-desc" data-i18n="idx_desc">JACOB is a Non-Fungible Agent (NFA) platform — you must buy JACOB tokens to mint agent NFTs. No token, no agent. Burn your tokens to create verified AI agents across 5 tiers (Bronze to Black). Every agent is registered on the BAP-578 standard and verified through ERC-8004 Trustless Identity. Each agent earns passive BNB revenue, trades through on-chain vaults, and competes in battles. The more you burn, the more powerful your agent becomes.</p>
             <div class="header-stats">
                 <div class="h-stat">
                     <span class="h-stat-value">10</span>
-                    <span class="h-stat-label">Contracts</span>
+                    <span class="h-stat-label" data-i18n="idx_contracts">Contracts</span>
                 </div>
                 <div class="h-stat-divider"></div>
                 <div class="h-stat">
                     <span class="h-stat-value">1M</span>
-                    <span class="h-stat-label">Supply</span>
+                    <span class="h-stat-label" data-i18n="idx_supply">Supply</span>
                 </div>
                 <div class="h-stat-divider"></div>
                 <div class="h-stat">
                     <span class="h-stat-value">BSC</span>
-                    <span class="h-stat-label">Network</span>
+                    <span class="h-stat-label" data-i18n="idx_network">Network</span>
                 </div>
             </div>
         </div>
     </header>
 
-    <div class="register-bar">
-        <div class="container register-bar-inner">
-            <div class="register-info">
-                <span class="register-pulse"></span>
-                <div>
-                    <strong>The Revolution Is Coming Soon</strong>
-                    <span class="register-sub">Register your BNB wallet to get early access and airdrop eligibility</span>
-                </div>
-            </div>
-            <div class="register-form">
-                <input type="text" id="wallet-input" placeholder="0x... your BNB wallet address" spellcheck="false" autocomplete="off">
-                <button id="register-btn">Register Interest</button>
-            </div>
-            <div class="register-count"><span id="registered-count">0</span> wallets registered</div>
-            <div id="register-msg" class="register-msg"></div>
-        </div>
-    </div>
 
     <main class="container">
         <section class="status-bar glass-panel">
             <div class="status-item">
                 <span class="status-dot active"></span>
                 <div>
-                    <span class="label">Network</span>
+                    <span class="label" data-i18n="idx_status_network">Network</span>
                     <span class="value">BNB Smart Chain (ID: 56)</span>
                 </div>
             </div>
             <div class="status-item">
                 <span class="status-dot active"></span>
                 <div>
-                    <span class="label">Contracts</span>
-                    <span class="value" id="contract-count">10 Compiled</span>
+                    <span class="label" data-i18n="idx_status_contracts">Contracts</span>
+                    <span class="value" id="contract-count" data-i18n="idx_status_compiled">10 Compiled</span>
                 </div>
             </div>
             <div class="status-item">
                 <span class="status-dot active"></span>
                 <div>
-                    <span class="label">Solidity</span>
+                    <span class="label" data-i18n="idx_status_solidity">Solidity</span>
                     <span class="value">^0.8.22 / ^0.8.14</span>
                 </div>
             </div>
@@ -105,14 +94,14 @@
 
         <section class="section-header">
             <div class="section-line"></div>
-            <h2 class="section-title">BAP-578 Registry</h2>
+            <h2 class="section-title" data-i18n="idx_registry_title">BAP-578 Registry</h2>
             <div class="section-line"></div>
         </section>
 
         <section class="registry-section glass-panel" style="margin-bottom:1.5rem;padding:1.5rem 2rem;">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
                 <span class="status-dot active"></span>
-                <span style="font-family:'Orbitron',monospace;font-size:1rem;color:#00ffc8;font-weight:600;">ERC-8004 Trustless Agents (Verified Identity)</span>
+                <span style="font-family:'Orbitron',monospace;font-size:1rem;color:#f0b90b;font-weight:600;">ERC-8004 Trustless Agents (Verified Identity)</span>
             </div>
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem;">
                 <div>
@@ -137,7 +126,7 @@
         <section class="registry-section glass-panel" style="margin-bottom:1.5rem;padding:1.5rem 2rem;">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
                 <span class="status-dot active"></span>
-                <span style="font-family:'Orbitron',monospace;font-size:1rem;color:#00ffc8;font-weight:600;">NFA Register - Non-Fungible Agents</span>
+                <span style="font-family:'Orbitron',monospace;font-size:1rem;color:#f0b90b;font-weight:600;">NFA Register - Non-Fungible Agents</span>
             </div>
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem;">
                 <div>
@@ -162,7 +151,7 @@
         <section class="registry-section glass-panel" style="margin-bottom:2rem;padding:1.5rem 2rem;">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
                 <span class="status-dot active"></span>
-                <span style="font-family:'Orbitron',monospace;font-size:1rem;color:#00ffc8;font-weight:600;">BAP-578 PlatformRegistry</span>
+                <span style="font-family:'Orbitron',monospace;font-size:1rem;color:#f0b90b;font-weight:600;">BAP-578 PlatformRegistry</span>
             </div>
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem;">
                 <div>
@@ -186,7 +175,7 @@
 
         <section class="section-header">
             <div class="section-line"></div>
-            <h2 class="section-title">Smart Contracts</h2>
+            <h2 class="section-title" data-i18n="idx_smart_contracts">Smart Contracts</h2>
             <div class="section-line"></div>
         </section>
 
@@ -195,11 +184,11 @@
                 <div class="card-glow controller-glow"></div>
                 <div class="card-header controller">
                     <span class="card-number">Contract 3</span>
-                    <h2>Agent Controller</h2>
+                    <h2 data-i18n="idx_c3_title">Agent Controller</h2>
                     <span class="card-badge pulse-badge">Deploy First</span>
                 </div>
                 <div class="card-body">
-                    <p class="card-desc">Lightweight on-chain action handler for BAP-578 agents. Executes actions and emits events for tracking.</p>
+                    <p class="card-desc" data-i18n="idx_c3_desc">Lightweight on-chain action handler for BAP-578 agents. Executes actions and emits events for tracking.</p>
                     <div class="card-details">
                         <div class="detail-row">
                             <span>File</span>
@@ -232,11 +221,11 @@
                 <div class="card-glow nfa-glow"></div>
                 <div class="card-header nfa">
                     <span class="card-number">Contract 1</span>
-                    <h2>BAP-578 NFA Core</h2>
+                    <h2 data-i18n="idx_c1_title">BAP-578 NFA Core</h2>
                     <span class="card-badge">UUPS Proxy</span>
                 </div>
                 <div class="card-body">
-                    <p class="card-desc">ERC-721 Enumerable NFT implementing the BAP-578 Non-Fungible Agent standard. Each NFT represents a tradeable AI agent with its own treasury.</p>
+                    <p class="card-desc" data-i18n="idx_c1_desc">ERC-721 Enumerable NFT implementing the BAP-578 Non-Fungible Agent standard. Each NFT represents a tradeable AI agent with its own treasury.</p>
                     <div class="card-details">
                         <div class="detail-row">
                             <span>File</span>
@@ -278,11 +267,11 @@
                 <div class="card-glow token-glow"></div>
                 <div class="card-header token">
                     <span class="card-number">Contract 2</span>
-                    <h2>Jacob Token</h2>
+                    <h2 data-i18n="idx_c2_title">Jacob Token</h2>
                     <span class="card-badge">DN404 / ERC-404</span>
                 </div>
                 <div class="card-body">
-                    <p class="card-desc">Hybrid ERC-20 + ERC-721 token with deflationary burn mechanics. Tokens burned to create agents permanently reduce totalSupply.</p>
+                    <p class="card-desc" data-i18n="idx_c2_desc">Hybrid ERC-20 + ERC-721 token with deflationary burn mechanics. Tokens burned to create agents permanently reduce totalSupply.</p>
                     <div class="card-details">
                         <div class="detail-row">
                             <span>Name / Symbol</span>
@@ -294,7 +283,7 @@
                         </div>
                         <div class="detail-row">
                             <span>NFT Ratio</span>
-                            <code>1 JACOB = 1 NFT</code>
+                            <code>100 JACOB = 1 NFT</code>
                         </div>
                         <div class="detail-row">
                             <span>Decimals</span>
@@ -331,11 +320,11 @@
                 <div class="card-glow vault-glow"></div>
                 <div class="card-header vault">
                     <span class="card-number">Contract 4</span>
-                    <h2>Agent Vault / Treasury</h2>
+                    <h2 data-i18n="idx_c4_title">Agent Vault / Treasury</h2>
                     <span class="card-badge">DEX Integrated</span>
                 </div>
                 <div class="card-body">
-                    <p class="card-desc">Per-agent isolated treasury with PancakeSwap V2 integration. Swap limits are enforced by agent tier &mdash; higher tier agents unlock larger trades.</p>
+                    <p class="card-desc" data-i18n="idx_c4_desc">Per-agent isolated treasury with PancakeSwap DEX integration. Swap limits are enforced by agent tier &mdash; higher tier agents unlock larger trades.</p>
                     <div class="card-details">
                         <div class="detail-row">
                             <span>Router</span>
@@ -372,11 +361,11 @@
                 <div class="card-glow" style="background: radial-gradient(circle, rgba(255,107,107,0.15), transparent 70%);"></div>
                 <div class="card-header" style="border-color: #ff6b6b;">
                     <span class="card-number">Contract 5</span>
-                    <h2>Agent Minter</h2>
+                    <h2 data-i18n="idx_c5_title">Agent Minter</h2>
                     <span class="card-badge">Burn-to-Mint</span>
                 </div>
                 <div class="card-body">
-                    <p class="card-desc">Burns JACOB tokens to mint tiered agent NFTs. The more tokens sacrificed, the higher the agent tier and vault capabilities. Deflationary flywheel.</p>
+                    <p class="card-desc" data-i18n="idx_c5_desc">Burns JACOB tokens to mint tiered agent NFTs. The more tokens sacrificed, the higher the agent tier and vault capabilities. Deflationary flywheel.</p>
                     <div class="card-details">
                         <div class="detail-row">
                             <span>File</span>
@@ -391,18 +380,18 @@
                             <code>5 (Bronze to Black)</code>
                         </div>
                     </div>
-                    <h3>Burn Costs Per Tier</h3>
-                    <div class="card-details">
-                        <div class="detail-row"><span>Bronze</span><code>10 JACOB &mdash; max 100,000</code></div>
-                        <div class="detail-row"><span>Silver</span><code>50 JACOB &mdash; max 20,000</code></div>
-                        <div class="detail-row"><span>Gold</span><code>250 JACOB &mdash; max 4,000</code></div>
-                        <div class="detail-row"><span>Diamond</span><code>1,000 JACOB &mdash; max 1,000</code></div>
-                        <div class="detail-row"><span>Black</span><code>10,000 JACOB &mdash; max 100</code></div>
+                    <h3>Burn Costs Per Tier <span style="font-size:0.7em;color:#00e5ff">(Dynamic &mdash; adjusts with MC)</span></h3>
+                    <div class="card-details" id="tier-costs-display">
+                        <div class="detail-row"><span>Bronze</span><code id="cost-bronze">Loading...</code></div>
+                        <div class="detail-row"><span>Silver</span><code id="cost-silver">Loading...</code></div>
+                        <div class="detail-row"><span>Gold</span><code id="cost-gold">Loading...</code></div>
+                        <div class="detail-row"><span>Diamond</span><code id="cost-diamond">Loading...</code></div>
+                        <div class="detail-row"><span>Black</span><code id="cost-black">Loading...</code></div>
                     </div>
                     <h3>Key Functions</h3>
                     <ul class="fn-list">
                         <li><code>mintAgent(tier)</code> &mdash; burn tokens + create agent</li>
-                        <li><code>getTierCost(tier)</code> &mdash; check burn cost</li>
+                        <li><code>getDynamicCost(tier)</code> &mdash; check current burn cost</li>
                         <li><code>totalMinted()</code> / <code>totalTokensBurned()</code></li>
                         <li><code>getMaxPossibleAgents(tier)</code></li>
                     </ul>
@@ -412,7 +401,7 @@
 
         <section class="section-header">
             <div class="section-line"></div>
-            <h2 class="section-title">AI Agent Tokenomics</h2>
+            <h2 class="section-title" data-i18n="idx_tokenomics_title">AI Agent Tokenomics</h2>
             <div class="section-line"></div>
         </section>
 
@@ -421,67 +410,67 @@
 
             <div class="tokenomics-grid">
                 <div class="token-alloc glass-card">
-                    <div class="alloc-bar" style="--pct: 25%; --color: #f0b90b;">
+                    <div class="alloc-bar" style="--pct: 25%; --color: #a855f7;">
                         <span class="alloc-pct">25%</span>
                     </div>
-                    <h3>Agent Liquidity Pool</h3>
+                    <h3 data-i18n="idx_ops_fund">Agent Operations Fund</h3>
                     <span class="alloc-amount">250,000 JACOB</span>
-                    <p>PancakeSwap trading pair -- how users buy JACOB to create and fund AI agents</p>
+                    <p>Funds agent vaults -- agents need capital to execute on-chain actions via the Vault contract</p>
                 </div>
                 <div class="token-alloc glass-card">
-                    <div class="alloc-bar" style="--pct: 20%; --color: #00f0ff;">
+                    <div class="alloc-bar" style="--pct: 20%; --color: #ffd54f;">
                         <span class="alloc-pct">20%</span>
                     </div>
-                    <h3>Agent Creation Treasury</h3>
+                    <h3 data-i18n="idx_create_treasury">Agent Creation Treasury</h3>
                     <span class="alloc-amount">200,000 JACOB</span>
                     <p>Reserved for agent minting rewards -- when agents perform well, creators earn from this pool</p>
-                </div>
-                <div class="token-alloc glass-card">
-                    <div class="alloc-bar" style="--pct: 20%; --color: #a855f7;">
-                        <span class="alloc-pct">20%</span>
-                    </div>
-                    <h3>Agent Operations Fund</h3>
-                    <span class="alloc-amount">200,000 JACOB</span>
-                    <p>Funds agent vaults -- agents need capital to execute on-chain actions via the Vault contract</p>
                 </div>
                 <div class="token-alloc glass-card">
                     <div class="alloc-bar" style="--pct: 15%; --color: #c792ea;">
                         <span class="alloc-pct">15%</span>
                     </div>
-                    <h3>Ecosystem Development</h3>
+                    <h3 data-i18n="idx_ecosystem">Ecosystem Development</h3>
                     <span class="alloc-amount">150,000 JACOB</span>
                     <p>Building AI models, agent templates, developer tools, and third-party integrations</p>
+                </div>
+                <div class="token-alloc glass-card">
+                    <div class="alloc-bar" style="--pct: 12.5%; --color: #f0b90b;">
+                        <span class="alloc-pct">12.5%</span>
+                    </div>
+                    <h3 data-i18n="idx_lp_title">Agent Liquidity Pool</h3>
+                    <span class="alloc-amount">125,000 JACOB</span>
+                    <p>PancakeSwap trading pair (125K JACOB + 1 BNB) -- LP tokens burned permanently for 25% LP/MC ratio</p>
                 </div>
                 <div class="token-alloc glass-card">
                     <div class="alloc-bar" style="--pct: 10%; --color: #ff6b6b;">
                         <span class="alloc-pct">10%</span>
                     </div>
-                    <h3>Team</h3>
+                    <h3 data-i18n="idx_team_title">Team</h3>
                     <span class="alloc-amount">100,000 JACOB</span>
                     <p>12-month cliff, 24-month linear vest for long-term alignment</p>
                 </div>
                 <div class="token-alloc glass-card">
-                    <div class="alloc-bar" style="--pct: 9%; --color: #82aaff;">
-                        <span class="alloc-pct">9%</span>
+                    <div class="alloc-bar" style="--pct: 10%; --color: #82aaff;">
+                        <span class="alloc-pct">10%</span>
                     </div>
-                    <h3>Community & Early Adopters</h3>
-                    <span class="alloc-amount">90,000 JACOB</span>
-                    <p>Rewards for agent creators, action executors, and early platform users</p>
+                    <h3 data-i18n="idx_community_title">Community & Airdrop</h3>
+                    <span class="alloc-amount">100,000 JACOB</span>
+                    <p>Rewards for agent creators, action executors, early platform users, and registered wallet airdrops</p>
                 </div>
                 <div class="token-alloc glass-card">
-                    <div class="alloc-bar" style="--pct: 1%; --color: #64ffda;">
-                        <span class="alloc-pct">1%</span>
+                    <div class="alloc-bar" style="--pct: 7.5%; --color: #64ffda;">
+                        <span class="alloc-pct">7.5%</span>
                     </div>
-                    <h3>Airdrop</h3>
-                    <span class="alloc-amount">10,000 JACOB</span>
-                    <p>Free tokens for registered interest wallets -- sign up early to claim your share</p>
+                    <h3 data-i18n="idx_reserve_title">Strategic Reserve</h3>
+                    <span class="alloc-amount">75,000 JACOB</span>
+                    <p>Reserved for future liquidity expansion, exchange listings, partnerships, and strategic initiatives</p>
                 </div>
             </div>
         </section>
 
         <section class="section-header">
             <div class="section-line"></div>
-            <h2 class="section-title">Token Vesting & Locks</h2>
+            <h2 class="section-title" data-i18n="idx_vesting_title">Token Vesting & Locks</h2>
             <div class="section-line"></div>
         </section>
 
@@ -496,7 +485,8 @@
                         <span class="vesting-badge burn">LP BURNED</span>
                     </div>
                     <div class="vesting-details">
-                        <div class="detail-row"><span>Amount</span><code>250,000 JACOB + BNB</code></div>
+                        <div class="detail-row"><span>Amount</span><code>125,000 JACOB + 1 BNB</code></div>
+                        <div class="detail-row"><span>LP/MC Ratio</span><code>25% (target)</code></div>
                         <div class="detail-row"><span>Status</span><code>Permanently Locked</code></div>
                         <div class="detail-row"><span>Method</span><code>LP tokens sent to 0x...dEaD</code></div>
                     </div>
@@ -551,7 +541,7 @@
                         <span class="vesting-badge open">UNLOCKED</span>
                     </div>
                     <div class="vesting-details">
-                        <div class="detail-row"><span>Amount</span><code>200,000 JACOB (20%)</code></div>
+                        <div class="detail-row"><span>Amount</span><code>250,000 JACOB (25%)</code></div>
                         <div class="detail-row"><span>Status</span><code>Available for agent vault funding</code></div>
                         <div class="detail-row"><span>Reason</span><code>Needed for real-time agent operations</code></div>
                     </div>
@@ -566,45 +556,86 @@
                     <div class="vesting-details">
                         <div class="detail-row"><span>Amount</span><code>100,000 JACOB (10%)</code></div>
                         <div class="detail-row"><span>Status</span><code>Available for airdrops & rewards</code></div>
-                        <div class="detail-row"><span>Reason</span><code>Community rewards and user incentives</code></div>
+                        <div class="detail-row"><span>Reason</span><code>Community rewards, airdrops, and user incentives</code></div>
                     </div>
                 </div>
             </div>
 
             <div class="vesting-summary glass-card">
-                <h3>Trust Summary</h3>
+                <h3 data-i18n="idx_trust_summary">Trust Summary</h3>
                 <div class="trust-stats">
                     <div class="trust-stat">
                         <span class="trust-value">45%</span>
-                        <span class="trust-label">Vested (cliff + linear)</span>
+                        <span class="trust-label" data-i18n="idx_vested_pct">Vested (cliff + linear)</span>
                     </div>
                     <div class="trust-stat">
-                        <span class="trust-value">25%</span>
-                        <span class="trust-label">LP Burned (permanent)</span>
+                        <span class="trust-value">12.5%</span>
+                        <span class="trust-label" data-i18n="idx_lp_burned_pct">LP Burned (permanent)</span>
                     </div>
                     <div class="trust-stat">
-                        <span class="trust-value">30%</span>
-                        <span class="trust-label">Unlocked (operations + community)</span>
+                        <span class="trust-value">42.5%</span>
+                        <span class="trust-label" data-i18n="idx_unlocked_pct">Unlocked (ops + community + reserve)</span>
                     </div>
                 </div>
-                <p class="trust-note">70% of total supply is either locked in vesting contracts or permanently burned as LP. All vesting schedules are verifiable on-chain.</p>
+                <p class="trust-note">57.5% of total supply is either locked in vesting contracts or permanently burned as LP. LP paired at 25% LP/MC ratio (125K JACOB + 1 BNB). All vesting schedules are verifiable on-chain.</p>
+            </div>
+        </section>
+
+        <section class="lp-health-section" id="lp-health-section" style="display:none;">
+            <div class="lp-health-card glass-card">
+                <div class="lp-health-header">
+                    <h3>LP Health Monitor</h3>
+                    <div class="lp-health-badge" id="lp-health-badge">--</div>
+                </div>
+                <div class="lp-health-body">
+                    <div class="lp-ratio-gauge">
+                        <div class="lp-gauge-bar">
+                            <div class="lp-gauge-fill" id="lp-gauge-fill" style="width:0%"></div>
+                            <div class="lp-gauge-target"></div>
+                        </div>
+                        <div class="lp-gauge-labels">
+                            <span>0%</span>
+                            <span class="lp-gauge-target-label">20% Target</span>
+                            <span>40%+</span>
+                        </div>
+                    </div>
+                    <div class="lp-stats-row">
+                        <div class="lp-stat-item">
+                            <div class="lp-stat-val" id="lp-health-mc">--</div>
+                            <div class="lp-stat-lbl">Market Cap</div>
+                        </div>
+                        <div class="lp-stat-item">
+                            <div class="lp-stat-val" id="lp-health-liq">--</div>
+                            <div class="lp-stat-lbl">Liquidity Pool</div>
+                        </div>
+                        <div class="lp-stat-item">
+                            <div class="lp-stat-val" id="lp-health-ratio">--</div>
+                            <div class="lp-stat-lbl">LP / MC Ratio</div>
+                        </div>
+                        <div class="lp-stat-item">
+                            <div class="lp-stat-val" id="lp-health-needed">--</div>
+                            <div class="lp-stat-lbl">LP Needed for 20%</div>
+                        </div>
+                    </div>
+                    <div class="lp-health-msg" id="lp-health-msg"></div>
+                </div>
             </div>
         </section>
 
         <section class="section-header">
             <div class="section-line"></div>
-            <h2 class="section-title">Agent Value Flow</h2>
+            <h2 class="section-title" data-i18n="idx_flow_title">Agent Value Flow</h2>
             <div class="section-line"></div>
         </section>
 
         <section class="value-flow-section">
-            <p class="section-desc">How JACOB tokens power the AI agent lifecycle &mdash; a deflationary flywheel</p>
+            <p class="section-desc" data-i18n="idx_flow_desc">How JACOB tokens power the AI agent lifecycle &mdash; a deflationary flywheel</p>
             <div class="flow-steps">
                 <div class="flow-step glass-card">
                     <div class="flow-icon neon-glow">1</div>
                     <div class="flow-content">
-                        <h3>Acquire JACOB</h3>
-                        <p>Users buy JACOB on PancakeSwap. The token is liquid and tradeable on the DEX with permanently locked liquidity.</p>
+                        <h3 data-i18n="idx_flow1_title">Acquire JACOB</h3>
+                        <p data-i18n="idx_flow1_desc">Users buy JACOB on PancakeSwap. The token is liquid and tradeable on the DEX with permanently locked liquidity.</p>
                     </div>
                 </div>
                 <div class="flow-connector">
@@ -613,8 +644,8 @@
                 <div class="flow-step glass-card">
                     <div class="flow-icon neon-glow">2</div>
                     <div class="flow-content">
-                        <h3>Burn to Create Agent</h3>
-                        <p>Burn 10&ndash;10,000 JACOB via AgentMinter to create a tiered agent NFT. Tokens are destroyed forever, reducing total supply. Higher burn = higher tier.</p>
+                        <h3 data-i18n="idx_flow2_title">Burn to Create Agent</h3>
+                        <p data-i18n="idx_flow2_desc">Burn 10&ndash;10,000 JACOB via AgentMinter to create a tiered agent NFT. Tokens are destroyed forever, reducing total supply. Higher burn = higher tier.</p>
                     </div>
                 </div>
                 <div class="flow-connector">
@@ -623,8 +654,8 @@
                 <div class="flow-step glass-card">
                     <div class="flow-icon neon-glow">3</div>
                     <div class="flow-content">
-                        <h3>Fund &amp; Operate</h3>
-                        <p>Deposit tokens or BNB into your agent's vault. Agent tier determines swap limits &mdash; Black agents get unlimited access to PancakeSwap trades.</p>
+                        <h3 data-i18n="idx_flow3_title">Fund &amp; Operate</h3>
+                        <p data-i18n="idx_flow3_desc">Deposit tokens or BNB into your agent's vault. Agent tier determines swap limits &mdash; Black agents get unlimited access to PancakeSwap trades.</p>
                     </div>
                 </div>
                 <div class="flow-connector">
@@ -633,8 +664,8 @@
                 <div class="flow-step glass-card">
                     <div class="flow-icon neon-glow">4</div>
                     <div class="flow-content">
-                        <h3>Execute Actions</h3>
-                        <p>Agents execute on-chain actions through the Controller. Each action is recorded with full event tracking. Agents are tradeable ERC-721 NFTs.</p>
+                        <h3 data-i18n="idx_flow4_title">Execute Actions</h3>
+                        <p data-i18n="idx_flow4_desc">Agents execute on-chain actions through the Controller. Each action is recorded with full event tracking. Agents are tradeable ERC-721 NFTs.</p>
                     </div>
                 </div>
                 <div class="flow-connector">
@@ -643,8 +674,8 @@
                 <div class="flow-step glass-card">
                     <div class="flow-icon neon-glow">5</div>
                     <div class="flow-content">
-                        <h3>Deflationary Flywheel</h3>
-                        <p>Every agent minted burns supply permanently. More agents = scarcer tokens = higher value for remaining holders and existing agents. The ecosystem grows as supply shrinks.</p>
+                        <h3 data-i18n="idx_flow5_title">Deflationary Flywheel</h3>
+                        <p data-i18n="idx_flow5_desc">Every agent minted burns supply permanently. More agents = scarcer tokens = higher value for remaining holders and existing agents. The ecosystem grows as supply shrinks.</p>
                     </div>
                 </div>
             </div>
@@ -711,7 +742,7 @@
                     <span class="step-num neon-glow">8</span>
                     <div class="step-content">
                         <h3>PancakeSwap Setup</h3>
-                        <p>Create pair via Factory V2 &amp; add liquidity</p>
+                        <p>Create pair via PancakeSwap Factory &amp; add liquidity</p>
                     </div>
                 </div>
             </div>
@@ -766,11 +797,11 @@
                     <span class="config-value">https://bsc-dataseed.binance.org/</span>
                 </div>
                 <div class="config-item">
-                    <span class="config-label">PancakeSwap Router V2</span>
+                    <span class="config-label">PancakeSwap Router</span>
                     <span class="config-value">0x10ED43C718714eb63d5aA57B78B54704E256024E</span>
                 </div>
                 <div class="config-item">
-                    <span class="config-label">PancakeSwap Factory V2</span>
+                    <span class="config-label">PancakeSwap Factory</span>
                     <span class="config-value">0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73</span>
                 </div>
                 <div class="config-item">
@@ -813,7 +844,7 @@
             this.speedX = (Math.random() - 0.5) * 0.3;
             this.speedY = (Math.random() - 0.5) * 0.3;
             this.opacity = Math.random() * 0.5 + 0.1;
-            this.color = ['#f0b90b', '#00f0ff', '#a855f7', '#64ffda'][Math.floor(Math.random() * 4)];
+            this.color = ['#f0b90b', '#ffd54f', '#a855f7', '#64ffda'][Math.floor(Math.random() * 4)];
         }
         update() {
             this.x += this.speedX;
@@ -878,14 +909,77 @@
 
     document.querySelectorAll('.glass-card, .section-header, .glass-panel').forEach(el => observer.observe(el));
 
+    function fmtUsd(v) {
+        if (v >= 1e6) return '$' + (v / 1e6).toFixed(2) + 'M';
+        if (v >= 1e3) return '$' + (v / 1e3).toFixed(1) + 'K';
+        return '$' + v.toFixed(0);
+    }
+
+    function updateLpHealthWidget(mc, liq, ratio, health) {
+        var section = document.getElementById('lp-health-section');
+        if (!mc || mc <= 0) { section.style.display = 'none'; return; }
+        section.style.display = 'block';
+
+        var badge = document.getElementById('lp-health-badge');
+        var healthLabels = { healthy: 'Healthy', moderate: 'Moderate', low: 'Low', critical: 'Critical' };
+        badge.textContent = healthLabels[health] || 'Unknown';
+        badge.className = 'lp-health-badge lp-' + health;
+
+        var gaugeWidth = Math.min(ratio / 40 * 100, 100);
+        var fill = document.getElementById('lp-gauge-fill');
+        fill.style.width = gaugeWidth + '%';
+        fill.className = 'lp-gauge-fill lp-' + health;
+
+        document.getElementById('lp-health-mc').textContent = fmtUsd(mc);
+        document.getElementById('lp-health-liq').textContent = fmtUsd(liq);
+        document.getElementById('lp-health-ratio').textContent = ratio.toFixed(1) + '%';
+
+        var target20 = mc * 0.2;
+        var needed = target20 - liq;
+        var neededEl = document.getElementById('lp-health-needed');
+        if (needed > 0) {
+            neededEl.textContent = '+' + fmtUsd(needed);
+            neededEl.style.color = '#ff8c00';
+        } else {
+            neededEl.textContent = 'Target Met';
+            neededEl.style.color = '#00ffaa';
+        }
+
+        var msgEl = document.getElementById('lp-health-msg');
+        if (health === 'healthy') {
+            msgEl.innerHTML = '<strong style="color:#00ffaa">LP ratio is at a healthy level.</strong> The liquidity pool is well-capitalized relative to market cap. Trades should execute with minimal slippage.';
+        } else if (health === 'moderate') {
+            msgEl.innerHTML = '<strong style="color:#f0b90b">LP ratio is moderate.</strong> Consider adding ' + fmtUsd(needed) + ' more liquidity to reach the 20% target. Current liquidity supports normal trading but larger orders may experience slippage.';
+        } else if (health === 'low') {
+            msgEl.innerHTML = '<strong style="color:#ff8c00">LP ratio is below recommended levels.</strong> Adding ' + fmtUsd(needed) + ' in liquidity would significantly improve trade execution and price stability. Low LP ratios increase vulnerability to price manipulation.';
+        } else {
+            msgEl.innerHTML = '<strong style="color:#ff4444">LP ratio is critically low.</strong> ' + fmtUsd(needed) + ' in additional liquidity is needed to reach the 20% target. Current levels may cause high slippage and make the token vulnerable to large price swings.';
+        }
+    }
+
+    function loadLpHealth() {
+        fetch('/api/market').then(function(r) { return r.json(); }).then(function(data) {
+            if (data.lpRatio !== null && data.lpRatio !== undefined && data.lpHealth) {
+                var mc = parseFloat(data.marketCap) || 0;
+                var liq = parseFloat(data.liquidity) || 0;
+                updateLpHealthWidget(mc, liq, data.lpRatio, data.lpHealth);
+            }
+        }).catch(function() {});
+    }
+    loadLpHealth();
+    setInterval(loadLpHealth, 60000);
+
     (function() {
         fetch('/api/register-count').then(r => r.json()).then(d => {
-            document.getElementById('registered-count').textContent = d.count;
+            var el = document.getElementById('registered-count');
+            if (el) el.textContent = d.count;
         }).catch(() => {});
 
         const regBtn = document.getElementById('register-btn');
         const walletInput = document.getElementById('wallet-input');
         const regMsg = document.getElementById('register-msg');
+
+        if (!regBtn || !walletInput || !regMsg) return;
 
         regBtn.addEventListener('click', async () => {
             const wallet = walletInput.value.trim();
@@ -944,11 +1038,10 @@
     (function() {
         const hc = document.getElementById('hacker-canvas');
         const hctx = hc.getContext('2d');
-        const header = document.querySelector('header');
 
         function resizeHacker() {
-            hc.width = header.offsetWidth;
-            hc.height = header.offsetHeight;
+            hc.width = window.innerWidth;
+            hc.height = window.innerHeight;
         }
         resizeHacker();
         window.addEventListener('resize', resizeHacker);
@@ -959,16 +1052,16 @@
             }
             reset(startVisible) {
                 this.x = Math.random() * hc.width;
-                this.y = hc.height * 0.3 + Math.random() * hc.height * 0.4;
+                this.y = hc.height * 0.1 + Math.random() * hc.height * 0.8;
                 this.baseX = this.x;
                 this.baseY = this.y;
-                this.size = 55 + Math.random() * 50;
-                this.dirX = (Math.random() - 0.5) * 0.4;
+                this.size = 60 + Math.random() * 55;
+                this.dirX = (Math.random() - 0.5) * 0.6;
                 this.drift = Math.random() * Math.PI * 2;
-                this.driftSpeed = 0.008 + Math.random() * 0.012;
-                this.maxAlpha = 0.45 + Math.random() * 0.35;
-                this.fadeSpeed = 0.003 + Math.random() * 0.004;
-                this.holdTime = 300 + Math.random() * 500;
+                this.driftSpeed = 0.01 + Math.random() * 0.015;
+                this.maxAlpha = 0.7 + Math.random() * 0.3;
+                this.fadeSpeed = 0.002 + Math.random() * 0.003;
+                this.holdTime = 500 + Math.random() * 800;
                 this.holdCounter = 0;
                 this.glitchTimer = 0;
                 this.glitchOffset = 0;
@@ -1101,7 +1194,7 @@
         }
 
         const hackers = [];
-        const hackerCount = 6;
+        const hackerCount = 8;
         for (let i = 0; i < hackerCount; i++) {
             const h = new Hacker();
             h.reset(true);
@@ -1117,6 +1210,48 @@
             requestAnimationFrame(animateHackers);
         }
         animateHackers();
+    })();
+    </script>
+    <script src="/walletconnect.js?v=2"></script>
+    <script>
+    function connectWalletNav() {
+        if (typeof window.connectWalletWithFallback === 'function') {
+            window.connectWalletWithFallback();
+            return;
+        }
+        if (typeof closeHamburgerMenu === 'function') closeHamburgerMenu();
+        if (typeof showMobileWalletFallback === 'function') {
+            showMobileWalletFallback();
+        }
+    }
+    window.addEventListener('wallet-connected', function(e) {
+        var btn = document.getElementById('connect-wallet-btn');
+        if (btn && e.detail && e.detail.address) {
+            var addr = e.detail.address;
+            btn.textContent = addr.slice(0, 6) + '...' + addr.slice(-4);
+            btn.classList.add('connected');
+        }
+    });
+    </script>
+    <script src="/i18n.js"></script>
+    <script>
+    (async function loadDynamicCosts() {
+      try {
+        const res = await fetch('/api/mint-costs');
+        const data = await res.json();
+        const ids = ['cost-bronze', 'cost-silver', 'cost-gold', 'cost-diamond', 'cost-black'];
+        data.tiers.forEach((t, i) => {
+          const el = document.getElementById(ids[i]);
+          if (el) {
+            const costStr = t.jacobCost % 1 === 0 ? t.jacobCost.toLocaleString() : t.jacobCost.toFixed(2);
+            el.textContent = costStr + ' JACOB' + (data.dynamic ? ' (live)' : '');
+          }
+        });
+      } catch (e) {
+        const ids = ['cost-bronze', 'cost-silver', 'cost-gold', 'cost-diamond', 'cost-black'];
+        const fallback = ['10 JACOB', '50 JACOB', '250 JACOB', '1,000 JACOB', '10,000 JACOB'];
+        ids.forEach((id, i) => { const el = document.getElementById(id); if (el) el.textContent = fallback[i]; });
+      }
     })();
     </script>
 </body>

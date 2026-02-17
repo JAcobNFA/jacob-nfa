@@ -107,6 +107,7 @@ contract AgentVault {
     );
     event OwnershipTransferStarted(address indexed previousOwner, address indexed newOwner);
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+    event GasReimbursed(uint256 indexed agentId, uint256 amount);
 
     modifier onlyOwner() {
         require(msg.sender == owner, "Not vault owner");
@@ -265,6 +266,15 @@ contract AgentVault {
         emit SwapExecuted(agentId, tokenIn, tokenOut, amountIn, amounts[amounts.length - 1]);
     }
 
+    function depositBNBForAgent(uint256 agentId) external payable whenNotPaused {
+        require(msg.value > 0, "Must send BNB");
+        if (bap578 != address(0)) {
+            IERC721(bap578).ownerOf(agentId);
+        }
+        bnbBalances[agentId] += msg.value;
+        emit AgentFunded(agentId, WBNB, msg.value);
+    }
+
     function swapBNBForTokens(
         uint256 agentId,
         address tokenOut,
@@ -308,6 +318,55 @@ contract AgentVault {
 
         balances[agentId][tokenOut] += amounts[amounts.length - 1];
         emit SwapExecuted(agentId, WBNB, tokenOut, swapAmount, amounts[amounts.length - 1]);
+    }
+
+    function swapAgentBNBForTokens(
+        uint256 agentId,
+        address tokenOut,
+        uint256 amountBNB,
+        uint256 amountOutMin
+    ) external whenNotPaused nonReentrant {
+        uint256 limit = _getTierSwapLimit(agentId);
+        require(amountBNB <= limit, "Exceeds tier swap limit");
+        _requireAgentOwnerOrVaultOwner(agentId);
+        require(bnbBalances[agentId] >= amountBNB, "Insufficient agent BNB balance");
+
+        bnbBalances[agentId] -= amountBNB;
+
+        uint256 fee = (amountBNB * swapFeePercent) / 100;
+        uint256 swapAmount = amountBNB - fee;
+
+        if (fee > 0) {
+            totalFeesCollected += fee;
+            uint256 ownerShare = (fee * 60) / 100;
+            uint256 revenueShare = fee - ownerShare;
+
+            (bool oSent, ) = payable(owner).call{value: ownerShare}("");
+            require(oSent, "Owner fee transfer failed");
+
+            if (revenueShare > 0 && revenueSharing != address(0)) {
+                (bool rSent, ) = payable(revenueSharing).call{value: revenueShare}("");
+                require(rSent, "Revenue share transfer failed");
+            } else if (revenueShare > 0) {
+                (bool rSent, ) = payable(owner).call{value: revenueShare}("");
+                require(rSent, "Fallback fee transfer failed");
+            }
+        }
+
+        address[] memory path = new address[](2);
+        path[0] = WBNB;
+        path[1] = tokenOut;
+
+        uint256[] memory amounts = IPancakeRouter(PANCAKE_ROUTER)
+            .swapExactETHForTokens{value: swapAmount}(
+                amountOutMin,
+                path,
+                address(this),
+                block.timestamp + 300
+            );
+
+        balances[agentId][tokenOut] += amounts[amounts.length - 1];
+        emit SwapExecuted(agentId, WBNB, tokenOut, amountBNB, amounts[amounts.length - 1]);
     }
 
     function swapTokensForBNB(
@@ -424,6 +483,14 @@ contract AgentVault {
         require(bap578 != address(0), "BAP578 not set");
         address nftOwner = IERC721(bap578).ownerOf(agentId);
         require(msg.sender == nftOwner, "Not agent NFT owner");
+    }
+
+    function reimburseGas(uint256 agentId, uint256 gasAmount) external onlyOwner nonReentrant {
+        require(bnbBalances[agentId] >= gasAmount, "Insufficient agent BNB for gas");
+        bnbBalances[agentId] -= gasAmount;
+        (bool sent, ) = payable(owner).call{value: gasAmount}("");
+        require(sent, "Gas reimbursement transfer failed");
+        emit GasReimbursed(agentId, gasAmount);
     }
 
     receive() external payable {}

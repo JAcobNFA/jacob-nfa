@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jacob - Trading Intelligence</title>
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/bot.css?v=7">
+</head>
+<body>
+    <canvas id="particle-canvas"></canvas>
+    <div class="scanlines"></div>
+
+    <nav class="top-nav">
+        <div class="container nav-inner">
+            <a href="/" class="nav-logo">Jacob</a>
+            <button class="hamburger" id="hamburger" aria-label="Menu" onclick="this.classList.toggle('active');this.nextElementSibling.classList.toggle('open')">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-links" id="nav-links">
+                <a href="/" data-i18n="nav_dashboard">Dashboard</a>
+                <a href="/command.html" data-i18n="nav_command">Command Center</a>
+                <a href="/jacob.html" class="active" data-i18n="nav_bot">Jacob</a>
+                <a href="/autotrade.html">Agent Autopilot</a>
+                <a href="/guide.html" data-i18n="nav_guide">Guide</a>
+                <button class="connect-wallet-btn" id="connect-wallet-btn" onclick="if(typeof connectWalletWithFallback==='function'){connectWalletWithFallback()}">Connect Wallet</button>
+                <button class="lang-toggle" id="lang-toggle" onclick="toggleLanguage()">中文</button>
+            </div>
+        </div>
+    </nav>
+
+    <header style="padding: 50px 0 40px;">
+        <div class="header-glow"></div>
+        <div class="container">
+            <h1 data-text="Jacob" style="font-size: 3rem;" data-i18n="bot_title">Jacob</h1>
+            <p class="subtitle">
+                <span class="cyber-bracket">[</span>
+                <span data-i18n="bot_subtitle">Tier-Gated Intelligence Engine</span>
+                <span class="cyber-bracket">]</span>
+            </p>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <section class="tier-banner glass-card" id="tier-banner">
+            <div class="tier-banner-inner">
+                <div class="tier-banner-left">
+                    <div class="tier-badge-large" id="tier-badge-display">
+                        <span class="tier-icon">&#x1f916;</span>
+                        <span class="tier-label" id="tier-label">No Agent</span>
+                    </div>
+                    <div class="tier-banner-info">
+                        <div class="tier-stat"><span class="tier-stat-label">Swap Limit</span><span class="tier-stat-value" id="stat-swap">--</span></div>
+                        <div class="tier-stat"><span class="tier-stat-label">Revenue Shares</span><span class="tier-stat-value" id="stat-shares">--</span></div>
+                        <div class="tier-stat"><span class="tier-stat-label">Jacob Level</span><span class="tier-stat-value" id="stat-ai-level">--</span></div>
+                    </div>
+                </div>
+                <div class="tier-banner-right">
+                    <div class="market-ticker" id="market-ticker">
+                        <div class="ticker-item"><span class="ticker-label">JACOB</span><span class="ticker-price" id="ticker-price">--</span></div>
+                        <div class="ticker-item"><span class="ticker-label">24h</span><span class="ticker-change" id="ticker-change">--</span></div>
+                        <div class="ticker-item"><span class="ticker-label">Vol</span><span class="ticker-vol" id="ticker-vol">--</span></div>
+                        <div class="ticker-item"><span class="ticker-label">MC</span><span class="ticker-mc" id="ticker-mc">--</span></div>
+                        <div class="ticker-item"><span class="ticker-label">LP</span><span class="ticker-lp" id="ticker-lp">--</span></div>
+                        <div class="ticker-item"><span class="ticker-label">LP/MC</span><span class="ticker-lp-ratio" id="ticker-lp-ratio">--</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-header">
+            <div class="section-line"></div>
+            <h2 class="section-title">Your Alpha Edge</h2>
+            <div class="section-line"></div>
+        </section>
+
+        <section class="wallet-analyzer-section">
+            <div class="analyzer-grid">
+                <div class="analyzer-input-card glass-card">
+                    <h3>Decode Your Trading DNA</h3>
+                    <p class="analyzer-desc">Drop any BSC wallet to reveal its full on-chain story — every DEX trade, P&L breakdown, win rate, risk profile, and AI-powered coaching to sharpen your edge.</p>
+                    <div class="analyzer-input-row">
+                        <input type="text" id="analyzer-address" placeholder="0x... BSC wallet address" class="analyzer-input">
+                        <button class="analyzer-btn" id="analyzer-btn" onclick="analyzeWallet()">Analyze</button>
+                    </div>
+                    <div class="analyzer-quick-row" id="analyzer-quick-row" style="display:none;">
+                        <button class="analyzer-quick-btn" onclick="analyzeConnectedWallet()">Use My Wallet</button>
+                    </div>
+                    <div id="analyzer-status" class="analyzer-status"></div>
+                    <div class="analyzer-tier-note">Bronze: 1 free full scan, then basic stats only. Silver+ for unlimited access.</div>
+                </div>
+
+                <div class="analyzer-results glass-card" id="analyzer-results" style="display:none;">
+                    <div class="ar-header">
+                        <div class="ar-header-left">
+                            <h3>Alpha Intelligence Report</h3>
+                            <div class="ar-wallet-label" id="analyzer-wallet-label"></div>
+                            <div class="ar-period" id="ar-period"></div>
+                        </div>
+                        <div class="ar-grade-box" id="ar-grade-box">
+                            <div class="ar-grade" id="ar-grade">C</div>
+                            <div class="ar-grade-label">SCORE</div>
+                        </div>
+                    </div>
+
+                    <div class="ar-overview-grid" id="ar-overview-grid"></div>
+
+                    <div class="ar-tier-banner" id="ar-tier-banner" style="display:none;"></div>
+
+                    <div class="ar-gate-wrap" id="gate-spotlight">
+                        <div class="ar-gate-content">
+                            <div class="ar-spotlight-row" id="ar-spotlight-row"></div>
+                        </div>
+                        <div class="ar-gate-lock" id="lock-spotlight" style="display:none;">
+                            <div class="ar-lock-inner">
+                                <span class="ar-lock-icon">&#128274;</span>
+                                <div class="ar-lock-title">Best & Worst Trades</div>
+                                <div class="ar-lock-text">Upgrade to <strong>Silver</strong> to see your best and worst trades with exact ROI</div>
+                                <a href="/command.html" class="ar-lock-btn">Upgrade Agent</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ar-gate-wrap" id="gate-insights">
+                        <div class="ar-gate-content">
+                            <div class="ar-insights-row">
+                                <div class="ar-insight-card ar-right-card" id="ar-right-card">
+                                    <div class="ar-insight-header"><span class="ar-icon">&#9650;</span> What You Did Right</div>
+                                    <div class="ar-insight-body" id="ar-right-body"></div>
+                                </div>
+                                <div class="ar-insight-card ar-wrong-card" id="ar-wrong-card">
+                                    <div class="ar-insight-header"><span class="ar-icon">&#9660;</span> What Went Wrong</div>
+                                    <div class="ar-insight-body" id="ar-wrong-body"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ar-gate-lock" id="lock-insights" style="display:none;">
+                            <div class="ar-lock-inner">
+                                <span class="ar-lock-icon">&#128274;</span>
+                                <div class="ar-lock-title">Trading Insights</div>
+                                <div class="ar-lock-text">Upgrade to <strong>Silver</strong> to see what you're doing right and wrong</div>
+                                <a href="/command.html" class="ar-lock-btn">Upgrade Agent</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ar-gate-wrap" id="gate-habits">
+                        <div class="ar-gate-content">
+                            <div class="ar-habits-section">
+                                <h4>Trading Habits</h4>
+                                <div class="ar-habits-grid" id="ar-habits-grid"></div>
+                            </div>
+                        </div>
+                        <div class="ar-gate-lock" id="lock-habits" style="display:none;">
+                            <div class="ar-lock-inner">
+                                <span class="ar-lock-icon">&#128274;</span>
+                                <div class="ar-lock-title">Trading Habits</div>
+                                <div class="ar-lock-text">Upgrade to <strong>Silver</strong> to see your trading habits and patterns</div>
+                                <a href="/command.html" class="ar-lock-btn">Upgrade Agent</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ar-gate-wrap" id="gate-advice">
+                        <div class="ar-gate-content">
+                            <div class="ar-advice-section" id="ar-advice-section">
+                                <div class="ar-advice-header">
+                                    <span class="ar-advice-icon">&#128161;</span>
+                                    <div>
+                                        <h4>Coach's Game Plan</h4>
+                                        <p class="ar-advice-subtitle">Personalized recommendations based on your trading data</p>
+                                    </div>
+                                </div>
+                                <div class="ar-advice-list" id="ar-advice-list"></div>
+                            </div>
+                        </div>
+                        <div class="ar-gate-lock" id="lock-advice" style="display:none;">
+                            <div class="ar-lock-inner">
+                                <span class="ar-lock-icon">&#128274;</span>
+                                <div class="ar-lock-title">Coach's Game Plan</div>
+                                <div class="ar-lock-text">Upgrade to <strong>Gold</strong> to unlock personalized coaching advice</div>
+                                <a href="/command.html" class="ar-lock-btn">Upgrade Agent</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ar-gate-wrap" id="gate-tokens">
+                        <div class="ar-gate-content">
+                            <div class="ar-section ar-tokens-section">
+                                <div class="ar-section-header">
+                                    <h4>Token Breakdown</h4>
+                                    <div class="ar-token-filters">
+                                        <button class="ar-filter-btn active" onclick="filterTokens('all',this)">All</button>
+                                        <button class="ar-filter-btn" onclick="filterTokens('wins',this)">Wins</button>
+                                        <button class="ar-filter-btn" onclick="filterTokens('losses',this)">Losses</button>
+                                        <button class="ar-filter-btn" onclick="filterTokens('holding',this)">Holding</button>
+                                    </div>
+                                </div>
+                                <div class="ar-tokens-table" id="analyzer-tokens-table"></div>
+                            </div>
+                        </div>
+                        <div class="ar-gate-lock" id="lock-tokens" style="display:none;">
+                            <div class="ar-lock-inner">
+                                <span class="ar-lock-icon">&#128274;</span>
+                                <div class="ar-lock-title">Full Token Breakdown</div>
+                                <div class="ar-lock-text">Upgrade to <strong>Silver</strong> to see every token with P&L, ROI, and hold times</div>
+                                <a href="/command.html" class="ar-lock-btn">Upgrade Agent</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ar-gate-wrap" id="gate-trades">
+                        <div class="ar-gate-content">
+                            <div class="ar-section">
+                                <h4>Recent Trades</h4>
+                                <div class="ar-trades-list" id="analyzer-trades-list"></div>
+                            </div>
+                        </div>
+                        <div class="ar-gate-lock" id="lock-trades" style="display:none;">
+                            <div class="ar-lock-inner">
+                                <span class="ar-lock-icon">&#128274;</span>
+                                <div class="ar-lock-title">Trade History</div>
+                                <div class="ar-lock-text">Upgrade to <strong>Silver</strong> to see your full trade history</div>
+                                <a href="/command.html" class="ar-lock-btn">Upgrade Agent</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ar-gate-wrap" id="gate-ai">
+                        <div class="ar-gate-content">
+                            <div class="ar-ai-section" id="analyzer-ai-section" style="display:none;">
+                                <h4>Jacob's Deep Analysis</h4>
+                                <div class="ar-ai-content" id="analyzer-ai-content"></div>
+                            </div>
+                            <button class="ar-ai-btn" id="analyzer-ai-btn" onclick="requestAIAnalysis()" style="display:none;">
+                                Ask Jacob to Coach Me
+                            </button>
+                        </div>
+                        <div class="ar-gate-lock" id="lock-ai" style="display:none;">
+                            <div class="ar-lock-inner">
+                                <span class="ar-lock-icon">&#128274;</span>
+                                <div class="ar-lock-title">Jacob's Personal Coaching</div>
+                                <div class="ar-lock-text">Upgrade to <strong>Diamond</strong> to let Jacob personally analyze every trade and coach you</div>
+                                <a href="/command.html" class="ar-lock-btn">Upgrade Agent</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-header">
+            <div class="section-line"></div>
+            <h2 class="section-title" data-i18n="bot_console">Strategy Console</h2>
+            <div class="section-line"></div>
+        </section>
+
+        <section class="bot-console-section">
+            <div class="bot-grid">
+                <div class="bot-chat glass-card">
+                    <div class="chat-header">
+                        <div class="bot-avatar">J</div>
+                        <div>
+                            <h3>Jacob</h3>
+                            <span class="bot-status" id="bot-status">Ready</span>
+                        </div>
+                        <div class="chain-badge" id="chain-badge" style="display:none;">
+                            <span class="chain-dot"></span> On-Chain Aware
+                        </div>
+                    </div>
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="msg bot-msg">
+                            <div class="msg-avatar">J</div>
+                            <div class="msg-content">
+                                <p>Welcome to Jacob. Connect your wallet and I'll automatically detect your agents and read their on-chain data — vault balances, tier, revenue status, and JACOB holdings.</p>
+                                <p>Your capabilities depend on your agent tier:</p>
+                                <ul>
+                                    <li><strong>Bronze:</strong> General chat & platform FAQ</li>
+                                    <li><strong>Silver:</strong> + Token analysis with live market data</li>
+                                    <li><strong>Gold:</strong> + Portfolio advice based on your actual holdings</li>
+                                    <li><strong>Diamond:</strong> + Strategy generation using your vault data</li>
+                                    <li><strong>Black:</strong> + Full autonomous mode with whale insights</li>
+                                </ul>
+                                <p>I'm not just a chatbot — I see your real on-chain position and tailor every answer to it.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chat-input" placeholder="Ask about your vault, revenue, strategy, market analysis...">
+                        <button class="send-btn" id="send-btn">&#9654;</button>
+                    </div>
+                </div>
+
+                <div class="bot-controls">
+                    <div class="control-card glass-card" id="agent-detect-card">
+                        <h3>Agent Configuration</h3>
+                        <div id="agent-detect-status" class="agent-detect-msg">
+                            <span class="detect-icon">&#128269;</span> Connect wallet to auto-detect your agents
+                        </div>
+                        <div class="control-group" id="agent-selector-group" style="display:none;">
+                            <label>Your Agent</label>
+                            <select id="bot-agent-select"></select>
+                        </div>
+                        <div class="control-group" id="manual-agent-group">
+                            <label>Agent Token ID (manual)</label>
+                            <input type="number" id="bot-agent-id" placeholder="Enter agent ID" min="1">
+                        </div>
+                        <div class="control-group">
+                            <label>Agent Tier</label>
+                            <select id="bot-agent-tier">
+                                <option value="1">Bronze (0.1 BNB max)</option>
+                                <option value="2">Silver (0.5 BNB max)</option>
+                                <option value="3" selected>Gold (2 BNB max)</option>
+                                <option value="4">Diamond (10 BNB max)</option>
+                                <option value="5">Black (Unlimited)</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>Risk Tolerance</label>
+                            <select id="bot-risk">
+                                <option value="conservative">Conservative</option>
+                                <option value="moderate" selected>Moderate</option>
+                                <option value="aggressive">Aggressive</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="control-card glass-card" id="agent-snapshot-card" style="display:none;">
+                        <h3>Live Agent Snapshot</h3>
+                        <div class="agent-snapshot" id="agent-snapshot">
+                        </div>
+                    </div>
+
+                    <div class="control-card glass-card">
+                        <h3>Quick Commands</h3>
+                        <div class="quick-actions" id="quick-actions">
+                        </div>
+                    </div>
+
+                    <div class="control-card glass-card">
+                        <h3>AI Capabilities</h3>
+                        <div class="capabilities" id="capabilities-list">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-header">
+            <div class="section-line"></div>
+            <h2 class="section-title">Tier Comparison</h2>
+            <div class="section-line"></div>
+        </section>
+
+        <section class="tier-compare-section">
+            <div class="tier-compare-grid">
+                <div class="tier-compare-card glass-card" data-tier="bronze">
+                    <div class="tc-tier-name">Bronze</div>
+                    <div class="tc-cost">10 JACOB</div>
+                    <div class="tc-features">
+                        <div class="tc-feat available">General Chat</div>
+                        <div class="tc-feat available">Platform FAQ</div>
+                        <div class="tc-feat available">Crypto Q&A</div>
+                        <div class="tc-feat locked">Token Analysis</div>
+                        <div class="tc-feat locked">Portfolio Advice</div>
+                        <div class="tc-feat locked">Strategy Gen</div>
+                        <div class="tc-feat locked">Autonomous Mode</div>
+                    </div>
+                    <div class="tc-swap">Swap: 0.1 BNB</div>
+                    <div class="tc-shares">1 Revenue Share</div>
+                </div>
+                <div class="tier-compare-card glass-card" data-tier="silver">
+                    <div class="tc-tier-name">Silver</div>
+                    <div class="tc-cost">50 JACOB</div>
+                    <div class="tc-features">
+                        <div class="tc-feat available">General Chat</div>
+                        <div class="tc-feat available">Platform FAQ</div>
+                        <div class="tc-feat available">Token Analysis</div>
+                        <div class="tc-feat available">Price Discussion</div>
+                        <div class="tc-feat locked">Portfolio Advice</div>
+                        <div class="tc-feat locked">Strategy Gen</div>
+                        <div class="tc-feat locked">Autonomous Mode</div>
+                    </div>
+                    <div class="tc-swap">Swap: 0.5 BNB</div>
+                    <div class="tc-shares">2 Revenue Shares</div>
+                </div>
+                <div class="tier-compare-card glass-card" data-tier="gold">
+                    <div class="tc-tier-name">Gold</div>
+                    <div class="tc-cost">250 JACOB</div>
+                    <div class="tc-features">
+                        <div class="tc-feat available">Token Analysis</div>
+                        <div class="tc-feat available">Portfolio Advice</div>
+                        <div class="tc-feat available">Risk Scoring</div>
+                        <div class="tc-feat available">Entry/Exit Points</div>
+                        <div class="tc-feat available">Price Discussion</div>
+                        <div class="tc-feat locked">Strategy Gen</div>
+                        <div class="tc-feat locked">Autonomous Mode</div>
+                    </div>
+                    <div class="tc-swap">Swap: 2 BNB</div>
+                    <div class="tc-shares">5 Revenue Shares</div>
+                </div>
+                <div class="tier-compare-card glass-card" data-tier="diamond">
+                    <div class="tc-tier-name">Diamond</div>
+                    <div class="tc-cost">1,000 JACOB</div>
+                    <div class="tc-features">
+                        <div class="tc-feat available">All Gold Features</div>
+                        <div class="tc-feat available">Strategy Generation</div>
+                        <div class="tc-feat available">DeFi Yield Analysis</div>
+                        <div class="tc-feat available">Cross-Token Analysis</div>
+                        <div class="tc-feat available">Risk Modeling</div>
+                        <div class="tc-feat locked">Autonomous Mode</div>
+                    </div>
+                    <div class="tc-swap">Swap: 10 BNB</div>
+                    <div class="tc-shares">12 Revenue Shares</div>
+                </div>
+                <div class="tier-compare-card glass-card" data-tier="black">
+                    <div class="tc-tier-name">Black</div>
+                    <div class="tc-cost">10,000 JACOB</div>
+                    <div class="tc-features">
+                        <div class="tc-feat available">All Diamond Features</div>
+                        <div class="tc-feat available">Autonomous Mode</div>
+                        <div class="tc-feat available">Whale Insights</div>
+                        <div class="tc-feat available">Priority Intelligence</div>
+                        <div class="tc-feat available">Custom Instructions</div>
+                    </div>
+                    <div class="tc-swap">Swap: Unlimited</div>
+                    <div class="tc-shares">25 Revenue Shares</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="auto-trade-section" id="auto-trade-section" style="text-align:center; padding:30px 0;">
+            <div class="section-line"></div>
+            <h2 class="section-title neon-glow">Autonomous Mode</h2>
+            <p class="auto-trade-subtitle" style="margin-bottom:16px;">Let your agent trade autonomously with AI-driven signals and on-chain execution.</p>
+            <a href="/autotrade.html" class="at-btn at-btn-simulate" style="display:inline-block; text-decoration:none; padding:14px 32px; font-size:1rem;">Launch Agent Autopilot</a>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-line"></div>
+            <p>Jacob <span class="footer-dot"></span> BAP-578 Non-Fungible Agent Platform <span class="footer-dot"></span> BNB Smart Chain</p>
+        </div>
+    </footer>
+
+    <script>
+    var chatMessages = document.getElementById('chat-messages');
+    var chatInput = document.getElementById('chat-input');
+    var sendBtn = document.getElementById('send-btn');
+    var botStatus = document.getElementById('bot-status');
+    var tierSelect = document.getElementById('bot-agent-tier');
+
+    var _connectedWallet = null;
+    var _walletAgents = [];
+    var _selectedAgentId = null;
+    var _agentContext = null;
+
+    var TIER_AI_LEVELS = { 1: 'Basic', 2: 'Analyst', 3: 'Advisor', 4: 'Strategist', 5: 'Autonomous' };
+    var TIER_SWAP_LIMITS = { 1: '0.1 BNB', 2: '0.5 BNB', 3: '2 BNB', 4: '10 BNB', 5: 'Unlimited' };
+    var TIER_SHARES = { 1: '1', 2: '2', 3: '5', 4: '12', 5: '25' };
+    var TIER_NAMES = { 1: 'Bronze', 2: 'Silver', 3: 'Gold', 4: 'Diamond', 5: 'Black' };
+    var TIER_COLORS = { 1: '#cd7f32', 2: '#c0c0c0', 3: '#ffd700', 4: '#b9f2ff', 5: '#1a1a2e' };
+
+    var QUICK_COMMANDS = {
+        1: [
+            { label: "What is Jacob?", prompt: "What is the Jacob platform and how do agent NFTs work?" },
+            { label: "How to mint?", prompt: "How do I mint an agent NFT? Walk me through the steps." },
+            { label: "My agent status", prompt: "Tell me about my agent — what's in my vault and what can I do?" },
+            { label: "Upgrade path", prompt: "What would I gain by upgrading my agent to Silver tier?" }
+        ],
+        2: [
+            { label: "JACOB Analysis", prompt: "Analyze the current JACOB token metrics and price action" },
+            { label: "My vault review", prompt: "Review my agent's vault balances and suggest what to do with them" },
+            { label: "Upgrade worth it?", prompt: "Based on my current holdings, should I upgrade to Gold?" },
+            { label: "Tokenomics", prompt: "Break down the JACOB tokenomics and supply distribution" }
+        ],
+        3: [
+            { label: "Portfolio Review", prompt: "Analyze my agent's current vault position and recommend an optimal allocation" },
+            { label: "Revenue Check", prompt: "Check my revenue status — am I registered? Do I have unclaimed BNB?" },
+            { label: "Entry Points", prompt: "Based on the current JACOB price and my holdings, where should I enter?" },
+            { label: "Upgrade Analysis", prompt: "Calculate whether upgrading to Diamond is worth it based on my actual JACOB balance" },
+            { label: "Revenue Estimate", prompt: "Given my tier and revenue shares, estimate my earnings per epoch" },
+            { label: "Swap Strategy", prompt: "What's the best swap strategy for my vault given my current balance?" }
+        ],
+        4: [
+            { label: "Full Strategy", prompt: "Build a comprehensive trading strategy using my actual vault position and Diamond capabilities" },
+            { label: "DeFi Opportunities", prompt: "What DeFi yield opportunities on BSC match my vault size and swap limit?" },
+            { label: "Cross-Token", prompt: "Perform cross-token correlation analysis between JACOB, BNB, and top BSC tokens" },
+            { label: "Risk Model", prompt: "Model my risk exposure across my vault holdings, revenue shares, and JACOB position" },
+            { label: "Competition Prep", prompt: "Help me prepare a strategy for the next agent trading competition" },
+            { label: "Upgrade to Black", prompt: "Given my current JACOB balance, can I afford Black tier? Is it worth it?" }
+        ],
+        5: [
+            { label: "Autonomous Plan", prompt: "Design an autonomous trading plan leveraging my Black agent's unlimited swap access and current vault" },
+            { label: "Whale Strategy", prompt: "Build a whale-level strategy based on my actual position size and holdings" },
+            { label: "Market Intelligence", prompt: "Priority market intelligence briefing — what opportunities match my current portfolio?" },
+            { label: "Full Portfolio", prompt: "Comprehensive portfolio optimization using my 25 revenue shares, vault balance, and unlimited swaps" },
+            { label: "Alpha Report", prompt: "Give me alpha based on my on-chain position — what moves should I make right now?" },
+            { label: "Agent Optimization", prompt: "How can I maximize my Black agent's value — vault, revenue, competitions, everything?" }
+        ]
+    };
+
+    var ALL_CAPABILITIES = [
+        { name: "General Chat", minTier: 1 },
+        { name: "Platform FAQ", minTier: 1 },
+        { name: "Crypto Q&A", minTier: 1 },
+        { name: "On-Chain Awareness", minTier: 1 },
+        { name: "Token Analysis", minTier: 2 },
+        { name: "Live Market Data", minTier: 2 },
+        { name: "Portfolio Advice", minTier: 3 },
+        { name: "Risk Scoring", minTier: 3 },
+        { name: "Revenue Insights", minTier: 3 },
+        { name: "Strategy Generation", minTier: 4 },
+        { name: "DeFi Analysis", minTier: 4 },
+        { name: "Cross-Token Analysis", minTier: 4 },
+        { name: "Autonomous Mode", minTier: 5 },
+        { name: "Whale Insights", minTier: 5 },
+        { name: "Priority Intelligence", minTier: 5 }
+    ];
+
+    function updateTierDisplay() {
+        var tier = parseInt(tierSelect.value);
+        document.getElementById('tier-label').textContent = TIER_NAMES[tier] + ' Agent';
+        document.getElementById('stat-swap').textContent = TIER_SWAP_LIMITS[tier];
+        document.getElementById('stat-shares').textContent = TIER_SHARES[tier];
+        document.getElementById('stat-ai-level').textContent = TIER_AI_LEVELS[tier];
+
+        var badge = document.getElementById('tier-badge-display');
+        badge.className = 'tier-badge-large tier-' + TIER_NAMES[tier].toLowerCase();
+
+        var qa = document.getElementById('quick-actions');
+        var commands = QUICK_COMMANDS[tier] || QUICK_COMMANDS[1];
+        qa.innerHTML = commands.map(function(cmd) {
+            return '<button class="qa-btn" data-prompt="' + cmd.prompt.replace(/"/g, '&quot;') + '">' + cmd.label + '</button>';
+        }).join('');
+        qa.querySelectorAll('.qa-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() { sendMessage(btn.dataset.prompt); });
+        });
+
+        var capList = document.getElementById('capabilities-list');
+        capList.innerHTML = ALL_CAPABILITIES.map(function(cap) {
+            var unlocked = tier >= cap.minTier;
+            return '<div class="cap-item">' +
+                '<span class="cap-dot ' + (unlocked ? 'active' : 'locked') + '"></span>' +
+                '<span class="' + (unlocked ? '' : 'cap-locked-text') + '">' + cap.name +
+                (unlocked ? '' : ' <small>(Tier ' + cap.minTier + '+)</small>') +
+                '</span></div>';
+        }).join('');
+    }
+
+    tierSelect.addEventListener('change', updateTierDisplay);
+
+    function addMessage(content, isBot) {
+        var msg = document.createElement('div');
+        msg.className = 'msg ' + (isBot ? 'bot-msg' : 'user-msg');
+        var formatted = content;
+        if (isBot) {
+            formatted = content
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/\n- /g, '</p><li>')
+                .replace(/\n\d+\. /g, '</p><li>');
+        }
+        msg.innerHTML =
+            '<div class="msg-avatar">' + (isBot ? 'J' : 'U') + '</div>' +
+            '<div class="msg-content"><p>' + formatted + '</p></div>';
+        chatMessages.appendChild(msg);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function getContext() {
+        var tier = document.getElementById('bot-agent-tier');
+        var risk = document.getElementById('bot-risk');
+        var agentId = _selectedAgentId || document.getElementById('bot-agent-id').value;
+        return {
+            tierName: tier.options[tier.selectedIndex].text,
+            tierValue: tier.value,
+            riskLevel: risk.value,
+            agentId: agentId || '',
+            walletAddress: _connectedWallet || ''
+        };
+    }
+
+    async function sendMessage(text) {
+        if (!text.trim()) return;
+
+        addMessage(text, false);
+        chatInput.value = '';
+        botStatus.textContent = 'Reading on-chain data...';
+        botStatus.classList.add('thinking');
+
+        var ctx = getContext();
+
+        try {
+            var res = await fetch('/api/bot/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text, context: ctx })
+            });
+            var data = await res.json();
+            addMessage(data.response || data.error || 'No response', true);
+        } catch (e) {
+            addMessage('Connection error. Please try again.', true);
+        }
+
+        botStatus.textContent = 'Ready';
+        botStatus.classList.remove('thinking');
+    }
+
+    sendBtn.addEventListener('click', function() { sendMessage(chatInput.value); });
+    chatInput.addEventListener('keypress', function(e) { if (e.key === 'Enter') sendMessage(chatInput.value); });
+
+    async function detectWalletAgents(address) {
+        var detectStatus = document.getElementById('agent-detect-status');
+        detectStatus.innerHTML = '<span class="detect-icon spin">&#9881;</span> Scanning blockchain for your agents...';
+
+        try {
+            var res = await fetch('/api/wallet-agents/' + address);
+            var data = await res.json();
+
+            if (data.agents && data.agents.length > 0) {
+                _walletAgents = data.agents;
+                var selector = document.getElementById('bot-agent-select');
+                var sortedAgents = data.agents.slice().sort(function(a, b) { return b.tier - a.tier; });
+                selector.innerHTML = sortedAgents.map(function(a) {
+                    return '<option value="' + a.tokenId + '">#' + a.tokenId + ' — ' + a.tierName + '</option>';
+                }).join('');
+                document.getElementById('agent-selector-group').style.display = '';
+                document.getElementById('manual-agent-group').style.display = 'none';
+                detectStatus.innerHTML = '<span class="detect-icon" style="color:#00ffaa;">&#10003;</span> Found ' + data.agents.length + ' agent' + (data.agents.length > 1 ? 's' : '') + ' on-chain';
+
+                selector.addEventListener('change', function() {
+                    var selectedAgent = data.agents.find(function(a) { return a.tokenId === parseInt(selector.value); });
+                    if (selectedAgent) {
+                        _selectedAgentId = selectedAgent.tokenId;
+                        tierSelect.value = selectedAgent.tier;
+                        updateTierDisplay();
+                        loadAgentSnapshot(selectedAgent.tokenId);
+                        if (typeof showAutoTradeSection === 'function') showAutoTradeSection(selectedAgent.tokenId, selectedAgent.tier);
+                    }
+                });
+
+                var bestAgent = data.agents.reduce(function(best, a) {
+                    return a.tier > best.tier ? a : best;
+                }, data.agents[0]);
+                selector.value = bestAgent.tokenId;
+                _selectedAgentId = bestAgent.tokenId;
+                tierSelect.value = bestAgent.tier;
+                updateTierDisplay();
+                loadAgentSnapshot(bestAgent.tokenId);
+                if (typeof showAutoTradeSection === 'function') showAutoTradeSection(bestAgent.tokenId, bestAgent.tier);
+
+                document.getElementById('chain-badge').style.display = '';
+            } else {
+                detectStatus.innerHTML = '<span class="detect-icon" style="color:#f0b90b;">&#9888;</span> No agents found. <a href="/command.html" style="color:#f0b90b;">Mint your first agent</a>';
+            }
+        } catch(e) {
+            detectStatus.innerHTML = '<span class="detect-icon" style="color:#ff4444;">&#10007;</span> Could not scan blockchain';
+        }
+    }
+
+    async function loadAgentSnapshot(agentId) {
+        var snapshotCard = document.getElementById('agent-snapshot-card');
+        var snapshot = document.getElementById('agent-snapshot');
+        snapshotCard.style.display = '';
+        snapshot.innerHTML = '<div class="snapshot-loading">Loading on-chain data...</div>';
+
+        try {
+            var url = '/api/agent-context/' + agentId;
+            if (_connectedWallet) url += '?wallet=' + _connectedWallet;
+            var res = await fetch(url);
+            var data = await res.json();
+            _agentContext = data;
+
+            var html = '';
+            html += '<div class="snap-row"><span class="snap-label">Agent</span><span class="snap-value" style="color:#f0b90b;">#' + data.agentId + (data.profileName ? ' "' + data.profileName + '"' : '') + '</span></div>';
+            html += '<div class="snap-row"><span class="snap-label">Tier</span><span class="snap-value tier-text-' + (data.tierName || 'bronze').toLowerCase() + '">' + data.tierName + ' (' + data.tier + '/5)</span></div>';
+            html += '<div class="snap-row"><span class="snap-label">Vault BNB</span><span class="snap-value">' + parseFloat(data.vaultBnb || 0).toFixed(4) + ' BNB</span></div>';
+            html += '<div class="snap-row"><span class="snap-label">Vault JACOB</span><span class="snap-value">' + parseFloat(data.vaultJacob || 0).toFixed(2) + '</span></div>';
+            html += '<div class="snap-row"><span class="snap-label">Revenue</span><span class="snap-value">' + (data.revenueRegistered ? '<span style="color:#00ffaa;">Registered</span>' : '<span style="color:#ff4444;">Not Registered</span>') + '</span></div>';
+            html += '<div class="snap-row"><span class="snap-label">Pending BNB</span><span class="snap-value" style="color:#00ffaa;">' + parseFloat(data.pendingRevenue || 0).toFixed(4) + '</span></div>';
+            html += '<div class="snap-row"><span class="snap-label">Claimed BNB</span><span class="snap-value">' + parseFloat(data.revenueClaimed || 0).toFixed(4) + '</span></div>';
+            if (data.walletJacobBalance) {
+                html += '<div class="snap-divider"></div>';
+                html += '<div class="snap-row"><span class="snap-label">Wallet JACOB</span><span class="snap-value" style="color:#f0b90b;">' + parseFloat(data.walletJacobBalance).toFixed(2) + '</span></div>';
+                html += '<div class="snap-row"><span class="snap-label">Total Agents</span><span class="snap-value">' + data.walletAgentCount + '</span></div>';
+            }
+            snapshot.innerHTML = html;
+        } catch(e) {
+            snapshot.innerHTML = '<div class="snapshot-error">Could not load agent data</div>';
+        }
+    }
+
+    var _analyzerAddress = null;
+    var _analyzerData = null;
+
+    function analyzeConnectedWallet() {
+        if (_connectedWallet) {
+            document.getElementById('analyzer-address').value = _connectedWallet;
+            analyzeWallet();
+        }
+    }
+
+    async function analyzeWallet() {
+        var address = document.getElementById('analyzer-address').value.trim();
+        if (!address || !/^0x[a-fA-F0-9]{40}$/.test(address)) {
+            document.getElementById('analyzer-status').innerHTML = '<span style="color:#ff4444;">Invalid BSC wallet address</span>';
+            return;
+        }
+
+        var btn = document.getElementById('analyzer-btn');
+        var status = document.getElementById('analyzer-status');
+        btn.disabled = true;
+        btn.textContent = 'Scanning...';
+        status.innerHTML = '<span class="detect-icon spin">&#9881;</span> Fetching all DEX trades from blockchain... This may take a moment.';
+
+        try {
+            var agentIdForScan = _selectedAgentId || document.getElementById('bot-agent-id').value || '';
+            var res = await fetch('/api/wallet-performance/' + address + '?agentId=' + encodeURIComponent(agentIdForScan) + '&wallet=' + encodeURIComponent(_connectedWallet || ''));
+            var data = await res.json();
+
+            if (data.error) {
+                status.innerHTML = '<span style="color:#ff4444;">' + data.error + '</span>';
+                btn.disabled = false;
+                btn.textContent = 'Analyze';
+                return;
+            }
+
+            _analyzerAddress = address;
+            _analyzerData = data;
+            displayPerformanceResults(data);
+            status.innerHTML = '<span style="color:#00ffaa;">&#10003; Analysis complete — ' + data.totalTrades + ' trades found</span>';
+        } catch(e) {
+            status.innerHTML = '<span style="color:#ff4444;">Failed to fetch wallet data. Try again.</span>';
+        }
+
+        btn.disabled = false;
+        btn.textContent = 'Analyze';
+    }
+
+    var _allTokenSummaries = [];
+
+    function fmtBNB(v) { return (v >= 0 ? '+' : '') + v.toFixed(4); }
+    function fmtPct(v) { return (v >= 0 ? '+' : '') + v.toFixed(1) + '%'; }
+
+    function filterTokens(filter, btn) {
+        document.querySelectorAll('.ar-filter-btn').forEach(function(b) { b.classList.remove('active'); });
+        if (btn) btn.classList.add('active');
+        var rows = document.querySelectorAll('.ar-token-row');
+        rows.forEach(function(row) {
+            var status = row.getAttribute('data-status');
+            if (filter === 'all') row.style.display = '';
+            else if (filter === 'wins') row.style.display = status === 'WIN' ? '' : 'none';
+            else if (filter === 'losses') row.style.display = status === 'LOSS' ? '' : 'none';
+            else if (filter === 'holding') row.style.display = status === 'HOLDING' ? '' : 'none';
+        });
+    }
+
+    var TIER_NAMES = { 1: 'Bronze', 2: 'Silver', 3: 'Gold', 4: 'Diamond', 5: 'Black' };
+
+    function lockSection(id) {
+        var wrap = document.getElementById('gate-' + id);
+        if (!wrap) return;
+        wrap.classList.add('ar-gated');
+        var lock = document.getElementById('lock-' + id);
+        if (lock) lock.style.display = '';
+    }
+    function unlockSection(id) {
+        var wrap = document.getElementById('gate-' + id);
+        if (!wrap) return;
+        wrap.classList.remove('ar-gated');
+        var lock = document.getElementById('lock-' + id);
+        if (lock) lock.style.display = 'none';
+    }
+
+    function applyTierGating(tier, bronzeLocked) {
+        var banner = document.getElementById('ar-tier-banner');
+        var allSections = ['spotlight', 'insights', 'habits', 'advice', 'tokens', 'trades', 'ai'];
+        allSections.forEach(function(s) { unlockSection(s); });
+
+        if (tier === 1 && bronzeLocked) {
+            banner.style.display = '';
+            banner.className = 'ar-tier-banner ar-banner-locked';
+            banner.innerHTML = '<span class="ar-banner-icon">&#128274;</span> <strong>Bronze Agent</strong> — Your 1 free full scan has been used. Only basic stats (grade & overview) are available. Upgrade to <strong>Silver</strong> for full access. <a href="/command.html" class="ar-banner-link">Upgrade Now</a>';
+            allSections.forEach(function(s) { lockSection(s); });
+            document.getElementById('analyzer-ai-btn').style.display = 'none';
+            document.getElementById('analyzer-ai-section').style.display = 'none';
+        } else if (tier === 1) {
+            banner.style.display = '';
+            banner.className = 'ar-tier-banner ar-banner-trial';
+            banner.innerHTML = '<span class="ar-banner-icon">&#127775;</span> <strong>Bronze Agent</strong> — This is your 1 free full scan! After this, only basic stats will be available. Upgrade to <strong>Silver</strong> for more scans.';
+            allSections.forEach(function(s) { unlockSection(s); });
+            document.getElementById('analyzer-ai-btn').style.display = '';
+            document.getElementById('analyzer-ai-section').style.display = '';
+        } else if (tier >= 2) {
+            banner.style.display = '';
+            banner.className = 'ar-tier-banner ar-banner-trial';
+            banner.innerHTML = '<span class="ar-banner-icon">&#127775;</span> <strong>' + TIER_NAMES[tier] + ' Agent</strong> — Full access scan!';
+            allSections.forEach(function(s) { unlockSection(s); });
+            document.getElementById('analyzer-ai-btn').style.display = '';
+            document.getElementById('analyzer-ai-section').style.display = '';
+
+            if (tier < 3) {
+                lockSection('advice');
+                lockSection('ai');
+            } else if (tier < 4) {
+                lockSection('ai');
+            }
+        }
+    }
+
+    function displayPerformanceResults(data) {
+        var resultsEl = document.getElementById('analyzer-results');
+        resultsEl.style.display = '';
+        _allTokenSummaries = data.tokenSummaries || [];
+        var ins = data.insights || {};
+
+        var warningEl = document.getElementById('analyzer-data-warning');
+        if (data.dataWarning) {
+            if (!warningEl) {
+                warningEl = document.createElement('div');
+                warningEl.id = 'analyzer-data-warning';
+                warningEl.style.cssText = 'background:rgba(255,165,0,0.15);border:1px solid rgba(255,165,0,0.4);border-radius:8px;padding:10px 14px;margin-bottom:12px;color:#ffa500;font-size:0.85rem;';
+                resultsEl.insertBefore(warningEl, resultsEl.firstChild);
+            }
+            warningEl.textContent = data.dataWarning;
+            warningEl.style.display = '';
+        } else if (warningEl) {
+            warningEl.style.display = 'none';
+        }
+
+        document.getElementById('analyzer-wallet-label').textContent = data.address.substring(0, 6) + '...' + data.address.substring(38);
+        document.getElementById('ar-period').textContent = (data.firstTradeDate || '?') + ' to ' + (data.lastTradeDate || '?');
+
+        var gradeColors = { A: '#00ffaa', B: '#64ffda', C: '#f0b90b', D: '#ff8c00', F: '#ff4444' };
+        var gradeEl = document.getElementById('ar-grade');
+        gradeEl.textContent = data.grade || 'C';
+        gradeEl.style.color = gradeColors[data.grade] || '#f0b90b';
+        document.getElementById('ar-grade-box').style.borderColor = gradeColors[data.grade] || '#f0b90b';
+
+        var pnlClass = data.totalPnlBNB >= 0 ? 'positive' : 'negative';
+        var pnlSign = data.totalPnlBNB >= 0 ? '+' : '';
+
+        document.getElementById('ar-overview-grid').innerHTML =
+            '<div class="ar-stat"><div class="ar-stat-num">' + data.totalTrades + '</div><div class="ar-stat-lbl">Trades</div></div>' +
+            '<div class="ar-stat"><div class="ar-stat-num">' + data.totalTokensTraded + '</div><div class="ar-stat-lbl">Tokens</div></div>' +
+            '<div class="ar-stat"><div class="ar-stat-num">' + data.winRate + '%</div><div class="ar-stat-lbl">Win Rate</div><div class="ar-stat-sub">' + data.wins + 'W / ' + data.losses + 'L</div></div>' +
+            '<div class="ar-stat"><div class="ar-stat-num ' + pnlClass + '">' + pnlSign + data.totalPnlBNB.toFixed(4) + '</div><div class="ar-stat-lbl">P&L</div></div>' +
+            '<div class="ar-stat"><div class="ar-stat-num">' + data.totalGasBNB.toFixed(4) + '</div><div class="ar-stat-lbl">Gas Burned</div></div>' +
+            '<div class="ar-stat"><div class="ar-stat-num">' + (ins.profitFactor || 0) + '</div><div class="ar-stat-lbl">Profit Factor</div></div>';
+
+        var spotHtml = '';
+        if (ins.bestROIToken) {
+            var bqc = ins.bestROIToken.quoteCurrency || 'BNB';
+            spotHtml += '<div class="ar-spotlight ar-spot-win"><div class="ar-spot-tag">BEST TRADE</div>' +
+                '<div class="ar-spot-token">' + ins.bestROIToken.token + '</div>' +
+                '<div class="ar-spot-roi positive">' + fmtPct(ins.bestROIToken.roi) + ' ROI</div>' +
+                '<div class="ar-spot-detail">Spent ' + ins.bestROIToken.spent.toFixed(4) + ' ' + bqc + '</div>' +
+                '<div class="ar-spot-detail">Got back ' + ins.bestROIToken.received.toFixed(4) + ' ' + bqc + '</div>' +
+                '<div class="ar-spot-pnl positive">' + fmtBNB(ins.bestROIToken.pnl) + ' ' + bqc + ' profit</div></div>';
+        }
+        if (ins.worstROIToken) {
+            var wqc = ins.worstROIToken.quoteCurrency || 'BNB';
+            spotHtml += '<div class="ar-spotlight ar-spot-loss"><div class="ar-spot-tag">WORST TRADE</div>' +
+                '<div class="ar-spot-token">' + ins.worstROIToken.token + '</div>' +
+                '<div class="ar-spot-roi negative">' + fmtPct(ins.worstROIToken.roi) + ' ROI</div>' +
+                '<div class="ar-spot-detail">Spent ' + ins.worstROIToken.spent.toFixed(4) + ' ' + wqc + '</div>' +
+                '<div class="ar-spot-detail">Got back ' + ins.worstROIToken.received.toFixed(4) + ' ' + wqc + '</div>' +
+                '<div class="ar-spot-pnl negative">' + fmtBNB(ins.worstROIToken.pnl) + ' ' + wqc + ' loss</div></div>';
+        }
+        document.getElementById('ar-spotlight-row').innerHTML = spotHtml;
+
+        var rightItems = [];
+        if (data.wins > 0) rightItems.push('You found ' + data.wins + ' winning tokens out of ' + data.totalTokensTraded + ' traded');
+        if (ins.bestROI > 0) rightItems.push('Your best ROI was ' + fmtPct(ins.bestROI) + ' — strong entry timing');
+        if (ins.avgWinBNB > 0) rightItems.push('Average win: ' + fmtBNB(ins.avgWinBNB) + ' per token');
+        if (ins.winStreak > 1) rightItems.push('Best win streak: ' + ins.winStreak + ' in a row');
+        if (ins.avgHoldWinHrs > 0 && ins.avgHoldWinHrs < 24) rightItems.push('You took profits quickly on winners (avg ' + ins.avgHoldWinHrs.toFixed(1) + 'h hold)');
+        if (ins.avgHoldWinHrs >= 24) rightItems.push('You showed patience on winners (avg ' + ins.avgHoldWinHrs.toFixed(1) + 'h hold)');
+        if (rightItems.length === 0) rightItems.push('Keep trading to build your track record');
+        document.getElementById('ar-right-body').innerHTML = rightItems.map(function(i) { return '<div class="ar-insight-item ar-right-item">' + i + '</div>'; }).join('');
+
+        var wrongItems = [];
+        if (data.losses > 0) wrongItems.push(data.losses + ' losing trades — ' + ((data.losses / (data.wins + data.losses)) * 100).toFixed(0) + '% loss rate');
+        if (ins.worstROI < -50) wrongItems.push('Worst loss was ' + fmtPct(ins.worstROI) + ' ROI — consider setting stop losses');
+        if (Math.abs(ins.avgLossBNB) > ins.avgWinBNB && ins.avgWinBNB > 0) wrongItems.push('Average loss (' + Math.abs(ins.avgLossBNB).toFixed(4) + ') exceeds average win (' + ins.avgWinBNB.toFixed(4) + ')');
+        if (ins.lossStreak > 2) wrongItems.push('Longest loss streak: ' + ins.lossStreak + ' — watch for tilt trading');
+        if (ins.holdingCount > 5) wrongItems.push(ins.holdingCount + ' tokens still held (' + ins.unrealizedBNB.toFixed(4) + ' at risk)');
+        if (ins.gasVsPnlRatio > 50 && data.totalPnlBNB < 0) wrongItems.push('Gas fees ate ' + ins.gasVsPnlRatio.toFixed(0) + '% of your losses — reduce overtrading');
+        if (ins.avgHoldLossHrs > 48) wrongItems.push('Holding losers too long (avg ' + ins.avgHoldLossHrs.toFixed(1) + 'h) — cut losses faster');
+        if (wrongItems.length === 0) wrongItems.push('No major issues detected');
+        document.getElementById('ar-wrong-body').innerHTML = wrongItems.map(function(i) { return '<div class="ar-insight-item ar-wrong-item">' + i + '</div>'; }).join('');
+
+        var habitsHtml = '';
+        habitsHtml += '<div class="ar-habit"><span class="ar-habit-icon">&#128337;</span><div class="ar-habit-info"><div class="ar-habit-val">' + data.tradingPatterns.mostActiveHour + ':00 UTC</div><div class="ar-habit-lbl">Peak Trading Hour</div></div></div>';
+        habitsHtml += '<div class="ar-habit"><span class="ar-habit-icon">&#128197;</span><div class="ar-habit-info"><div class="ar-habit-val">' + data.tradingPatterns.mostActiveDay + '</div><div class="ar-habit-lbl">Most Active Day</div></div></div>';
+        habitsHtml += '<div class="ar-habit"><span class="ar-habit-icon">&#128176;</span><div class="ar-habit-info"><div class="ar-habit-val">' + (ins.avgTradeSize || 0).toFixed(4) + '</div><div class="ar-habit-lbl">Avg Position Size</div></div></div>';
+        habitsHtml += '<div class="ar-habit"><span class="ar-habit-icon">&#128200;</span><div class="ar-habit-info"><div class="ar-habit-val">' + (data.totalTokensTraded > 0 ? (data.totalTrades / data.totalTokensTraded).toFixed(1) : '0') + '</div><div class="ar-habit-lbl">Trades per Token</div></div></div>';
+        habitsHtml += '<div class="ar-habit"><span class="ar-habit-icon">&#9889;</span><div class="ar-habit-info"><div class="ar-habit-val">' + (ins.winStreak || 0) + 'W / ' + (ins.lossStreak || 0) + 'L</div><div class="ar-habit-lbl">Best Streaks</div></div></div>';
+        habitsHtml += '<div class="ar-habit"><span class="ar-habit-icon">&#9981;</span><div class="ar-habit-info"><div class="ar-habit-val">' + (ins.holdingCount || 0) + ' tokens</div><div class="ar-habit-lbl">Still Holding</div></div></div>';
+        document.getElementById('ar-habits-grid').innerHTML = habitsHtml;
+
+        var adviceHtml = '';
+        var iconMap = { warn: '&#9888;', tip: '&#128218;', good: '&#9989;', info: '&#128161;' };
+        (data.adviceSummary || []).forEach(function(a) {
+            adviceHtml += '<div class="ar-advice-card ar-advice-' + a.icon + '">' +
+                '<div class="ar-advice-card-icon">' + (iconMap[a.icon] || '&#128161;') + '</div>' +
+                '<div class="ar-advice-card-body">' +
+                '<div class="ar-advice-title">' + a.title + '</div>' +
+                '<div class="ar-advice-text">' + a.text + '</div>' +
+                '</div></div>';
+        });
+        document.getElementById('ar-advice-list').innerHTML = adviceHtml || '<p style="color:#666;">Complete more trades to get personalized advice.</p>';
+
+        var tokensHtml = '<div class="ar-tokens-header"><span>Token</span><span>Buys</span><span>Sells</span><span>Spent</span><span>Received</span><span>P&L</span><span>ROI</span><span>Hold</span><span>Status</span></div>';
+        (data.tokenSummaries || []).forEach(function(t) {
+            var qc = t.quoteCurrency || 'BNB';
+            var statusLabel = t.win ? 'WIN' : (t.stillHolding ? 'HOLDING' : (t.sellCount > 0 ? 'LOSS' : 'HOLDING'));
+            var rowClass = t.win ? 'ar-row-win' : (t.sellCount > 0 ? 'ar-row-loss' : 'ar-row-hold');
+            var roi = t.totalSpentBNB > 0 ? ((t.totalReceivedBNB - t.totalSpentBNB) / t.totalSpentBNB * 100) : 0;
+            var holdStr = t.holdTimeHrs < 1 ? (t.holdTimeHrs * 60).toFixed(0) + 'm' : (t.holdTimeHrs < 24 ? t.holdTimeHrs.toFixed(1) + 'h' : (t.holdTimeHrs / 24).toFixed(1) + 'd');
+            tokensHtml += '<div class="ar-token-row ' + rowClass + '" data-status="' + statusLabel + '">' +
+                '<span class="ar-tok-name">' + t.token + '</span>' +
+                '<span>' + t.buyCount + '</span>' +
+                '<span>' + t.sellCount + '</span>' +
+                '<span>' + t.totalSpentBNB.toFixed(4) + ' ' + qc + '</span>' +
+                '<span>' + t.totalReceivedBNB.toFixed(4) + ' ' + qc + '</span>' +
+                '<span class="' + (t.realizedPnlBNB >= 0 ? 'positive' : 'negative') + '">' + fmtBNB(t.realizedPnlBNB) + ' ' + qc + '</span>' +
+                '<span class="' + (roi >= 0 ? 'positive' : 'negative') + '">' + fmtPct(roi) + '</span>' +
+                '<span>' + holdStr + '</span>' +
+                '<span class="ar-status ar-status-' + statusLabel.toLowerCase() + '">' + statusLabel + '</span>' +
+                '</div>';
+        });
+        document.getElementById('analyzer-tokens-table').innerHTML = tokensHtml;
+
+        var tradesHtml = '';
+        (data.recentTrades || []).forEach(function(t) {
+            var typeClass = t.type === 'buy' ? 'ar-trade-buy' : (t.type === 'sell' ? 'ar-trade-sell' : 'ar-trade-swap');
+            var qa = Number(t.quoteAmount) || 0;
+            var ga = Number(t.gasBNB) || 0;
+            tradesHtml += '<div class="ar-trade-row ' + typeClass + '">' +
+                '<span class="ar-trade-date">' + (t.date || '').split('T')[0] + '</span>' +
+                '<span class="ar-trade-type">' + (t.type || '').toUpperCase() + '</span>' +
+                '<span class="ar-trade-token">' + (t.baseToken || '???') + '</span>' +
+                '<span class="ar-trade-amt">' + qa.toFixed(4) + ' ' + (t.quoteToken || '') + '</span>' +
+                '<span class="ar-trade-gas">' + ga.toFixed(4) + ' gas</span>' +
+                '</div>';
+        });
+        document.getElementById('analyzer-trades-list').innerHTML = tradesHtml || '<p style="color:#666;">No recent trades</p>';
+
+        var tier = parseInt(document.getElementById('bot-agent-tier').value) || 1;
+        applyTierGating(tier, !!data.bronzeLocked);
+
+        resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    async function requestAIAnalysis() {
+        if (!_analyzerAddress) return;
+        var agentId = _selectedAgentId || document.getElementById('bot-agent-id').value || '';
+        var btn = document.getElementById('analyzer-ai-btn');
+        var aiSection = document.getElementById('analyzer-ai-section');
+        var aiContent = document.getElementById('analyzer-ai-content');
+
+        btn.disabled = true;
+        btn.textContent = 'Jacob is analyzing...';
+        aiSection.style.display = '';
+        aiContent.innerHTML = '<div class="ai-loading"><span class="detect-icon spin">&#9881;</span> Jacob is studying ' + (_analyzerData ? _analyzerData.totalTrades : '?') + ' trades... This takes about 15 seconds.</div>';
+
+        try {
+            var res = await fetch('/api/wallet-analysis', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ address: _analyzerAddress, agentId: agentId, walletAddress: _connectedWallet || '' })
+            });
+            var data = await res.json();
+
+            if (data.error) {
+                aiContent.innerHTML = '<div class="ai-error">' + data.error + '</div>';
+            } else {
+                var formatted = data.analysis
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\n\n/g, '</p><p>')
+                    .replace(/\n- /g, '<br>- ')
+                    .replace(/\n(\d+)\. /g, '<br>$1. ');
+                aiContent.innerHTML = '<div class="ai-report"><p>' + formatted + '</p></div>';
+            }
+        } catch(e) {
+            aiContent.innerHTML = '<div class="ai-error">Failed to generate analysis. Please try again.</div>';
+        }
+
+        btn.disabled = false;
+        btn.textContent = 'Ask Jacob Again';
+    }
+
+    window.addEventListener('wallet-connected', function(e) {
+        var address = e.detail && e.detail.address;
+        if (address) {
+            _connectedWallet = address;
+            detectWalletAgents(address);
+            document.getElementById('analyzer-quick-row').style.display = '';
+            var btn = document.getElementById('connect-wallet-btn');
+            if (btn) {
+                btn.textContent = address.substring(0, 6) + '...' + address.substring(38);
+                btn.classList.add('connected');
+            }
+        }
+    });
+
+    if (window.ethereum) {
+        window.ethereum.request({ method: 'eth_accounts' }).then(function(accounts) {
+            if (accounts && accounts.length > 0) {
+                _connectedWallet = accounts[0];
+                detectWalletAgents(accounts[0]);
+            }
+        }).catch(function() {});
+    }
+
+    function fmtUsd(v) {
+        if (v >= 1e6) return '$' + (v / 1e6).toFixed(2) + 'M';
+        if (v >= 1e3) return '$' + (v / 1e3).toFixed(1) + 'K';
+        return '$' + v.toFixed(0);
+    }
+
+    async function loadMarketData() {
+        try {
+            var res = await fetch('/api/market');
+            var data = await res.json();
+            var priceEl = document.getElementById('ticker-price');
+            var changeEl = document.getElementById('ticker-change');
+            var volEl = document.getElementById('ticker-vol');
+            var mcEl = document.getElementById('ticker-mc');
+            var lpEl = document.getElementById('ticker-lp');
+            var lpRatioEl = document.getElementById('ticker-lp-ratio');
+
+            if (data.price && data.price !== 'Unavailable' && data.price !== 'Not listed yet') {
+                priceEl.textContent = '$' + parseFloat(data.price).toFixed(6);
+                var change = parseFloat(data.change24h);
+                changeEl.textContent = (change >= 0 ? '+' : '') + change.toFixed(1) + '%';
+                changeEl.className = 'ticker-change ' + (change >= 0 ? 'positive' : 'negative');
+                var vol = parseFloat(data.volume24h);
+                volEl.textContent = vol > 1000 ? '$' + (vol / 1000).toFixed(1) + 'K' : '$' + vol.toFixed(0);
+
+                var mc = parseFloat(data.marketCap) || 0;
+                var liq = parseFloat(data.liquidity) || 0;
+                var ratio = data.lpRatio;
+                var health = data.lpHealth;
+
+                mcEl.textContent = mc > 0 ? fmtUsd(mc) : '--';
+                lpEl.textContent = liq > 0 ? fmtUsd(liq) : '--';
+                if (ratio !== null && ratio !== undefined && health) {
+                    lpRatioEl.textContent = ratio.toFixed(1) + '%';
+                    lpRatioEl.className = 'ticker-lp-ratio lp-' + health;
+                } else {
+                    lpRatioEl.textContent = '--';
+                    lpRatioEl.className = 'ticker-lp-ratio';
+                }
+            } else {
+                priceEl.textContent = 'Pre-market';
+                changeEl.textContent = '--';
+                volEl.textContent = '--';
+                mcEl.textContent = '--';
+                lpEl.textContent = '--';
+                lpRatioEl.textContent = '--';
+            }
+        } catch(e) {
+            console.log('Market data unavailable');
+        }
+    }
+
+    updateTierDisplay();
+    loadMarketData();
+    setInterval(loadMarketData, 60000);
+
+    var canvas = document.getElementById('particle-canvas');
+    var ctx2 = canvas.getContext('2d');
+    var particles = [];
+    var mouse = { x: -1000, y: -1000 };
+
+    function resize() { canvas.width = window.innerWidth; canvas.height = document.body.scrollHeight; }
+    resize();
+    window.addEventListener('resize', resize);
+    document.addEventListener('mousemove', function(e) { mouse.x = e.clientX; mouse.y = e.clientY + window.scrollY; });
+
+    function Particle() { this.reset(); }
+    Particle.prototype.reset = function() {
+        this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 0.5;
+        this.speedX = (Math.random() - 0.5) * 0.3; this.speedY = (Math.random() - 0.5) * 0.3;
+        this.opacity = Math.random() * 0.5 + 0.1;
+        this.color = ['#f0b90b', '#7c3aed', '#00ffaa', '#64ffda'][Math.floor(Math.random() * 4)];
+    };
+    Particle.prototype.update = function() {
+        this.x += this.speedX; this.y += this.speedY;
+        var dx = mouse.x - this.x, dy = mouse.y - this.y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 120) { this.x -= dx * 0.02; this.y -= dy * 0.02; }
+        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+    };
+    Particle.prototype.draw = function() {
+        ctx2.beginPath(); ctx2.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx2.fillStyle = this.color; ctx2.globalAlpha = this.opacity; ctx2.fill(); ctx2.globalAlpha = 1;
+    };
+    for (var i = 0; i < 50; i++) particles.push(new Particle());
+    function animate() {
+        ctx2.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(function(p) { p.update(); p.draw(); });
+        requestAnimationFrame(animate);
+    }
+    animate();
+
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.glass-card, .section-header').forEach(function(el) { observer.observe(el); });
+
+    </script>
+    <script src="/walletconnect.js?v=2"></script>
+    <script src="/hackers.js"></script>
+    <script src="/i18n.js"></script>
+</body>
+</html>

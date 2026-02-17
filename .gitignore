@@ -29,6 +29,7 @@ Thumbs.db
 
 # Data
 data/registered-wallets.json
+data/tg-wallets.json
 
 # Platform config
 .replit
