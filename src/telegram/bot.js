@@ -890,11 +890,8 @@ function startTelegramBot({ openai, fetchMarketData, fetchAgentContext, verifyAg
   const BAP578_NFA = '0xfd8EeD47b61435f43B004fC65C5b76951652a8CE';
   const VAULT_ABI = [
     'function bnbBalances(uint256) view returns (uint256)',
-    'function balances(uint256, address) view returns (uint256)'
-  ];
-  const NFA_FUND_ABI = [
-    'function fundAgent(uint256 tokenId) external payable',
-    'function agentFunds(uint256) view returns (uint256)'
+    'function balances(uint256, address) view returns (uint256)',
+    'function depositBNBForAgent(uint256 agentId) external payable'
   ];
 
   async function handleVault(chatId) {
@@ -1056,8 +1053,8 @@ function startTelegramBot({ openai, fetchMarketData, fetchAgentContext, verifyAg
     }
 
     const provider = getProvider();
-    const nfaContract = new ethersLib.Contract(BAP578_NFA, NFA_FUND_ABI, provider);
-    const agentBnb = await nfaContract.agentFunds(user.selectedId);
+    const vaultContract = new ethersLib.Contract(AGENT_VAULT, VAULT_ABI, provider);
+    const agentBnb = await vaultContract.bnbBalances(user.selectedId);
     const bnbNum = parseFloat(ethersLib.formatEther(agentBnb));
 
     if (bnbNum < 0.001) {
@@ -1105,8 +1102,8 @@ function startTelegramBot({ openai, fetchMarketData, fetchAgentContext, verifyAg
       const depositNum = parseFloat(ethersLib.formatEther(depositAmount));
       sendSafe(chatId, `\u23F3 *Depositing ${depositNum.toFixed(4)} BNB to Agent #${user.selectedId} vault...*`);
 
-      const nfaContract = new ethersLib.Contract(BAP578_NFA, NFA_FUND_ABI, wallet);
-      const depTx = await nfaContract.fundAgent(user.selectedId, { value: depositAmount, gasLimit: 100000 });
+      const vaultContract = new ethersLib.Contract(AGENT_VAULT, VAULT_ABI, wallet);
+      const depTx = await vaultContract.depositBNBForAgent(user.selectedId, { value: depositAmount, gasLimit: 100000 });
       const receipt = await depTx.wait();
 
       return sendSafe(chatId,

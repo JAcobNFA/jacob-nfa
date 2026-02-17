@@ -605,7 +605,6 @@ const AGENT_CONTEXT_ABIS = {
     "function getAgentTier(uint256 tokenId) view returns (uint8)",
     "function balanceOf(address owner) view returns (uint256)",
     "function tokenOfOwnerByIndex(address owner, uint256 index) view returns (uint256)",
-    "function agentFunds(uint256 tokenId) view returns (uint256)",
   ],
   jacobToken: [
     "function balanceOf(address account) view returns (uint256)",
@@ -651,11 +650,10 @@ async function fetchAgentContext(agentId, walletAddress) {
   let tierFetchFailed = false;
 
   try {
-    const [owner, tier, vaultBnb, nfaFunds, vaultJacob, agentName, agentBio, isRegistered, totalClaimed, currentEp] = await Promise.all([
+    const [owner, tier, vaultBnb, vaultJacob, agentName, agentBio, isRegistered, totalClaimed, currentEp] = await Promise.all([
       nfa.ownerOf(agentId).catch(() => null),
       nfa.getAgentTier(agentId).catch(() => { tierFetchFailed = true; return 1; }),
       vault.bnbBalances(agentId).catch(() => 0n),
-      nfa.agentFunds(agentId).catch(() => 0n),
       vault.balances(agentId, AGENT_CONTEXT_CONTRACTS.jacobToken).catch(() => 0n),
       profile.agentNames(agentId).catch(() => ""),
       profile.agentBios(agentId).catch(() => ""),
@@ -678,8 +676,7 @@ async function fetchAgentContext(agentId, walletAddress) {
     }
 
     result.tierName = TIER_NAMES[result.tier] || "Unknown";
-    const totalVaultBnb = vaultBnb + nfaFunds;
-    result.vaultBnb = ethers.formatEther(totalVaultBnb);
+    result.vaultBnb = ethers.formatEther(vaultBnb);
     result.vaultJacob = ethers.formatEther(vaultJacob);
     result.profileName = agentName || null;
     result.profileBio = agentBio || null;
