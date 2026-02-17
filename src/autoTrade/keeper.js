@@ -484,35 +484,18 @@ async function executeTradeForAgent(agentId, signal, config, tradeAmount) {
     const decimals = await resolveTokenDecimals(tokenAddress);
 
     if (signal.action === 'buy') {
-      const [vaultBnb, nfaFunds] = await Promise.all([
-        vaultContract.bnbBalances(agentId).catch(() => 0n),
-        nfaContract.agentFunds(agentId).catch(() => 0n)
-      ]);
-      const totalBnb = parseFloat(ethers.formatEther(vaultBnb + nfaFunds));
+      const vaultBnb = await vaultContract.bnbBalances(agentId).catch(() => 0n);
+      const vaultBnbParsed = parseFloat(ethers.formatEther(vaultBnb));
 
-      if (totalBnb < tradeAmount) {
-        return { success: false, error: `Insufficient vault BNB: ${totalBnb.toFixed(4)} < ${tradeAmount}. Deposit BNB to agent vault first.` };
+      if (vaultBnbParsed < tradeAmount) {
+        return { success: false, error: `Insufficient vault BNB: ${vaultBnbParsed.toFixed(4)} < ${tradeAmount}. Deposit BNB to agent vault on V2 contract first.` };
       }
 
       const amountIn = ethers.parseEther(tradeAmount.toString());
       let receipt;
 
-      if (vaultBnb >= amountIn) {
-        try {
-          const tx = await vaultContract.swapAgentBNBForTokens(agentId, tokenAddress, amountIn, 0, { gasLimit: 300000 });
-          receipt = await tx.wait();
-        } catch (e) {
-          if (e.message && e.message.includes('data="0x"')) {
-            const tx = await vaultContract.swapBNBForTokens(agentId, tokenAddress, 0, { value: amountIn, gasLimit: 300000 });
-            receipt = await tx.wait();
-          } else {
-            throw e;
-          }
-        }
-      } else {
-        const tx = await vaultContract.swapBNBForTokens(agentId, tokenAddress, 0, { value: amountIn, gasLimit: 300000 });
-        receipt = await tx.wait();
-      }
+      const tx = await vaultContract.swapAgentBNBForTokens(agentId, tokenAddress, amountIn, 0, { gasLimit: 300000 });
+      receipt = await tx.wait();
 
       store.trackPosition(agentId, tokenAddress, signal.token || '???', signal.tokenName || signal.token || 'Unknown', decimals);
 
@@ -598,11 +581,8 @@ async function runKeeperCycle(openai) {
       try {
         let vaultBNB = 0;
         try {
-          const [vaultBnb, nfaFunds] = await Promise.all([
-            vaultContract.bnbBalances(agent.agentId).catch(() => 0n),
-            nfaContract.agentFunds(agent.agentId).catch(() => 0n)
-          ]);
-          vaultBNB = parseFloat(ethers.formatEther(vaultBnb + nfaFunds));
+          const vaultBnb = await vaultContract.bnbBalances(agent.agentId).catch(() => 0n);
+          vaultBNB = parseFloat(ethers.formatEther(vaultBnb));
         } catch (e) {}
 
         const positions = await getAgentPositions(agent.agentId);
